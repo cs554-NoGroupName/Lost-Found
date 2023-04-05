@@ -1,20 +1,37 @@
+import React from "react";
 import { Route, BrowserRouter, Routes, Navigate } from "react-router-dom";
 import "./App.css";
 import LoginPage from "components/login";
+import ForgotPassword from "components/forgotPassword";
+import SignUp from "components/signup";
+import ResetPassword from "components/resetPassword";
+import { ToastContainer } from "react-toastify";
+import Nav from "components/navbar";
 
 function App() {
-  const isAuthenticated = () => {
+  const [state, setState] = React.useState(false);
+
+  // const isAuthenticated = () => {
+  //   console.log("here");
+  //   return JSON.parse(localStorage.getItem("auth") === "true");
+  // };
+
+  React.useEffect(() => {
     console.log("here");
-    return JSON.parse(localStorage.getItem("auth") === "true");
-  };
+    // setState(JSON.parse(localStorage.getItem("auth") === "true"));
+  }, []);
+
+  const styles = () =>
+    state
+      ? "col-span-10 my-4 px-4 overflow-y-auto scroller"
+      : "col-span-12 px-5 py-5 h-[100%] overflow-y-auto";
 
   return (
     <div className="App">
       <BrowserRouter>
         <div className="grid grid-cols-12 h-screen">
-          {/* {isAuthenticated() && <Nav />} */}
-          {/* <div className={styles()}> */}
-          <div>
+          {state && <Nav />}
+          <div className={styles()}>
             <Routes>
               {/* <Route
                 path="/"
@@ -85,17 +102,7 @@ function App() {
                   )
                 }
               />
-              <Route
-                path="/reset/:token"
-                exact
-                element={
-                  isAuthenticated() ? (
-                    <Navigate to="/login" replace />
-                  ) : (
-                    <ResetPassword />
-                  )
-                }
-              />
+
               <Route
                 path="/my-events"
                 exact
@@ -128,39 +135,34 @@ function App() {
                     <Navigate to="/login" replace />
                   )
                 }
-              />
+              /> */}
               <Route
                 exact
                 path="/signup"
-                element={
-                  isAuthenticated() ? <Navigate to="/" replace /> : <SignUp />
-                }
-              /> */}
+                element={state ? <Navigate to="/" replace /> : <SignUp />}
+              />
               <Route
                 path="/login"
-                element={
-                  isAuthenticated() ? (
-                    <Navigate to="/" replace />
-                  ) : (
-                    <LoginPage />
-                  )
-                }
+                // element={state ? <Navigate to="/" replace /> : <LoginPage />}
+                element={<LoginPage />}
               />
-              {/* <Route
+              <Route
                 path="/forgot-password"
                 element={
-                  isAuthenticated() ? (
-                    <Navigate to="/" replace />
-                  ) : (
-                    <ForgotPassword />
-                  )
+                  state ? <Navigate to="/" replace /> : <ForgotPassword />
                 }
-              /> */}
-              {/* NOTE: do we need a 404 Not Found page or redirect to login if not logged-in */}
+              />
+              <Route
+                path="/reset/:token"
+                exact
+                element={
+                  state ? <Navigate to="/login" replace /> : <ResetPassword />
+                }
+              />
               <Route
                 path="*"
                 element={
-                  isAuthenticated() ? (
+                  state ? (
                     <Navigate to="/" replace />
                   ) : (
                     <Navigate to="/login" replace />
@@ -171,14 +173,14 @@ function App() {
           </div>
         </div>
 
-        {/* <ToastContainer
+        <ToastContainer
           autoClose={3000}
           hideProgressBar={true}
           newestOnTop={true}
           closeOnClick
           rtl={false}
           theme="colored"
-        /> */}
+        />
       </BrowserRouter>
     </div>
   );
