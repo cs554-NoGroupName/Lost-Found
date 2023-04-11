@@ -1,8 +1,6 @@
-html {
-  /* TODO: decide font for the app */
-  /* font-family: monospace; */
-  /* font-size: 20px; */
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
   overflow: hidden;
@@ -28,7 +26,7 @@ body {
   font-size: 18px;
   font-weight: 500;
   border-radius: 4px;
-  background-color: #393e46;
+  background-color: theme("colors.logoDarkBlue");
   cursor: pointer;
 }
 

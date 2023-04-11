@@ -64,11 +64,13 @@ function Login() {
     <div className="flex min-h-full justify-center items-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
         <div className="flex items-center flex-col">
-          <div className="w-40">
+          <div className="w-[240px] h-[160px] sm:flex md:hidden lg:hidden xl:hidden 2xl:hidden mb-8">
+            <SVGComponent type="phone" />
+          </div>
+          <div className="w-[25rem] sm:hidden">
             <SVGComponent />
           </div>
-
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="mt-6 text-center text-xl md:text-2xl lg:text-3xl font-bold tracking-tight text-gray-900">
             Sign in to your account
           </h2>
         </div>
@@ -150,21 +152,12 @@ function Login() {
             </div>
           </div>
 
-          <div className="flex items-center justify-end text-logoBlue text-xl">
-            {/* <div className="flex items-center">
-              <FormControlLabel
-                control={<Checkbox defaultChecked />}
-                label="Remember me"
-              />
-            </div> */}
-
-            <div>
-              <div
-                onClick={() => navigate("/forgot-password")}
-                className="text-[#393e46] cursor-pointer hover:underline "
-              >
-                Forgot your password?
-              </div>
+          <div className="flex items-center justify-end text-logoDarkBlue text-xl sm:text-lg font-bold">
+            <div
+              onClick={() => navigate("/forgot-password")}
+              className="text-logoDarkBlue cursor-pointer hover:underline "
+            >
+              Forgot your password?
             </div>
           </div>
 
@@ -179,14 +172,15 @@ function Login() {
         </div>
         <div>
           <Divider />
-          <div className="text-xl text-black flex">
-            New user?&nbsp;
-            <div
+          <div className="sm:text-lg text-xl text-black text-center">
+            Don’t have an account?&nbsp;
+            <span
               onClick={() => navigate("/signup")}
-              className="text-[#393e46] cursor-pointer hover:underline "
+              className="text-logoDarkBlue cursor-pointer hover:underline font-bold"
             >
-              Create new account
-            </div>
+              Sign up
+            </span>
+            &nbsp;for free
           </div>
         </div>
       </div>
