@@ -10,6 +10,7 @@ import ReportItem from "components/reportItem";
 import { AuthProvider } from "./firebase/auth";
 import "./App.css";
 import { ThemeProvider, createTheme } from "@mui/material";
+import Page404 from "components/common/Page404";
 
 function App() {
   const [state, setState] = React.useState(false);
@@ -87,6 +88,7 @@ function App() {
                   )
                 }
               />
+              <Route path="/404-page" element={<Page404 />} />
             </Routes>
 
             <ToastContainer
