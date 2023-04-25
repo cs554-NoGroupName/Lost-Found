@@ -1,17 +1,17 @@
-import React from 'react';
-import { Divider, TextField } from '@mui/material';
-import { emailValidation } from '../../utils/helper';
-import CloseIcon from '@mui/icons-material/Close';
-import './styles.css';
-import SVGComponent from '../common/Logo';
+import React from "react";
+import { Divider, TextField } from "@mui/material";
+import { emailValidation } from "../../utils/helper";
+import CloseIcon from "@mui/icons-material/Close";
+import "./styles.css";
+import SVGComponent from "../common/Logo";
 // import { forgotpassword } from '../../utils/apis/auth';
-import { toast } from 'react-toastify';
-import Loading from '../common/Loading';
-import { useNavigate } from 'react-router';
+import { toast } from "react-toastify";
+import Loading from "../common/Loading";
+import { useNavigate } from "react-router";
 
 function ForgotPassword() {
   const navigate = useNavigate();
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState("");
   // const [passwordVisibility, setPasswordVisibility] = React.useState(false);
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -37,10 +37,13 @@ function ForgotPassword() {
     <div className="flex min-h-full justify-center items-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-lg space-y-4">
         <div className="flex items-center flex-col">
-          <div className="w-40">
+          <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">
+            <SVGComponent type="phone" />
+          </div>
+          <div className="w-[25rem] md:hidden sm:hidden">
             <SVGComponent />
           </div>
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl font-bold tracking-tight text-gray-900">
             Forgot password
           </h2>
         </div>
@@ -83,7 +86,7 @@ function ForgotPassword() {
                 onChange={(e) => {
                   let { value } = e.target;
                   value = value.trim();
-                  if (value === '') setError(true);
+                  if (value === "") setError(true);
                   if (!emailValidation(value)) setError(true);
                   else setError(false);
                   setEmail(value);
@@ -103,8 +106,8 @@ function ForgotPassword() {
                 <Divider />
                 <span className="text-xl">
                   <div
-                    onClick={() => navigate('/login')}
-                    className="text-[#393e46] cursor-pointer hover:underline "
+                    onClick={() => navigate("/login")}
+                    className="text-logoBlue cursor-pointer hover:underline font-bold"
                   >
                     back to login
                   </div>

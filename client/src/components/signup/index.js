@@ -130,17 +130,20 @@ function SignUp() {
     setPasswordVisibility(!passwordVisibility);
 
   return (
-    <div className="min-h-full sm:py-8 lg:py-2 md:py-5 sm:px-4 lg:px-8">
-      <div className="sm:flex sm:items-center sm:justify-center">
-        <div className="flex items-center flex-col p-8 md:p-16">
-          <div className="w-20 md:w-40">
+    <div className="min-h-full flex justify-center sm:py-2 lg:py-2 md:py-5 lg:px-8 sm:px-0">
+      <div className="sm:block md:block items-center justify-center flex">
+        <div className="flex items-center flex-col px-8 md:px-16">
+          <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">
+            <SVGComponent type="phone" />
+          </div>
+          <div className="w-[25rem] md:hidden sm:hidden">
             <SVGComponent />
           </div>
-          <h2 className="mt-3 text-center text-xl md:text-3xl font-bold tracking-tight text-gray-900">
-            Create your account
-          </h2>
         </div>
         <div className="rounded-md px-4">
+          <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl font-bold tracking-tight text-gray-900">
+            Create your account
+          </h2>
           <div className="flex justify-between">
             <div className="mr-1 w-6/12">
               <TextField
@@ -605,7 +608,7 @@ function SignUp() {
               Have a account? &nbsp;
               <div
                 onClick={() => navigate("/login")}
-                className="text-[#393e46] cursor-pointer hover:underline"
+                className="text-logoBlue cursor-pointer hover:underline font-bold"
               >
                 Sign in
               </div>

@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* .sample_class {
+  logoblue: #367272;
+  lightwhite: #e6e6e6;
+  logolightblue: #6aa6a6;
+  logolighterblue: #95b1b0;
+  logoBlue: #324b4b;
+} */
+
 body {
   overflow: hidden;
 }
@@ -26,7 +34,7 @@ body {
   font-size: 18px;
   font-weight: 500;
   border-radius: 4px;
-  background-color: theme("colors.logoDarkBlue");
+  background-color: theme("colors.logoBlue");
   cursor: pointer;
 }
 

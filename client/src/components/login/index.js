@@ -51,7 +51,8 @@ function Login() {
       // else {
       //   localStorage.setItem("auth", true);
       //   localStorage.setItem("token", data?.token);
-      //   window.location.href = "/";
+      // window.location.href = "/";
+      navigate("/");
       // }
     }
     setLoading(false);
@@ -64,13 +65,13 @@ function Login() {
     <div className="flex min-h-full justify-center items-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
         <div className="flex items-center flex-col">
-          <div className="w-[240px] h-[160px] sm:flex md:hidden lg:hidden xl:hidden 2xl:hidden mb-8">
+          <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">
             <SVGComponent type="phone" />
           </div>
-          <div className="w-[25rem] sm:hidden">
+          <div className="w-[25rem] md:hidden sm:hidden">
             <SVGComponent />
           </div>
-          <h2 className="mt-6 text-center text-xl md:text-2xl lg:text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl font-bold tracking-tight text-gray-900">
             Sign in to your account
           </h2>
         </div>
@@ -152,10 +153,10 @@ function Login() {
             </div>
           </div>
 
-          <div className="flex items-center justify-end text-logoDarkBlue text-xl sm:text-lg font-bold">
+          <div className="flex items-center justify-end text-logoBlue text-xl sm:text-lg font-bold">
             <div
               onClick={() => navigate("/forgot-password")}
-              className="text-logoDarkBlue cursor-pointer hover:underline "
+              className="text-logoBlue cursor-pointer hover:underline "
             >
               Forgot your password?
             </div>
@@ -176,7 +177,7 @@ function Login() {
             Don’t have an account?&nbsp;
             <span
               onClick={() => navigate("/signup")}
-              className="text-logoDarkBlue cursor-pointer hover:underline font-bold"
+              className="text-logoBlue cursor-pointer hover:underline font-bold"
             >
               Sign up
             </span>

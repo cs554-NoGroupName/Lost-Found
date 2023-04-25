@@ -69,10 +69,13 @@ function ResetPassword() {
     <div className="flex min-h-full justify-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-xl space-y-4">
         <div className="flex items-center flex-col">
-          <div className="w-40">
+          <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">
+            <SVGComponent type="phone" />
+          </div>
+          <div className="w-[25rem] md:hidden sm:hidden">
             <SVGComponent />
           </div>
-          <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl font-bold tracking-tight text-gray-900">
             Reset Password
           </h2>
         </div>
