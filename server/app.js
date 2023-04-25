@@ -1,19 +1,25 @@
-const express = require('express');
-const app = express();
-const configRoutes = require('./routes');
-const dotenv = require('dotenv');
-const cors = require('cors');
-dotenv.config();
+import express from 'express';
+import configRoutes from './routes';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import { VerifyToken } from './middleware/VerifyToken.js';
 
-const data = require('./data');
+dotenv.config();
+const app = express();
+const port = process.env.NODE_PORT || 4000;
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use('/images', express.static('images'));
+console.log(VerifyToken);
+app.use(VerifyToken);
 
 configRoutes(app);
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log("We've now got a server!");
-  console.log('Your routes will be running on http://localhost:3000');
+  console.log('Your routes will be running on ' + process.env.SERVER_URL);
 });
+
+export default app;
