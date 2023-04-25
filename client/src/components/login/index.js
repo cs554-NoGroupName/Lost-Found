@@ -1,17 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Divider, TextField } from "@mui/material";
 import { emailValidation, passwordValidation } from "utils/helper";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CloseIcon from "@mui/icons-material/Close";
 import SVGComponent from "../common/Logo";
-// import { login } from "../../utils/apis/auth";
+import { login } from "../../utils/apis/auth";
 import { toast } from "react-toastify";
 import Loading from "../common/Loading";
-import "./styles.css";
 import { useNavigate } from "react-router";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import firebase from "firebase/compat/app";
+import { AuthContext } from "../../firebase/auth";
+import "./styles.css";
 
 function Login() {
+  const auth = getAuth();
+  const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [userData, setUserData] = React.useState({ email: "", password: "" });
   const [passwordVisibility, setPasswordVisibility] = React.useState(false);
@@ -44,15 +49,36 @@ function Login() {
 
     setErrors(errorObj);
     if (Object.keys(errorObj).length === 0) {
-      console.log("in login");
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          firebase
+            .auth()
+            .currentUser.getIdToken(true)
+            .then(async (res) => {
+              const loginData = await login(res);
+              console.log({ loginData, currentUser });
+              navigate("/");
+            })
+            .catch((err) => {
+              console.log({ err });
+            });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode, errorMessage);
+        });
+
       // const loginData = await login(userData);
       // const { data, status } = loginData;
       // if (status !== 200) toast.error(data?.error);
       // else {
-      //   localStorage.setItem("auth", true);
-      //   localStorage.setItem("token", data?.token);
-      // window.location.href = "/";
-      navigate("/");
+      //   // localStorage.setItem("auth", true);
+      //   // localStorage.setItem("token", data?.token);
+      //   // window.location.href = "/";
+      //
       // }
     }
     setLoading(false);

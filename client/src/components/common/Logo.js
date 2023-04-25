@@ -1,11 +1,11 @@
 import * as React from "react";
-const SVGComponent = ({ type, fillColor="#367272", h="108", w="400" }) =>
+const SVGComponent = ({ type, fillColor = "#367272", h = "108", w = "400" }) =>
   type === "phone" ? (
     <svg
       width="317.2840942382812"
       height="177.55677689337594"
       viewBox="0 0 355 198.66314429809"
-      class="css-1j8o68f"
+      className="css-1j8o68f"
     >
       <defs id="SvgjsDefs1635"></defs>
       <g
@@ -75,7 +75,7 @@ const SVGComponent = ({ type, fillColor="#367272", h="108", w="400" }) =>
       width={w}
       height={h}
       viewBox="0.025 0 391.56 111.112"
-      class="css-1j8o68f"
+      className="css-1j8o68f"
     >
       <g fill={fillColor}>
         <path
