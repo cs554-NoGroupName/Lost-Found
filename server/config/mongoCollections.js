@@ -14,5 +14,5 @@ const getCollectionFn = (collection) => {
 };
 
 module.exports = {
-  events: getCollectionFn('items'),
+  items: getCollectionFn('items'),
 };
