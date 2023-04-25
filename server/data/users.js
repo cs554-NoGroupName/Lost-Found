@@ -30,16 +30,15 @@ export const createUser = async (
     user_firebase_id,
   };
   const insertInfo = await userCollection.insertOne(newUser);
-  if (insertInfo.insertedCount === 0) throw 'Could not add user';
+  if (!insertInfo.acknowledged) throw 'Could not add user';
   const newId = insertInfo.insertedId;
   const user = await getUserById(newId);
   return user;
 };
 
 export const getUserById = async (id) => {
-  id = validation.checkObjectId(id, 'id');
   const userCollection = await users();
-  const user = await userCollection.findOne({ _id: ObjectId(id) });
+  const user = await userCollection.findOne({ _id: new ObjectId(id) });
   if (!user) throw 'User not found';
   return user;
 };
@@ -106,4 +105,14 @@ export const deleteUserById = async (id) => {
     throw 'Could not delete user';
   }
   return { deleted: true };
+};
+
+export default {
+  createUser,
+  getUserById,
+  getUserByFirebaseId,
+  getAllUsers,
+  updateUserByFirebaseId,
+  deleteUserByFirebaseId,
+  deleteUserById,
 };

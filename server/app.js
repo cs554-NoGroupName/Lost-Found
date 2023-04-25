@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use('/images', express.static('images'));
 console.log(VerifyToken);
-app.use(VerifyToken);
+app.use('protected/', VerifyToken);
 
 configRoutes(app);
 

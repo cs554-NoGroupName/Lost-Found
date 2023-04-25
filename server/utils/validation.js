@@ -74,6 +74,26 @@ const checkObjectId = (input, name = 'object id') => {
   }
   return input;
 };
+const checkPassword = (input) => {
+  if (!input)
+    throw 'Password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number';
+  if (input === '')
+    throw 'Password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number';
+  if (input.length < 8)
+    // return "Password must contain more than 8 and less than 20 characters!";
+    throw 'Password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number';
+
+  if (!/[0-9]/g.test(input))
+    throw 'Password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number';
+  // return "Password must contain atleast one number!";
+  if (!/[A-Z]/g.test(input))
+    throw 'Password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number';
+  // return "Password must contain atleast one uppercase letter!";
+  if (!/[a-z]/g.test(input))
+    throw 'Password must be at least 8 characters long and contain at least 1 uppercase letter, 1 lowercase letter, and 1 number';
+  // return "Password must contain atleast one lowercase letter!";
+  return input;
+};
 
 export default {
   checkInputString,
@@ -85,4 +105,5 @@ export default {
   checkDate,
   checkGender,
   checkObjectId,
+  checkPassword,
 };
