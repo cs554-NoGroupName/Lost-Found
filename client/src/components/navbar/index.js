@@ -62,19 +62,17 @@ function Nav() {
       sx={{
         top: 0,
         zIndex: 999,
-        backgroundColor: "#367272"
+        backgroundColor: "#367272",
       }}
     >
-      <Container maxWidth="2xl" disableGutters sx={{padding: '0px 10px'}}>
+      <Container maxWidth="2xl" disableGutters sx={{ padding: "0px 10px" }}>
         <Toolbar disableGutters>
           <div className="xs:hidden sm:hidden md:flex">
             <SVGComponent fillColor="#fff" w="200" h="55" />
           </div>
-
-          {/* desktop */}
+          {/* {Phone} */}
           <Box
             sx={{
-              // marginLeft: "10px",
               flexGrow: 1,
               display: { xs: "flex", md: "none" },
               alignItems: "center",
@@ -134,8 +132,14 @@ function Nav() {
             <SVGComponent fillColor="#fff" w="142" h="40" />
           </Box>
 
-          {/* phone */}
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          {/* desktop */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              marginLeft: "10px",
+            }}
+          >
             {pages.map(({ name, route }) => (
               <Button
                 key={name}
