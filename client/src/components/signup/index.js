@@ -12,7 +12,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import SVGComponent from "../common/Logo";
-import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers";
 import "./styles.css";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -308,6 +308,7 @@ function SignUp() {
               <div className="ml-1 w-6/12">
                 <div className="mt-2">
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
+
                     <DatePicker
                       label="Date of birth"
                       disableFuture

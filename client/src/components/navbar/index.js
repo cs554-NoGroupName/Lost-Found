@@ -15,6 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import SVGComponent from "components/common/Logo";
 import "./styles.css";
 import { Divider } from "@mui/material";
+import firebase from "firebase/compat/app";
 
 const pages = [
   { name: "Home", route: "/" },
@@ -23,10 +24,15 @@ const pages = [
 const settings = ["Profile", "My Activites"];
 
 function Nav() {
+  // const auth = getAuth(firebaseApp);
   const navigate = useNavigate();
-  const signOutUser = () => {
+  const signOutUser = async () => {
+    firebase
+      .auth()
+      .signOut()
+      .then((res) => console.log({ res }))
+      .catch((err) => console.log({ err }));
     localStorage.setItem("token", null);
-    localStorage.setItem("auth", false);
     handleCloseUserMenu();
     navigate("/login");
   };
@@ -52,15 +58,27 @@ function Nav() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar
+      position="sticky"
+      sx={{
+        top: 0,
+        zIndex: 999,
+      }}
+    >
       <Container maxWidth="2xl">
         <Toolbar disableGutters>
           <div className="xs:hidden sm:hidden md:flex">
-            <SVGComponent fillColor="#fff" w="250" h="55" />
+            <SVGComponent fillColor="#fff" w="200" h="55" />
           </div>
 
           {/* desktop */}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box
+            sx={{
+              marginLeft: "10px",
+              flexGrow: 1,
+              display: { xs: "flex", md: "none" },
+            }}
+          >
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -90,9 +108,26 @@ function Nav() {
               }}
             >
               {pages.map(({ name, route }) => (
-                <MenuItem key={name} onClick={handleCloseNavMenu}>
+                <MenuItem
+                  key={name}
+                  onClick={handleCloseNavMenu}
+                  sx={{
+                    color: pathname === route ? "#367272" : "black",
+                    fontWeight: pathname === route ? 700 : 500,
+                  }}
+                >
                   <Link to={route}>
-                    <Typography textAlign="center">{name}</Typography>
+                    <Typography
+                      textAlign="center"
+                      sx={
+                        {
+                          // color: pathname === route ? 'white' : 'logoBlue',
+                          // fontWeight: pathname === route ? 700 : 500,
+                        }
+                      }
+                    >
+                      {name}
+                    </Typography>
                   </Link>
                 </MenuItem>
               ))}

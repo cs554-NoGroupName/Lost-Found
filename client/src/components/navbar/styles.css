@@ -12,3 +12,18 @@
 .css-1uwgr7b-MuiTypography-root {
   font-size: 1.2rem !important;
 }
+
+.css-1pz7awu-MuiButtonBase-root-MuiIconButton-root {
+  padding: 12px 12px 12px 0px !important;
+}
+
+.css-1uzplkd {
+  margin-left: 0px !important;
+}
+
+@media (min-width: 300px) {
+  .css-b3nsxf-MuiContainer-root {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}

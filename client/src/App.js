@@ -7,13 +7,18 @@ import ResetPassword from "components/resetPassword";
 import { ToastContainer } from "react-toastify";
 import Home from "components/Home";
 import ReportItem from "components/reportItem";
-import { AuthProvider } from "./firebase/auth";
-import "./App.css";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { ThemeProvider, createTheme } from "@mui/material";
 import Page404 from "components/common/Page404";
+import "./App.css";
+import firebaseApp from "./firebase/firebase";
+import { getAuth } from "firebase/auth";
+import { AuthProvider } from "./firebase/auth";
 
 function App() {
   const [state, setState] = React.useState(false);
+  const [user] = useAuthState(getAuth(firebaseApp));
+
   const theme = createTheme({
     breakpoints: {
       values: {
@@ -25,15 +30,15 @@ function App() {
       },
     },
   });
-  // const isAuthenticated = () => {
-  //   console.log("here");
-  //   return JSON.parse(localStorage.getItem("auth") === "true");
-  // };
 
   React.useEffect(() => {
-    console.log("here", window.location.pathname);
-    // setState(JSON.parse(localStorage.getItem("auth") === "true"));
-  }, []);
+    setState(user?.accessToken ? true : false);
+  }, [user]);
+
+  const isAuthenticated = () => {
+    return state ? true : false;
+    // return user?.accessToken ? true : false;
+  };
 
   return (
     <div className="App h-screen">
@@ -41,47 +46,55 @@ function App() {
         <ThemeProvider theme={theme}>
           <BrowserRouter>
             <Routes>
-              <Route path="/" exact element={<Home />} />
-              <Route path="/report-item" exact element={<ReportItem />} />
-              {/*
               <Route
-                path="/invites"
+                path="/"
                 exact
-                element={
-                  isAuthenticated() ? (
-                    <InvitedEvents />
-                  ) : (
-                    <Navigate to="/login" replace />
-                  )
-                }
-              /> */}
+                element={isAuthenticated() ? <Home /> : <LoginPage />}
+              />
+              <Route path="/report-item" exact element={<ReportItem />} />
+
               <Route
                 exact
                 path="/signup"
-                element={state ? <Navigate to="/" replace /> : <SignUp />}
+                element={
+                  isAuthenticated() ? <Navigate to="/" replace /> : <SignUp />
+                }
               />
               <Route
                 path="/login"
-                // element={state ? <Navigate to="/" replace /> : <LoginPage />}
-                element={<LoginPage />}
+                element={
+                  isAuthenticated() ? (
+                    <Navigate to="/" replace />
+                  ) : (
+                    <LoginPage />
+                  )
+                }
               />
               <Route
                 path="/forgot-password"
                 element={
-                  state ? <Navigate to="/" replace /> : <ForgotPassword />
+                  isAuthenticated() ? (
+                    <Navigate to="/" replace />
+                  ) : (
+                    <ForgotPassword />
+                  )
                 }
               />
               <Route
                 path="/reset/:token"
                 exact
                 element={
-                  state ? <Navigate to="/login" replace /> : <ResetPassword />
+                  isAuthenticated() ? (
+                    <Navigate to="/login" replace />
+                  ) : (
+                    <ResetPassword />
+                  )
                 }
               />
               <Route
                 path="*"
                 element={
-                  state ? (
+                  isAuthenticated() ? (
                     <Navigate to="/" replace />
                   ) : (
                     <Navigate to="/login" replace />
