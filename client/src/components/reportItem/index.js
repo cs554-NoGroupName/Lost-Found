@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
+import React from "react";
 import { IconButton, MenuItem, Modal, TextField } from "@mui/material";
 
 import LayoutProvider from "components/common/Layout";
-import { AuthContext } from "../../firebase/auth";
+// import { AuthContext } from "../../firebase/auth";
 import {
   nameValidation,
   validateDescription,
@@ -27,22 +27,11 @@ import "./styles.css";
 import PreviewModal from "./previewModal";
 
 function ReportItem() {
-  const { currentUser } = useContext(AuthContext);
-  console.log({ currentUser });
-  const [itemData, setItemData] = React.useState(
-    {
-      itemName: "Tarun Dadlani",
-      type: "Lost",
-      description: "white case with devil name printed on it ",
-      category: "Clothing",
-      tags: "NJ,birch,breakfast,brunch,lunch",
-      lastSeenLocation: "Gateway North",
-    }
-    // {
-    // type: "Lost",
-    // category: "Electronics",
-    // }
-  );
+  // const { currentUser } = React.useContext(AuthContext);
+  const [itemData, setItemData] = React.useState({
+    type: "Lost",
+    category: "Electronics",
+  });
 
   const [reviewData, setReviewData] = React.useState({});
 
@@ -88,8 +77,6 @@ function ReportItem() {
       });
     }
 
-    console.log(4);
-
     const errorObj = {};
     if (!itemData?.itemName) errorObj.itemName = true;
     if (!itemData?.type) errorObj.type = true;
@@ -100,10 +87,8 @@ function ReportItem() {
     if (!itemData?.lastSeenLocation) errorObj.lastSeenLocation = true;
     if (!itemData?.dateTime) errorObj.dateTime = true;
 
-    console.log(1, { errorObj });
     if (Object.keys(errorObj).length !== 0) return setErrors(errorObj);
     else setErrors({});
-    console.log(2);
     setPreviewModal(true);
     setLoading(true);
     const {
@@ -116,9 +101,8 @@ function ReportItem() {
       lastSeenLocation,
       dateTime,
     } = itemData;
-    console.log(3);
-    const today = new Date(dateTime);
-    console.log({ today });
+    // const today = new Date(dateTime);
+    // console.log({ today });
     // const yyyy = today.getFullYear();
     // let mm = today.getMonth() + 1; // Months start at 0!
     // let dd = today.getDate();
@@ -507,7 +491,6 @@ function ReportItem() {
         Report {itemData?.type} Item
       </div>
 
-      {renderForm()}
       {renderForm()}
 
       <PreviewModal
