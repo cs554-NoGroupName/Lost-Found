@@ -62,6 +62,7 @@ function Nav() {
       sx={{
         top: 0,
         zIndex: 999,
+        backgroundColor: "#367272",
       }}
     >
       <Container maxWidth="2xl">
@@ -110,20 +111,18 @@ function Nav() {
                 <MenuItem
                   key={name}
                   onClick={handleCloseNavMenu}
-                  sx={{
-                    color: pathname === route ? "#367272" : "black",
-                    fontWeight: pathname === route ? 700 : 500,
-                  }}
+                  // sx={{
+                  //   color: pathname === route ? "#367272" : "black",
+                  //   fontWeight: pathname === route ? 700 : 500,
+                  // }}
                 >
                   <Link to={route}>
                     <Typography
                       textAlign="center"
-                      sx={
-                        {
-                          // color: pathname === route ? 'white' : 'logoBlue',
-                          // fontWeight: pathname === route ? 700 : 500,
-                        }
-                      }
+                      sx={{
+                        color: pathname === route ? "#367272" : "black",
+                        fontWeight: pathname === route ? 700 : 500,
+                      }}
                     >
                       {name}
                     </Typography>

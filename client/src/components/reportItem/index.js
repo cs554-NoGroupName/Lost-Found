@@ -163,7 +163,7 @@ function ReportItem() {
     );
   };
 
-  const renderForm = (type) => {
+  const renderForm = () => {
     return (
       <div>
         <div>
@@ -507,6 +507,7 @@ function ReportItem() {
         Report {itemData?.type} Item
       </div>
 
+      {renderForm()}
       {renderForm()}
 
       <PreviewModal

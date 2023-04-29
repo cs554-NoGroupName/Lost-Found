@@ -10,10 +10,9 @@
   logoBlue: #324b4b;
 } */
 
-body {
+/* body {
   overflow: hidden;
-}
-
+} */
 .scroller::-webkit-scrollbar {
   width: 5px;
 }
