@@ -62,10 +62,10 @@ function Nav() {
       sx={{
         top: 0,
         zIndex: 999,
-        backgroundColor: "#367272",
+        backgroundColor: "#367272"
       }}
     >
-      <Container maxWidth="2xl">
+      <Container maxWidth="2xl" disableGutters sx={{padding: '0px 10px'}}>
         <Toolbar disableGutters>
           <div className="xs:hidden sm:hidden md:flex">
             <SVGComponent fillColor="#fff" w="200" h="55" />
@@ -74,9 +74,10 @@ function Nav() {
           {/* desktop */}
           <Box
             sx={{
-              marginLeft: "10px",
+              // marginLeft: "10px",
               flexGrow: 1,
               display: { xs: "flex", md: "none" },
+              alignItems: "center",
             }}
           >
             <IconButton
@@ -86,6 +87,10 @@ function Nav() {
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
+              sx={{
+                marginLeft: "0px",
+                padding: "12px 12px 12px 0px",
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -108,20 +113,15 @@ function Nav() {
               }}
             >
               {pages.map(({ name, route }) => (
-                <MenuItem
-                  key={name}
-                  onClick={handleCloseNavMenu}
-                  // sx={{
-                  //   color: pathname === route ? "#367272" : "black",
-                  //   fontWeight: pathname === route ? 700 : 500,
-                  // }}
-                >
+                <MenuItem key={name} onClick={handleCloseNavMenu}>
                   <Link to={route}>
                     <Typography
                       textAlign="center"
                       sx={{
                         color: pathname === route ? "#367272" : "black",
                         fontWeight: pathname === route ? 700 : 500,
+                        textTransform: "capitalize",
+                        fontSize: "1.2rem",
                       }}
                     >
                       {name}
@@ -148,7 +148,9 @@ function Nav() {
                     sx={{
                       color: "white",
                       textDecoration: pathname === route ? "underline" : "none",
+                      textTransform: "capitalize",
                       fontWeight: pathname === route ? "700" : 500,
+                      fontSize: "1.2rem",
                     }}
                   >
                     {name}
