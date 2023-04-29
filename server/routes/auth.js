@@ -34,7 +34,21 @@ router.post('/register', async (req, res) => {
       gender,
       user_firebase_id
     );
-    res.json(newUser);
+    res.status(201).json(newUser);
+  } catch (e) {
+    res.status(400).json({ error: e });
+  }
+});
+
+router.post('/login', async (req, res) => {
+  // idToken comes from the client app
+  const idToken = req.headers.authorization.split(' ')[1];
+  try {
+    const decodeValue = await auth.verifyIdToken(idToken);
+    if (decodeValue) {
+      const user = await users.getUserByFirebaseId(decodeValue.uid);
+      res.json(user);
+    }
   } catch (e) {
     res.status(400).json({ error: e });
   }
