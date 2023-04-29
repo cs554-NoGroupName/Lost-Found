@@ -34,7 +34,7 @@ router.post('/register', async (req, res) => {
       gender,
       user_firebase_id
     );
-    res.json(newUser);
+    res.status(201).json(newUser);
   } catch (e) {
     res.status(400).json({ error: e });
   }

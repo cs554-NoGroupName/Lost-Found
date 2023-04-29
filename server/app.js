@@ -1,5 +1,5 @@
 import express from 'express';
-import configRoutes from './routes';
+import { configRoutes } from './routes/index.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { VerifyToken } from './middleware/VerifyToken.js';
