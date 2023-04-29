@@ -2,7 +2,7 @@ FROM node:16.17.0-alpine
 
 WORKDIR /usr/src/app
 
-ADD package*.json ./
+COPY package*.json ./
 
 ENV NODE_ENV=production
 
