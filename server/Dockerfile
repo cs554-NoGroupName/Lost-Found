@@ -1,8 +1,8 @@
 FROM node:16.17.0-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY ./package.json .
+COPY ./app/package.json /app
 
 RUN npm install
 
