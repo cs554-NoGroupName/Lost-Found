@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
-import mongoCollections from '../config/mongoCollections';
+import mongoCollections from '../config/mongoCollections.js';
 const users = mongoCollections.users;
-import validation from '../utils/validation';
+import validation from '../utils/validation.js';
 
 export const createUser = async (
   firstName,
