@@ -7,6 +7,7 @@ import ResetPassword from "components/resetPassword";
 import { ToastContainer } from "react-toastify";
 import Home from "components/Home";
 import ReportItem from "components/reportItem";
+import ItemDetails from "components/item";
 import "./App.css";
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Routes>
           <Route path="/" exact element={<Home />} />
           <Route path="/report-item" exact element={<ReportItem />} />
+          <Route path="/item/:id" exact element={<ItemDetails />} />
           {/*
               <Route
                 path="/invites"
