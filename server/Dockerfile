@@ -1,12 +1,12 @@
 FROM node:16.17.0-alpine
 
-COPY package*.json ./
+WORKDIR /usr/src/app
+
+COPY ./ ./
 
 ENV NODE_ENV=production
 
 RUN npm install
-
-COPY . .
 
 EXPOSE 8080
 
