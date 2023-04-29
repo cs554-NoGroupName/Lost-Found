@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import "./styles.css";
 import SVGComponent from "../common/Logo";
 // import { forgotpassword } from '../../utils/apis/auth';
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import Loading from "../common/Loading";
 import { useNavigate } from "react-router";
 
@@ -24,6 +24,7 @@ function ForgotPassword() {
 
     if (!error) {
       setLoading(true);
+      setResetSuccess(false); //NOTE remove this line
       // const response = await forgotpassword({ email: email });
       // const { status, data } = response;
       // if (status !== 200) toast.error(data?.error);

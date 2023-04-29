@@ -24,17 +24,16 @@ const pages = [
 const settings = ["Profile", "My Activites"];
 
 function Nav() {
-  // const auth = getAuth(firebaseApp);
   const navigate = useNavigate();
   const signOutUser = async () => {
     firebase
       .auth()
       .signOut()
-      .then((res) => console.log({ res }))
+      .then((res) => {
+        handleCloseUserMenu();
+        navigate("/login");
+      })
       .catch((err) => console.log({ err }));
-    localStorage.setItem("token", null);
-    handleCloseUserMenu();
-    navigate("/login");
   };
 
   const { pathname } = window.location;
