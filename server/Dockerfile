@@ -1,11 +1,13 @@
 FROM node:16.17.0-alpine
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY ./app/package.json /app
+COPY package*.json ./
 
 RUN npm install
 
 COPY . .
+
+EXPOSE 4000
 
 CMD ["npm", "start"]
