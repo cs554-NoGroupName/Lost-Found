@@ -64,7 +64,7 @@ function Login() {
               const { data, status } = loginData;
               if (status !== 200) toast.error(data?.error);
               else {
-                setCurrentUser({ ...currentUser, loginData });
+                setCurrentUser({ ...currentUser, userdata: data });
                 navigate("/");
               }
             })
