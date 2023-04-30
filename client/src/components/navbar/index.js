@@ -15,20 +15,28 @@ import MenuItem from "@mui/material/MenuItem";
 import SVGComponent from "components/common/Logo";
 import "./styles.css";
 import { Divider } from "@mui/material";
+import firebase from "firebase/compat/app";
 
 const pages = [
   { name: "Home", route: "/" },
   { name: "Report Item", route: "/report-item" },
 ];
-const settings = ["Profile", "My Activites"];
+const settings = [
+  { name: "My Profile", route: "/profile" },
+  { name: "My Activites", route: "/My-Activites" },
+];
 
 function Nav() {
   const navigate = useNavigate();
-  const signOutUser = () => {
-    localStorage.setItem("token", null);
-    localStorage.setItem("auth", false);
-    handleCloseUserMenu();
-    navigate("/login");
+  const signOutUser = async () => {
+    firebase
+      .auth()
+      .signOut()
+      .then((res) => {
+        handleCloseUserMenu();
+        navigate("/login");
+      })
+      .catch((err) => console.log({ err }));
   };
 
   const { pathname } = window.location;
@@ -52,15 +60,27 @@ function Nav() {
   };
 
   return (
-    <AppBar position="static">
-      <Container maxWidth="2xl">
+    <AppBar
+      position="sticky"
+      sx={{
+        top: 0,
+        zIndex: 999,
+        backgroundColor: "#367272",
+      }}
+    >
+      <Container maxWidth="2xl" disableGutters sx={{ padding: "0px 10px" }}>
         <Toolbar disableGutters>
           <div className="xs:hidden sm:hidden md:flex">
-            <SVGComponent fillColor="#fff" w="250" h="55" />
+            <SVGComponent fillColor="#fff" w="200" h="55" />
           </div>
-
-          {/* desktop */}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          {/* {Phone} */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "flex", md: "none" },
+              alignItems: "center",
+            }}
+          >
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -68,6 +88,10 @@ function Nav() {
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
+              sx={{
+                marginLeft: "0px",
+                padding: "12px 12px 12px 0px",
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -92,7 +116,17 @@ function Nav() {
               {pages.map(({ name, route }) => (
                 <MenuItem key={name} onClick={handleCloseNavMenu}>
                   <Link to={route}>
-                    <Typography textAlign="center">{name}</Typography>
+                    <Typography
+                      textAlign="center"
+                      sx={{
+                        color: pathname === route ? "#367272" : "black",
+                        fontWeight: pathname === route ? 700 : 500,
+                        textTransform: "capitalize",
+                        fontSize: "1.2rem",
+                      }}
+                    >
+                      {name}
+                    </Typography>
                   </Link>
                 </MenuItem>
               ))}
@@ -101,8 +135,14 @@ function Nav() {
             <SVGComponent fillColor="#fff" w="142" h="40" />
           </Box>
 
-          {/* phone */}
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          {/* desktop */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              marginLeft: "10px",
+            }}
+          >
             {pages.map(({ name, route }) => (
               <Button
                 key={name}
@@ -115,7 +155,9 @@ function Nav() {
                     sx={{
                       color: "white",
                       textDecoration: pathname === route ? "underline" : "none",
+                      textTransform: "capitalize",
                       fontWeight: pathname === route ? "700" : 500,
+                      fontSize: "1.2rem",
                     }}
                   >
                     {name}
@@ -147,9 +189,11 @@ function Nav() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {settings.map(({ name, route }) => (
+                <MenuItem key={name} onClick={handleCloseUserMenu}>
+                  <Link to={route}>
+                    <Typography textAlign="center">{name}</Typography>
+                  </Link>
                 </MenuItem>
               ))}
 

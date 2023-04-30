@@ -5,15 +5,13 @@ import {
   emailValidation,
   nameValidation,
   passwordValidation,
-  usernameValidation,
 } from "../../utils/helper";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import SVGComponent from "../common/Logo";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import "./styles.css";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { toast } from "react-toastify";
@@ -91,13 +89,14 @@ function SignUp() {
     const singupInfo = await signup(apiBody);
 
     const { data, status } = singupInfo;
-    // if (status !== 201) toast.error(data?.error);
-    // else {
-    //   toast.success(
-    //     "User registered successfully. Please check your inbox to verify your account."
-    //   );
-    //   setTimeout(() => navigate("/"), 4000);
-    // }
+    console.log({ singupInfo });
+    if (status !== 201) toast.error(data?.error);
+    else {
+      toast.success(
+        "User registered successfully. Please check your inbox to verify your account."
+      );
+      setTimeout(() => navigate("/login"), 4000);
+    }
     setLoading(false);
   };
 

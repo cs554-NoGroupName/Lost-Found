@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Divider, TextField } from "@mui/material";
 import { emailValidation, passwordValidation } from "utils/helper";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -9,14 +9,12 @@ import { login } from "../../utils/apis/auth";
 import { toast } from "react-toastify";
 import Loading from "../common/Loading";
 import { useNavigate } from "react-router";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import firebase from "firebase/compat/app";
-import { AuthContext } from "../../firebase/auth";
 import "./styles.css";
+import { AuthContext } from "../../FirebaseUtils/authenticate";
 
 function Login() {
-  const auth = getAuth();
-  const { currentUser } = useContext(AuthContext);
+  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
   const navigate = useNavigate();
   const [userData, setUserData] = React.useState({ email: "", password: "" });
   const [passwordVisibility, setPasswordVisibility] = React.useState(false);
@@ -37,6 +35,10 @@ function Login() {
     setUserData({ ...userData, [name]: value });
   };
 
+  // React.useEffect(() => {
+  //   if (currentUser !== null) navigate("/");
+  // }, [currentUser, navigate]);
+
   const validateData = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -48,6 +50,7 @@ function Login() {
     if (!passwordValidation(password)) errorObj.password = true;
 
     setErrors(errorObj);
+
     if (Object.keys(errorObj).length === 0) {
       firebase
         .auth()
@@ -58,8 +61,12 @@ function Login() {
             .currentUser.getIdToken(true)
             .then(async (res) => {
               const loginData = await login(res);
-              console.log({ loginData, currentUser });
-              navigate("/");
+              const { data, status } = loginData;
+              if (status !== 200) toast.error(data?.error);
+              else {
+                setCurrentUser({ ...currentUser, userData: data });
+                navigate("/");
+              }
             })
             .catch((err) => {
               console.log({ err });
@@ -70,17 +77,8 @@ function Login() {
           const errorMessage = error.message;
           console.log(errorCode, errorMessage);
         });
-
-      // const loginData = await login(userData);
-      // const { data, status } = loginData;
-      // if (status !== 200) toast.error(data?.error);
-      // else {
-      //   // localStorage.setItem("auth", true);
-      //   // localStorage.setItem("token", data?.token);
-      //   // window.location.href = "/";
-      //
-      // }
     }
+
     setLoading(false);
   };
 
