@@ -6,7 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import SVGComponent from "../common/Logo";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import Loading from "../common/Loading";
 import "./styles.css";
 import { useParams } from "react-router";
@@ -60,6 +60,8 @@ function ResetPassword() {
     // const { data, status } = resetInfo;
     // if (status !== 200) toast.error(data?.error);
     // else setResetStatus(true);
+    console.log({ params });
+    setResetStatus(false); //NOTE remove this line
     setLoading(false);
   };
 

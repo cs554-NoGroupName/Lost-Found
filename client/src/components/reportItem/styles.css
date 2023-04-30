@@ -6,3 +6,88 @@
 .css-11yukd5-MuiTabs-indicator {
   background-color: #324b4b !important;
 }
+
+.css-qywfm8-MuiDivider-wrapper {
+  font-size: 24px !important;
+  font-weight: bold !important;
+  color: #367272 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.section_number {
+  width: 35px;
+  background-color: #367272;
+  color: white;
+  display: flex;
+  justify-content: center;
+  border-radius: 100px;
+  align-items: center;
+  height: 30px;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  background-color: white;
+  /* width: 450px; */
+  border-radius: 10px;
+}
+
+.modal_header {
+  background-color: #367272;
+  width: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 10px;
+  font-size: 18px;
+  color: white;
+  font-weight: 600;
+}
+
+.modal_body {
+  margin: 0px 10px 10px;
+  font-size: 15px;
+  overflow-y: auto;
+  padding-bottom: 10px;
+}
+
+.modal_footer {
+  display: flex;
+  justify-content: space-around;
+  padding: 8px;
+  box-shadow: 0px 0px 5px 0px #367272;
+  margin-top: -10px;
+}
+
+.modal_body__key {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.modal_body__value {
+  font-size: 16px;
+}
+
+.profile_upload_modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  background-color: white;
+  width: 450px;
+  max-height: 500px;
+  border-radius: 10px;
+  padding: 10px;
+  justify-content: space-evenly;
+}
