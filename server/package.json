@@ -12,6 +12,8 @@
   "author": "Mani Sai Prasad",
   "license": "ISC",
   "dependencies": {
+    "@dicebear/collection": "^6.0.3",
+    "@dicebear/core": "^6.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
