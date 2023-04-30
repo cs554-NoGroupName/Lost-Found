@@ -1,9 +1,9 @@
 import LayoutProvider from "components/common/Layout";
 import { AuthContext } from "../../FirebaseUtils/authenticate";
-import React, { useContext } from "react";
+import React from "react";
 
 function Home() {
-  const [currentUser, setCurrentUser] = useContext(AuthContext);
+  const [currentUser] = React.useContext(AuthContext);
   console.log({ currentUser });
   return (
     <LayoutProvider>

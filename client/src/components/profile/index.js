@@ -3,7 +3,7 @@ import { IconButton, Modal, Slider } from "@mui/material";
 import { AuthContext } from "FirebaseUtils/authenticate";
 import LayoutProvider from "components/common/Layout";
 import { PhotoCamera } from "@mui/icons-material";
-import Loading from "components/common/Loading";
+// import Loading from "components/common/Loading";
 import {
   capitalizeFirstLetter,
   fullNameFormatter,
@@ -12,29 +12,25 @@ import {
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import PhoneAndroidOutlinedIcon from "@mui/icons-material/PhoneAndroidOutlined";
 import CakeOutlinedIcon from "@mui/icons-material/CakeOutlined";
-import CloseIcon from "@mui/icons-material/Close";
+// import CloseIcon from "@mui/icons-material/Close";
 import AvatarEditor from "react-avatar-editor";
 import DefaultProfile from "../../utils/images/default_profile_pic.png";
 
 import "./styles.css";
 
 function Profile() {
-  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
+  const [currentUser] = React.useContext(AuthContext);
+  console.log({ currentUser });
   const data = currentUser?.userData;
   const editorRef = React.useRef(null);
   const [modalView, setModalView] = React.useState(false);
   const [zoom, setZoom] = React.useState(1);
   const [borderRadius, setBorderRadius] = React.useState(1);
   const [editView, setEditView] = React.useState(false);
-  const [errors, setErrors] = React.useState(false);
-  const [userData, setUserData] = React.useState(null);
-  const [userFollower, setUserFollowers] = React.useState([]);
-  const [bookmarks, setBookmarks] = React.useState([]);
-  const [userCreatedEvents, setUserCreatedEvents] = React.useState([]);
-  const [userFollowing, setUserFollowing] = React.useState([]);
-  const [updateUserData, setUpdateUserData] = React.useState(null);
-  const [pageLoading, setPageLoading] = React.useState(false);
-  const [updateLoading, setUpdateLoading] = React.useState(false);
+  // const [errors, setErrors] = React.useState(false);
+  // const [userData, setUserData] = React.useState(null);
+  // const [updateUserData, setUpdateUserData] = React.useState(null);
+  // const [updateLoading, setUpdateLoading] = React.useState(false);
   const [imageObj, setImageObj] = React.useState(null);
 
   const handlemodalView = () => setModalView(true);
@@ -80,7 +76,7 @@ function Profile() {
             </span>
             <div
               onClick={() => {
-                setUpdateUserData(userData);
+                // setUpdateUserData(userData);
                 setEditView(!editView);
               }}
               className="btn_edit_profile"
@@ -173,7 +169,8 @@ function Profile() {
                     onClick={() => {}}
                     // {uploadImage}
                   >
-                    <Loading loading={updateLoading} width={18} /> Upload
+                    {/* <Loading loading={updateLoading} width={18} /> */}
+                    Upload
                   </button>
                   <button
                     className="btn_default__cancel"

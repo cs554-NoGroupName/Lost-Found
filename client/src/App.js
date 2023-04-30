@@ -15,7 +15,7 @@ import Profile from "components/profile";
 import PrivacyPolicyPage from "components/common/privacyPolicyPage";
 
 function App() {
-  const [currentUser, setCurrentUser] = useContext(AuthContext);
+  const [currentUser] = useContext(AuthContext);
 
   const theme = createTheme({
     breakpoints: {

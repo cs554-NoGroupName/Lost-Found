@@ -25,10 +25,10 @@ import DefaultProfile from "../../utils/images/no-image-icon.png";
 
 import "./styles.css";
 import PreviewModal from "./previewModal";
-import { AuthContext } from "../../FirebaseUtils/authenticate";
+// import { AuthContext } from "../../FirebaseUtils/authenticate";
 
 function ReportItem() {
-  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
+  // const [currentUser] = React.useContext(AuthContext);
   const [itemData, setItemData] = React.useState({
     type: "Lost",
     category: "Electronics",
