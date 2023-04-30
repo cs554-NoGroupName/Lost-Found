@@ -8,13 +8,13 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     firebaseApp.auth().onAuthStateChanged((user) => {
-      setCurrentUser(user);
-      localStorage.setItem("token", user?.accessToken);
+      const firebase = user;
+      setCurrentUser({ firebase });
     });
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser }}>
+    <AuthContext.Provider value={[currentUser, setCurrentUser]}>
       {children}
     </AuthContext.Provider>
   );
