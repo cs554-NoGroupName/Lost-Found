@@ -11,7 +11,7 @@ import Loading from "../common/Loading";
 import { useNavigate } from "react-router";
 import firebase from "firebase/compat/app";
 import "./styles.css";
-import { AuthContext } from "../../firebase/authenticate";
+import { AuthContext } from "../../FirebaseUtils/authenticate";
 
 function Login() {
   const [currentUser, setCurrentUser] = React.useContext(AuthContext);

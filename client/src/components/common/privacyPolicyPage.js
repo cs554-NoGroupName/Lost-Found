@@ -7,16 +7,16 @@ function PrivacyPolicyPage() {
       <Link to="/signup">
         <span className="underline text-2xl">Go back to Sign-up page</span>
       </Link>
-      <h1>Application privacy policy for Uinvite app</h1>​
+      <h1>Application privacy policy for Lost & Found app</h1>​
       <p>
-        Uinvite is committed to protecting your privacy and ensuring that your
-        personal information is handled in a safe and responsible manner. This
-        Privacy Policy applies to the Uinvite app and describes how we collect,
-        use, and share information about you when you use our app.
+        Lost & Found is committed to protecting your privacy and ensuring that
+        your personal information is handled in a safe and responsible manner.
+        This Privacy Policy applies to the Lost & Found app and describes how we
+        collect, use, and share information about you when you use our app.
       </p>
       ​<h2>1. Information we collect</h2>​
       <p>
-        We collect information about you when you use the Uinvite app,
+        We collect information about you when you use the Lost & Found app,
         including:
       </p>
       ​
@@ -27,28 +27,28 @@ function PrivacyPolicyPage() {
           and phone number.
         </li>
         <li>
-          Information we collect automatically: When you use the Uinvite app, we
-          may automatically collect certain information about your device and
-          your use of the app, such as your device type, IP address, and the
-          pages you visit.
+          Information we collect automatically: When you use the Lost & Found
+          app, we may automatically collect certain information about your
+          device and your use of the app, such as your device type, IP address,
+          and the pages you visit.
         </li>
       </ul>
       ​<h2>2. How we use your information</h2>​
       <p>
         We use the information we collect to provide, maintain, and improve the
-        Uinvite app, and to personalize your experience. This includes:
+        Lost & Found app, and to personalize your experience. This includes:
       </p>
       ​
       <ul>
         <li>
-          Providing the Uinvite app and its features: We use the information we
-          collect to provide you with the Uinvite app and its features, such as
-          creating and managing events and invitations.
+          Providing the Lost & Found app and its features: We use the
+          information we collect to provide you with the Lost & Found app and
+          its features, such as creating and managing events and invitations.
         </li>
         <li>
-          Improving the Uinvite app: We use the information we collect to
-          understand how people use the Uinvite app, so we can improve it and
-          fix any issues.
+          Improving the Lost & Found app: We use the information we collect to
+          understand how people use the Lost & Found app, so we can improve it
+          and fix any issues.
         </li>
         <li>
           Personalizing your experience: We may use the information we collect
@@ -90,8 +90,8 @@ function PrivacyPolicyPage() {
       ​
       <p>
         We will retain your information for as long as necessary to provide the
-        Uinvite app and its features, or as necessary to comply with our legal
-        obligations, resolve disputes, and enforce our agreements.
+        Lost & Found app and its features, or as necessary to comply with our
+        legal obligations, resolve disputes, and enforce our agreements.
       </p>
       ​<h2>5. Your rights and choices</h2>​
       <p>
@@ -112,11 +112,6 @@ function PrivacyPolicyPage() {
         to our practices or for other operational, legal, or regulatory reasons.
         We encourage you to review this Privacy Policy periodically for the
         latest information on our privacy practices.
-      </p>
-      ​<h2>7. Contact us</h2>​
-      <p>
-        If you have any questions or concerns about this Privacy Policy or our
-        privacy practices, please contact us at uinvite45@gmail.com
       </p>
     </div>
   );

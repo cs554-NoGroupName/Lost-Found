@@ -25,7 +25,7 @@ import DefaultProfile from "../../utils/images/no-image-icon.png";
 
 import "./styles.css";
 import PreviewModal from "./previewModal";
-import { AuthContext } from "../../firebase/authenticate";
+import { AuthContext } from "../../FirebaseUtils/authenticate";
 
 function ReportItem() {
   const [currentUser, setCurrentUser] = React.useContext(AuthContext);

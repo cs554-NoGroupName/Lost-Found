@@ -10,8 +10,9 @@ import ReportItem from "components/reportItem";
 import { ThemeProvider, createTheme } from "@mui/material";
 import Page404 from "components/common/Page404";
 import "./App.css";
-import { AuthContext } from "./firebase/authenticate";
+import { AuthContext } from "./FirebaseUtils/authenticate";
 import Profile from "components/profile";
+import PrivacyPolicyPage from "components/common/privacyPolicyPage";
 
 function App() {
   const [currentUser, setCurrentUser] = useContext(AuthContext);
@@ -29,7 +30,9 @@ function App() {
   });
 
   const isAuthenticated = () => {
-    return currentUser?.firebase !== null ? true : false;
+    return currentUser?.firebase !== null && currentUser?.loginData
+      ? true
+      : false;
   };
 
   return (
@@ -52,6 +55,16 @@ function App() {
                   <ReportItem />
                 ) : (
                   <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/privacy-policy"
+              element={
+                isAuthenticated() ? (
+                  <Navigate to="/" replace />
+                ) : (
+                  <PrivacyPolicyPage />
                 )
               }
             />
