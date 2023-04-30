@@ -16,23 +16,28 @@ import SVGComponent from "components/common/Logo";
 import "./styles.css";
 import { Divider } from "@mui/material";
 import firebase from "firebase/compat/app";
-import { AuthContext } from "../../firebase/auth";
+import { AuthContext } from "FirebaseUtils/authenticate";
 
 const pages = [
   { name: "Home", route: "/" },
   { name: "Report Item", route: "/report-item" },
 ];
-const settings = ["Profile", "My Activites"];
+const settings = [
+  { name: "My Profile", route: "/profile" },
+  { name: "My Activites", route: "/My-Activites" },
+];
 
 function Nav() {
-  const { currentUser } = useContext(AuthContext);
+  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
   const navigate = useNavigate();
   const signOutUser = async () => {
+    console.log({ currentUser });
     firebase
       .auth()
       .signOut()
       .then((res) => {
         handleCloseUserMenu();
+        setCurrentUser(null);
         navigate("/login");
       })
       .catch((err) => console.log({ err }));
@@ -188,9 +193,11 @@ function Nav() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {settings.map(({ name, route }) => (
+                <MenuItem key={name} onClick={handleCloseUserMenu}>
+                  <Link to={route}>
+                    <Typography textAlign="center">{name}</Typography>
+                  </Link>
                 </MenuItem>
               ))}
 

@@ -25,9 +25,10 @@ import DefaultProfile from "../../utils/images/no-image-icon.png";
 
 import "./styles.css";
 import PreviewModal from "./previewModal";
+// import { AuthContext } from "../../FirebaseUtils/authenticate";
 
 function ReportItem() {
-  // const { currentUser } = React.useContext(AuthContext);
+  // const [currentUser] = React.useContext(AuthContext);
   const [itemData, setItemData] = React.useState({
     type: "Lost",
     category: "Electronics",
@@ -185,7 +186,7 @@ function ReportItem() {
             )}
           </div>
           {sectionHeading(1, "What")}
-          <div className="mr-2 w-6/12 sm:w-full md:w-full">
+          <div className="mx-2 w-6/12 sm:w-full md:w-full">
             <TextField
               id="itemName"
               label="Item Name"
@@ -217,7 +218,7 @@ function ReportItem() {
               }}
             />
           </div>
-          <div className="mr-2 w-8/12 sm:w-full md:w-full">
+          <div className="mx-2 w-8/12 sm:w-full md:w-full">
             <TextField
               id="description"
               label="Description"
@@ -252,7 +253,7 @@ function ReportItem() {
               }}
             />
           </div>
-          <div className="mr-2 w-6/12 sm:w-full md:w-full">
+          <div className="mx-2 w-6/12 sm:w-full md:w-full">
             <TextField
               id="category"
               label="Category"
@@ -289,7 +290,7 @@ function ReportItem() {
               ))}
             </TextField>
           </div>
-          <div className="mr-2 w-6/12 sm:w-full md:w-full">
+          <div className="mx-2 w-6/12 sm:w-full md:w-full">
             <TextField
               id="tags"
               label="Tags"
@@ -353,7 +354,7 @@ function ReportItem() {
                 <div>
                   {imageObj ? (
                     <div className="flex mt-4">
-                      {/* <button className="btn_default mr-2" onClick={uploadImage}>
+                      {/* <button className="btn_default mx-2" onClick={uploadImage}>
                       <Loading loading={updateLoading} width={18} /> Upload
                     </button> */}
                       <button
@@ -393,7 +394,7 @@ function ReportItem() {
 
         <div>
           {sectionHeading(2, "Where")}
-          <div className="mr-2 w-6/12 sm:w-full md:w-full">
+          <div className="mx-2 w-6/12 sm:w-full md:w-full">
             <TextField
               id="lastSeenLocation"
               select
@@ -426,7 +427,7 @@ function ReportItem() {
               </span>
             )}
           </div>
-          <div className="mr-2 mt-3 w-6/12 sm:w-full md:w-full">
+          <div className="mx-2 mt-3 w-6/12 sm:w-full md:w-full">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateTimePicker
                 label="Lost Date and Time"
