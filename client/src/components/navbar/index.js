@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -16,6 +16,7 @@ import SVGComponent from "components/common/Logo";
 import "./styles.css";
 import { Divider } from "@mui/material";
 import firebase from "firebase/compat/app";
+import { AuthContext } from "../../firebase/auth";
 
 const pages = [
   { name: "Home", route: "/" },
@@ -24,6 +25,7 @@ const pages = [
 const settings = ["Profile", "My Activites"];
 
 function Nav() {
+  const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const signOutUser = async () => {
     firebase
@@ -193,9 +195,14 @@ function Nav() {
               ))}
 
               <Divider />
-              <MenuItem key={"sign-out"} onClick={signOutUser}>
+              {currentUser ? <MenuItem key={"sign-out"} onClick={signOutUser}>
                 <Typography textAlign="center">Sign Out</Typography>
-              </MenuItem>
+              </MenuItem> : <MenuItem key={"log-in"} onClick={navigate("/login")}>
+                <Typography textAlign="center">Log in</Typography>
+              </MenuItem>}
+              {/* <MenuItem key={"sign-out"} onClick={signOutUser}>
+                <Typography textAlign="center">Sign Out</Typography>
+              </MenuItem> */}
             </Menu>
           </Box>
         </Toolbar>
