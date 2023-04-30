@@ -103,7 +103,6 @@ function App() {
         </BrowserRouter>
       </ThemeProvider>
     </div>
-    </Router>
 
   );
 }
