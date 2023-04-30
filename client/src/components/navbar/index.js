@@ -16,6 +16,7 @@ import SVGComponent from "components/common/Logo";
 import "./styles.css";
 import { Divider } from "@mui/material";
 import firebase from "firebase/compat/app";
+import { AuthContext } from "FirebaseUtils/authenticate";
 
 const pages = [
   { name: "Home", route: "/" },
@@ -27,13 +28,16 @@ const settings = [
 ];
 
 function Nav() {
+  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
   const navigate = useNavigate();
   const signOutUser = async () => {
+    console.log({ currentUser });
     firebase
       .auth()
       .signOut()
       .then((res) => {
         handleCloseUserMenu();
+        setCurrentUser(null);
         navigate("/login");
       })
       .catch((err) => console.log({ err }));

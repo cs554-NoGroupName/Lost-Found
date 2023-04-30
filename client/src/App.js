@@ -14,6 +14,8 @@ import { AuthContext } from "./FirebaseUtils/authenticate";
 import Profile from "components/profile";
 import PrivacyPolicyPage from "components/common/privacyPolicyPage";
 
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
   const [currentUser] = useContext(AuthContext);
 
@@ -30,6 +32,7 @@ function App() {
   });
 
   const isAuthenticated = () => {
+    console.log({ currentUser });
     return currentUser?.firebase !== null && currentUser?.userData
       ? true
       : false;
@@ -126,17 +129,16 @@ function App() {
             />
             <Route path="/404-page" element={<Page404 />} />
           </Routes>
-
-          <ToastContainer
-            autoClose={3000}
-            hideProgressBar={true}
-            newestOnTop={true}
-            closeOnClick
-            rtl={false}
-            theme="colored"
-          />
         </BrowserRouter>
       </ThemeProvider>
+      <ToastContainer
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        theme="colored"
+      />
     </div>
   );
 }
