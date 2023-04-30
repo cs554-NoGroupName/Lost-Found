@@ -10,10 +10,11 @@ import ReportItem from "components/reportItem";
 import { ThemeProvider, createTheme } from "@mui/material";
 import Page404 from "components/common/Page404";
 import "./App.css";
-import { AuthContext } from "./firebase/auth";
+import { AuthContext } from "./firebase/authenticate";
+import Profile from "components/profile";
 
 function App() {
-  const { currentUser } = useContext(AuthContext);
+  const [currentUser, setCurrentUser] = useContext(AuthContext);
 
   const theme = createTheme({
     breakpoints: {
@@ -28,7 +29,7 @@ function App() {
   });
 
   const isAuthenticated = () => {
-    return currentUser !== null ? true : false;
+    return currentUser?.firebase !== null ? true : false;
   };
 
   return (
@@ -43,7 +44,28 @@ function App() {
                 isAuthenticated() ? <Home /> : <Navigate to="/login" replace />
               }
             />
-            <Route path="/report-item" exact element={<ReportItem />} />
+            <Route
+              path="/report-item"
+              exact
+              element={
+                isAuthenticated() ? (
+                  <ReportItem />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/profile"
+              exact
+              element={
+                isAuthenticated() ? (
+                  <Profile />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
 
             <Route
               exact

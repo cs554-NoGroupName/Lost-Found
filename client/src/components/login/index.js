@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Divider, TextField } from "@mui/material";
 import { emailValidation, passwordValidation } from "utils/helper";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -10,11 +10,11 @@ import { toast } from "react-toastify";
 import Loading from "../common/Loading";
 import { useNavigate } from "react-router";
 import firebase from "firebase/compat/app";
-import { AuthContext } from "../../firebase/auth";
 import "./styles.css";
+import { AuthContext } from "../../firebase/authenticate";
 
 function Login() {
-  const { currentUser } = useContext(AuthContext);
+  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
   const navigate = useNavigate();
   const [userData, setUserData] = React.useState({ email: "", password: "" });
   const [passwordVisibility, setPasswordVisibility] = React.useState(false);
@@ -35,9 +35,9 @@ function Login() {
     setUserData({ ...userData, [name]: value });
   };
 
-  React.useEffect(() => {
-    if (currentUser !== null) navigate("/");
-  }, [currentUser, navigate]);
+  // React.useEffect(() => {
+  //   if (currentUser !== null) navigate("/");
+  // }, [currentUser, navigate]);
 
   const validateData = async (e) => {
     e.preventDefault();
@@ -56,16 +56,17 @@ function Login() {
         .auth()
         .signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-          console.log({ userCredential });
           firebase
             .auth()
             .currentUser.getIdToken(true)
             .then(async (res) => {
               const loginData = await login(res);
-              console.log(firebase.auth());
               const { data, status } = loginData;
               if (status !== 200) toast.error(data?.error);
-              else navigate("/");
+              else {
+                setCurrentUser({ ...currentUser, loginData });
+                navigate("/");
+              }
             })
             .catch((err) => {
               console.log({ err });

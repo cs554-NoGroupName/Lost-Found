@@ -20,8 +20,9 @@ import firebase from "firebase/compat/app";
 const pages = [
   { name: "Home", route: "/" },
   { name: "Report Item", route: "/report-item" },
+
 ];
-const settings = ["Profile", "My Activites"];
+const settings = [{ name: "Report Item", route: "/profile" }, { name: "My Activites", route: "/My-Activites" }];
 
 function Nav() {
   const navigate = useNavigate();
@@ -186,9 +187,11 @@ function Nav() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {settings.map(({name, route}) => (
+                <MenuItem key={name} onClick={handleCloseUserMenu}>
+                  <Link to={route}>
+                    <Typography textAlign="center">{name}</Typography>
+                    </Link>
                 </MenuItem>
               ))}
 

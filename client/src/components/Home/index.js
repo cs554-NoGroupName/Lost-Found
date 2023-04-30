@@ -1,7 +1,10 @@
 import LayoutProvider from "components/common/Layout";
-import React from "react";
+import { AuthContext } from "../../firebase/authenticate";
+import React, { useContext } from "react";
 
 function Home() {
+  const [currentUser, setCurrentUser] = useContext(AuthContext);
+  console.log({ currentUser });
   return (
     <LayoutProvider>
       <div>Home</div>
