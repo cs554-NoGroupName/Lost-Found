@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import users from '../data/users.js';
 import validation from '../utils/validation.js';
-import auth from '../config/firebase-config.js';
+import { auth } from '../config/firebase-config.js';
 import { createAvatar } from '@dicebear/core';
 import { lorelei } from '@dicebear/collection';
 export async function register(req, res) {
