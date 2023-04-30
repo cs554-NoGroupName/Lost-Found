@@ -33,3 +33,102 @@ It’s an open platform for developing, shipping, and running applications. Dock
 ### Azure App Service
 
 Azure Web Apps is a cloud computing based platform for hosting websites, created and operated by Microsoft. It is a platform as a service which allows publishing Web apps running on multiple frameworks and written in different programming languages. This technology will be used to deploy the application.
+
+## App Setup
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/download/)
+- [Docker](https://www.docker.com/products/docker-desktop)
+
+### Installation
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/cs554-NoGroupName/Lost-Found.git
+```
+
+2. Open two terminals and navigate to the root directory of the project in both terminals
+
+```bash
+cd Lost-Found
+```
+
+3. Add the environment variables to the .env file as shown in the .env.example file
+
+4. In the first terminal, run the following command to start the docker containers for the application
+
+```bash
+docker compose up
+```
+
+5. In the second terminal, run the following command to install the dependencies and start the application
+
+```bash
+cd client && npm install
+npm start
+
+```
+
+6. Open a browser window and navigate to the url.
+
+## Deployment
+
+The application is deployed on Azure App Service and the docker image is hosted on Docker Hub.
+
+There are two environments for the application - dev and prod. The dev environment is used for development and testing purposes and the prod environment is used for production.
+
+CI/CD is setup for the application using GitHub Actions. Whenever a pull request is merged into the `dev` branch, the application is deployed to the dev environment and whenever a pull request is merged into the `main` branch, the application is deployed to the prod environment.
+
+### Backend endpoints
+
+Dev - https://lostandfounddev.azurewebsites.net
+
+Prod - https://lostandfoundprod.azurewebsites.net
+
+### Frontend
+
+Dev - https://lostandfounddev.netlify.app
+
+Prod - https://lostandfoundprod.netlify.app
+
+## Contribution Guidelines
+
+### Git Workflow
+
+1. Create a new branch from the `dev` branch
+
+```bash
+git checkout dev
+git pull
+git checkout -b <branch-name>
+```
+
+2. Make changes to the code and commit them
+
+```bash
+git add .
+git commit -m "commit message"
+```
+
+3. Once you're happy with your changes, pull latest changes from the `dev` branch and merge them into your branch
+
+```bash
+git pull origin dev
+# resolve any merge conflicts
+```
+
+- Then push your changes to the remote branch
+
+```bash
+git push origin <branch-name>
+```
+
+4. Create a pull request from your branch to the `dev` branch. Atleast one other person should review your code and approve the pull request. (Note: Do not merge your own pull request)
+
+- Should pass all the tests and linting checks.
+
+5. Once the pull request is approved, merge it into the `dev` branch and delete the branch
+
+6. After a feature is complete and tested properly, create a pull request from the `dev` branch to the `main` branch. Atleast one other person should review your code and approve the pull request before it can be merged into the `main` branch.
