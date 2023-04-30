@@ -20,6 +20,7 @@ import "./styles.css";
 
 function Profile() {
   const [currentUser, setCurrentUser] = React.useContext(AuthContext);
+  const data = currentUser?.userData;
   const editorRef = React.useRef(null);
   const [modalView, setModalView] = React.useState(false);
   const [zoom, setZoom] = React.useState(1);
@@ -35,16 +36,6 @@ function Profile() {
   const [pageLoading, setPageLoading] = React.useState(false);
   const [updateLoading, setUpdateLoading] = React.useState(false);
   const [imageObj, setImageObj] = React.useState(null);
-
-  const data = {
-    firstName: "Mani",
-    lastName: "Masupalli",
-    email: "manisaiprasadam@gmail.com",
-    phone: "5513445525",
-    dob: "06/07/2000",
-    gender: "male",
-    user_firebase_id: "564ea8d8-4720-4093-991b-da1b566f9627",
-  };
 
   const handlemodalView = () => setModalView(true);
   const handleClose = () => setModalView(false);

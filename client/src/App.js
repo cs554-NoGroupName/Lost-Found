@@ -30,7 +30,7 @@ function App() {
   });
 
   const isAuthenticated = () => {
-    return currentUser?.firebase !== null && currentUser?.loginData
+    return currentUser?.firebase !== null && currentUser?.userData
       ? true
       : false;
   };
