@@ -1,322 +1,334 @@
 import React, { useState, useEffect } from 'react';
 // import imageUnavailable from '../img/item-image-not-available.jpg';
 import {
-	Card,
 	CardContent,
 	Typography,
 	CardHeader,
 	Grid,
 	Button,
-	CardActions,
-	Stepper,
-	Step,
-	StepLabel,
 	CardMedia,
-	Divider
+	Divider,
+	Avatar,
+	TextField
 } from '@mui/material';
-import { Avatar } from '@mui/material';
 import MobileStepper from '@mui/material/MobileStepper';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LayoutProvider from "components/common/Layout";
+import Comments from './Comments';
+import TimelineTracker from './TimelineTracker';
+import Actions from './ActionContainer';
+import CustomSelect from './CustomSelect';
+import ClaimsAndDisputes from './ClaimsAndDisputes';
 
-const data = {
-	id: 123,
-	name: 'Mac Book Pro',
-	description: 'This is a Mac Book Pro',
-	type: 'Lost',
-	status: 'Open',
-	priority: 'High',
-	tags: ['Electronics', 'Laptop', 'Hardware'],
-	category: 'Electronics',
-	reportedDate: '2023-10-10',
-	reportedLocation: 'Babbio Center',
-	reportedBy: 'John Doe',
-	currentLocation: 'Babbio Center',
-	claims: [],
-	disputes: [],
-	timelineDetails: [
-		{
-			id: 1,
-			date: '2021-10-10',
-			location: 'Babbio Center',
-			description: 'Mac Book Pro was lost',
-		},
-		{
-			id: 2,
-			date: '2021-10-12',
-			location: 'Babbio Center',
-			description: 'Item reported to team member',
-		}
-	],
-	comments: [
-		{
-			id: 1,
-			date: '2021-10-10',
-			location: 'Babbio Center',
-			description: 'Mac Book Pro was lost',
-		}
-	],
-	images: [
-		"https://picsum.photos/seed/picsum/1000/1000",
-		"https://picsum.photos/seed/picsum2/1000/1000",
-		"https://picsum.photos/seed/picsum3/1000/1000",
-		"https://picsum.photos/seed/picsum4/1000/1000",
-		"https://picsum.photos/seed/picsum5/1000/1000",
-		"https://picsum.photos/seed/picsum6/1000/1000",
-		"https://picsum.photos/seed/picsum7/1000/1000",
-		"https://picsum.photos/seed/picsum8/1000/1000",
-		"https://picsum.photos/seed/picsum9/1000/1000"
-	],
-}
+import { lostData, foundData } from './testData';
 
-const titleStyle = {
-	fontWeight: 'bold',
-	fontSize: '1.5rem',
-	color: 'rgb(200, 200, 200, 0.8)'
-}
-
-const contentStyle = {
-	fontSize: '1.0rem',
-	color: 'rgb(200, 200, 200, 0.5)'
-}
-
-const actionButtonStyle = {
-	color: 'white',
-	width: '100%',
-	boxShadow: '0 0px 5px #000',
-	backgroundColor: '#367272',
-	'&:hover': {
-		backgroundColor: 'rgb(200, 200, 200, 0.7)',
-	},
-}
 
 function ItemDetails() {
-	const [itemData, setItemData] = useState(undefined);
+	const [itemData, setItemData] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
+
 	const [activeStep, setActiveStep] = React.useState(0);
+	const handleNext = () => { setActiveStep((prevActiveStep) => prevActiveStep + 1); };
+	const handleBack = () => { setActiveStep((prevActiveStep) => prevActiveStep - 1); };
 
-	const handleNext = () => {
-		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-	};
-
-	const handleBack = () => {
-		setActiveStep((prevActiveStep) => prevActiveStep - 1);
-	};
-
-	const handleEdit = () => {
-		//
-	};
-
-	const handleDelete = () => {
-		//
-	};
-
-	const handleClaim = () => {
-		//
-	};
-
+	const itemTypeList = ['Lost', 'Found'];
+	const itemStatusList = ['Open', 'Closed'];
+	const itemCategoryList = ['Electronics', 'Clothing', 'Jewelry', 'Other'];
 
 	useEffect(() => {
 		async function fetchData() {
 			try {
-				setItemData(data);
+				setItemData(foundData);
 				setLoading(false);
 			} catch (e) {
 				setLoading(false);
 				setError('Unable to fetch item details');
-				console.log(e);
 			}
 		}
 		fetchData();
-	}, []);
+	}, [itemData]);
+
+	const Text = ({ label, value }) => {
+		return (
+			<>
+				<TextField
+					label={label}
+					defaultValue={value}
+					InputProps={{
+						readOnly: true,
+
+					}}
+					InputLabelProps={{
+						style: {
+							color: 'white',
+							fontWeight: 'bold',
+							fontSize: '1.3rem',
+						}
+					}}
+					sx={{
+						marginBottom: '20px',
+						display: 'flex',
+					}}
+				/>
+			</>
+		);
+	}
+
 
 	if (loading) {
 		return (
-			<div>
-				<h2>Loading....</h2>
-			</div>
+			<LayoutProvider>
+				<h2> Loading.... </h2>
+			</LayoutProvider>
 		);
 	} else if (error) {
 		return (
-			<div>
-				<h2>{error}</h2>
-			</div>
+			<LayoutProvider>
+				<h2> Error loading item details: </h2>
+				<h4> {error} </h4>
+			</LayoutProvider>
 		);
 	} else {
 		return (
 			<LayoutProvider>
-				{/* Top Actions -------------------------------------------------- START */}
-				<CardActions
-					sx={{
-						display: 'flex',
-						justifyContent: 'space-between',
-						padding: '10px',
-						marginBottom: '10px',
-					}}
-				>
-					<Button onClick={() => { handleEdit() }} style={actionButtonStyle}> Edit </Button>
-					<Button onClick={() => { handleDelete() }} style={actionButtonStyle}> Delete </Button>
-					<Button onClick={() => { handleClaim() }} style={actionButtonStyle} > Claim</Button>
-				</CardActions>
-				{/* Top Actions -------------------------------------------------- END */}
+
+				{/* Action Container */}
+				<Actions />
 
 				<Divider />
 
-				{/* Card Header -------------------------------------------------- START */}
+				{/* Card Header - START */}
 				<CardHeader
 					avatar={
-						<Avatar>
+						<Avatar
+							sx={{
+								backgroundColor: 'rgb(54, 114, 114, 0.8)',
+								color: 'white',
+								fontWeight: 'bold',
+								fontSize: '1.5rem',
+							}}
+						>
 							{itemData.reportedBy[0]}
 						</Avatar>
 					}
 					title={itemData.reportedBy}
 					subheader={itemData.reportedDate}
-					sx={{
-						padding: '10px',
-						marginBottom: '10px',
-						color: 'rgb(200, 200, 200, 0.7)'
-					}}
 				/>
-				{/* Card Header -------------------------------------------------- END */}
+				{/* Card Header - END */}
 
 				<Divider />
 
-				{/* Image Carousel -------------------------------------------------- START */}
-				<CardContent
+				<Grid container spacing={1}
 					sx={{
-						justifyContent: 'center',
-						marginTop: '10px',
-						position: 'relative',
+						backgroundColor: 'rgb(54, 114, 114, 0.8)',
+						margin: '10px 10px',
+						width: '100%',
+						borderRadius: '10px',
+						justifyContent: 'space-between',
 					}}
 				>
-					<CardMedia
-						component='img'
-						image={itemData.images[activeStep]}
-						alt={itemData.images[activeStep]}
-						style={{
-							height: '400px',
-							width: '100%',
-							objectFit: 'cover',
-							borderRadius: '10px',
-							boxShadow: '0 0px 30px #000',
-							position: 'relative',
-							left: '50%',
-							transform: 'translateX(-50%)',
-						}}
-					/>
-					<MobileStepper
-						steps={data.images.length}
-						position="static"
-						activeStep={activeStep}
+					{/* Image Carousel - START */}
+					<Grid item xs={5.9}>
+						<CardContent
+							sx={{ marginTop: '10px', position: 'relative' }}
+						>
+							<CardMedia
+								component='img'
+								image={itemData.images[activeStep]}
+								alt={itemData.images[activeStep]}
+								style={{
+									height: '380px',
+									width: '100%',
+									objectFit: 'cover',
+									borderRadius: '10px',
+									boxShadow: '0 0px 10px #000'
+								}}
+							/>
+							<MobileStepper
+								steps={itemData.images.length}
+								position="static"
+								activeStep={activeStep}
+								sx={{
+									backgroundColor: 'rgba(0, 0, 0, 0.0)',
+									color: 'white',
+									'& .MuiMobileStepper-dotActive': {
+										backgroundColor: 'white',
+									},
+								}}
+								nextButton={
+									<Button
+										onClick={handleNext}
+										disabled={activeStep === itemData.images.length - 1}
+										sx={{
+											color: 'white',
+											'&:hover': {
+												color: 'black',
+											},
+										}}
+									>
+										Next<KeyboardArrowRight />
+									</Button>
+								}
+								backButton={
+									<Button
+										onClick={handleBack}
+										disabled={activeStep === 0}
+										sx={{
+											color: 'white',
+											'&:hover': {
+												color: 'black',
+											},
+										}}
+									>
+										<KeyboardArrowLeft />Back
+									</Button>
+								}
+							/>
+							<Typography sx={{
+								fontWeight: 'bold',
+								fontSize: '1.5rem',
+								color: 'rgb(200, 200, 200, 0.8)',
+								marginBottom: '10px'
+							}} >Tags</Typography>
+							{itemData.tags.map((tag) => (
+								<Button
+									key={tag}
+									variant="contained"
+									sx={{
+										backgroundColor: '#01AD7B',
+										color: 'white',
+										borderRadius: '50px',
+										marginRight: '10px',
+										fontSize: '0.75rem',
+									}}
+								>
+									{tag}
+								</Button>
+							))}
+						</CardContent>
+					</Grid>
+					{/* Image Container - END */}
+
+					<Grid item xs={0.2}
 						sx={{
-							backgroundColor: 'rgba(0, 0, 0, 0.0)',
-						}}
-						nextButton={
-							<Button
-								size="small"
-								onClick={handleNext}
-								disabled={activeStep === data.images.length - 1}
+							display: 'flex',
+							justifyContent: 'center',
+							marginBottom: '10px',
+						}}>
+						<Divider
+							orientation="vertical"
+							sx={{ backgroundColor: 'white', width: '1px' }}
+						/>
+					</Grid>
+
+					{/* Item Description - START */}
+					<Grid item xs={5.9}>
+						<CardContent sx={{ padding: '10px', textAlign: 'left', margin: '10px' }}>
+
+							{/* Item Name */}
+							<Text
+								label="Item Name"
+								value={itemData.name}
+							/>
+
+							{/* Item Description */}
+							<Text
+								label="Description"
+								value={itemData.description}
+							/>
+
+							{/* Item Reporter */}
+							<Text
+								label="Reported By"
+								value={itemData.reportedBy}
+							/>
+
+							{/* Item Description */}
+							<Text
+								label="Reported On"
+								value={itemData.reportedDate}
+							/>
+
+							{/* Item Location */}
+							{itemData.type === 'Lost' && itemData.reportedLocation && (
+								<Text
+									label="Reported Location of the Item"
+									value={itemData.reportedLocation}
+								/>
+							)}
+							{itemData.type === 'Found' && itemData.reportedLocation && (
+								<Text
+									label="Current Location of the Item"
+									value={itemData.currentLocation}
+								/>
+							)}
+
+							<Divider sx={{ marginBottom: '20px' }} />
+
+							<Grid container spacing={2}
+								orientation="column"
 							>
-								Next<KeyboardArrowRight />
-							</Button>
-						}
-						backButton={
-							<Button
-								size="small"
-								onClick={handleBack}
-								disabled={activeStep === 0}
-							>
-								<KeyboardArrowLeft />Back
-							</Button>
-						}
-					/>
-				</CardContent>
-				{/* Image Container --------------------------------------------------- END */}
+								<Grid item xs={2}>
+									{/* Item Status */}
+									<CustomSelect
+										id="item-status"
+										label="Item Status"
+										value={itemData.status}
+										disabled={true}
+										itemList={itemStatusList}
+									/>
+								</Grid>
+								<Grid item xs={2}>
+									{/* Item Type */}
+									<CustomSelect
+										id="item-type"
+										label="Item Type"
+										value={itemData.type}
+										disabled={true}
+										itemList={itemTypeList}
+									/>
+								</Grid>
+								<Grid item xs={8}>
+									{/* Item Category */}
+									<CustomSelect
+										id="item-category"
+										label="Item Category"
+										value={itemData.category}
+										disabled={true}
+										itemList={itemCategoryList}
+									/>
+								</Grid>
+							</Grid>
+						</CardContent>
+					</Grid>
+					{/* Item Description - END */}
+
+				</Grid>
 
 				<Divider />
 
-				{/* Item Description -------------------------------------------------- START */}
-				<CardContent
-					sx={{
-						padding: '10px',
-						textAlign: 'left',
-						margin: '10px',
-					}}
-				>
-					<Grid container spacing={2}>
-						<Grid item xs={6}>
-							<Typography sx={titleStyle} >Reported Date</Typography>
-							<Typography sx={contentStyle}>{itemData.reportedDate}</Typography>
-						</Grid>
-						<Grid item xs={6}>
-							<Typography sx={titleStyle} >Reported Location</Typography>
-							<Typography sx={contentStyle}>{itemData.reportedLocation}</Typography>
-						</Grid>
-						<Grid item xs={6}>
-							<Typography sx={titleStyle} >Reported By</Typography>
-							<Typography sx={contentStyle}>{itemData.reportedBy}</Typography>
-						</Grid>
-						<Grid item xs={6}>
-							<Typography sx={titleStyle} >Current Location</Typography>
-							<Typography sx={contentStyle}>{itemData.currentLocation}</Typography>
-						</Grid>
-					</Grid>
-					<Grid container spacing={2}>
-						<Grid item xs={6}>
-							<Typography sx={titleStyle} >Type</Typography>
-							<Typography sx={contentStyle}>{itemData.type}</Typography>
-						</Grid>
-						<Grid item xs={6}>
-							<Typography sx={titleStyle} >Status</Typography>
-							<Typography sx={contentStyle}>{itemData.status}</Typography>
-						</Grid>
-						<Grid item xs={6}>
-							<Typography sx={titleStyle} >Priority</Typography>
-							<Typography sx={contentStyle}>{itemData.priority}</Typography>
-						</Grid>
-						<Grid item xs={6}>
-							<Typography sx={titleStyle} >Category</Typography>
-							<Typography sx={contentStyle}>{itemData.category}</Typography>
-						</Grid>
-					</Grid>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<Typography sx={titleStyle}>Description</Typography>
-							<Typography sx={contentStyle}>{itemData.description}</Typography>
-						</Grid>
-					</Grid>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<Typography sx={titleStyle} >Tags</Typography>
-							<Typography sx={contentStyle}>{itemData.tags.join(', ')}</Typography>
-						</Grid>
-					</Grid>
-				</CardContent>
-				{/* Item Description -------------------------------------------------- END */}
+				{/* TimelineTracker */}
+				<TimelineTracker
+					timeline={itemData.timelineDetails}
+				/>
 
 				<Divider />
 
-				{/* Progress Tracker -------------------------------------------------- START */}
-				<CardContent sx={{ margin: '10px' }}>
-					<Grid container spacing={2}>
-						<Grid item xs={12}>
-							<Typography
-								sx={titleStyle}>Progress Tracker</Typography>
-						</Grid>
-					</Grid>
-					<Stepper activeStep={1} alternativeLabel>
-						{itemData.timelineDetails.map((item) => (
-							<Step key={item.id}>
-								<StepLabel
-								>{item.description}
-								</StepLabel>
-							</Step>
-						))}
-					</Stepper>
-				</CardContent>
-				{/* Progress Tracker -------------------------------------------------- END */}
+				{/* Claims and disputed Tabs */}
+				<ClaimsAndDisputes
+					claims={itemData.claims}
+					disputes={itemData.disputes}
+				/>
+
+				<Divider />
+
+				{/* Comments Section */}
+				<Comments
+					comments={itemData.comments}
+				/>
+
 			</LayoutProvider>
 		);
 	}
