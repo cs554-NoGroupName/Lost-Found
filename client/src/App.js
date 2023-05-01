@@ -120,11 +120,12 @@ function App() {
             <Route
               path="*"
               element={
-                isAuthenticated() ? (
-                  <Navigate to="/" replace />
-                ) : (
-                  <Navigate to="/login" replace />
-                )
+                // isAuthenticated() ? (
+                  // <Navigate to="/" replace />
+                  <Home /> 
+                // ) : (
+                //   <Navigate to="/login" replace />
+                // )
               }
             />
             <Route path="/404-page" element={<Page404 />} />
