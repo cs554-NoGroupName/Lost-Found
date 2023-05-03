@@ -12,9 +12,10 @@ import firebase from "firebase/compat/app";
 import "./styles.css";
 import { AuthContext } from "../../FirebaseUtils/authenticate";
 import { toast } from "react-toastify";
+import useDocumentTitle from "components/common/useDocumentTitle";
 
 function Login() {
-  const [setCurrentUser] = React.useContext(AuthContext);
+  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
   const navigate = useNavigate();
   const [userData, setUserData] = React.useState({ email: "", password: "" });
   const [passwordVisibility, setPasswordVisibility] = React.useState(false);
@@ -37,6 +38,7 @@ function Login() {
 
   const validateData = async (e) => {
     e.preventDefault();
+    console.log("here");
     setLoading(true);
     const { email, password } = userData;
 
@@ -48,52 +50,113 @@ function Login() {
     setErrors(errorObj);
 
     if (Object.keys(errorObj).length === 0) {
-      firebase
+      const fireBaseData = await firebase
         .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          firebase
-            .auth()
-            .currentUser.getIdToken(true)
-            .then(async (res) => {
-              const loginData = await login(res);
-              const { data, status } = loginData;
-              if (status !== 200) toast.error(data?.error);
-              else {
-                setCurrentUser({
-                  firebaseData: userCredential?.user,
-                  userData: data,
-                });
-                localStorage.setItem(
-                  "currentUser",
-                  JSON.stringify({
-                    firebaseData: userCredential?.user,
-                    userData: data,
-                  })
-                );
-                navigate("/");
-              }
-            })
-            .catch((err) => {
-              // const errorCode = err.code;
-              // const errorMessage = err.message;
-            });
-        })
-        .catch((error) => {
-          const { code } = error;
-          //NOTE: need to check more error codes to show specific errors
-          if (code === "auth/user-not-found") toast.error("User not found");
-        });
+        .signInWithEmailAndPassword(email, password);
+      const userToken = await firebase.auth().currentUser.getIdToken(true);
+      // .then((userCredential) => {
+
+      const loginData = await login(userToken);
+      const { data, status } = loginData;
+      if (status !== 200) toast.error(data?.error);
+      else {
+        const user = {
+          firebaseData: fireBaseData?.user,
+          userData: data,
+        };
+        await setCurrentUser(user);
+        await localStorage.setItem("currentUser", JSON.stringify(user));
+        navigate("/");
+      }
+      console.log({ currentUser });
+      // firebase
+      //       .auth()
+      //       .currentUser.getIdToken(true)
+      //       .then(async (res) => {
+      //         const loginData = await login(res);
+      //         const { data, status } = await loginData;
+      //         if (status !== 200) toast.error(data?.error);
+      //         else {
+      //           setCurrentUser({
+      //             firebaseData: userCredential?.user,
+      //             userData: data,
+      //           });
+      //           localStorage.setItem(
+      //             "currentUser",
+      //             JSON.stringify({
+      //               firebaseData: userCredential?.user,
+      //               userData: data,
+      //             })
+      //           );
+
+      //           console.log({ loginData });
+      //           navigate("/");
+      //         }
+      //       })
+      //       .catch((err) => {
+      //         // const errorCode = err.code;
+      //         // const errorMessage = err.message;
+      //       });
+      //   })
+      //   .catch((error) => {
+      //     const { code } = error;
+      //     //NOTE: need to check more error codes to show specific errors
+      //     if (code === "auth/user-not-found") toast.error("User not found");
+      //   });
+
+      // firebase
+      // .auth()
+      // .signInWithEmailAndPassword(email, password)
+      // .then((userCredential) => {
+      //   firebase
+      //     .auth()
+      //     .currentUser.getIdToken(true)
+      //     .then(async (res) => {
+      //       const loginData = await login(res);
+      //       const { data, status } = await loginData;
+      //       if (status !== 200) toast.error(data?.error);
+      //       else {
+      //         setCurrentUser({
+      //           firebaseData: userCredential?.user,
+      //           userData: data,
+      //         });
+      //         localStorage.setItem(
+      //           "currentUser",
+      //           JSON.stringify({
+      //             firebaseData: userCredential?.user,
+      //             userData: data,
+      //           })
+      //         );
+
+      //         console.log({ loginData });
+      //         navigate("/");
+      //       }
+      //     })
+      //     .catch((err) => {
+      //       // const errorCode = err.code;
+      //       // const errorMessage = err.message;
+      //     });
+      // })
+      // .catch((error) => {
+      //   const { code } = error;
+      //   //NOTE: need to check more error codes to show specific errors
+      //   if (code === "auth/user-not-found") toast.error("User not found");
+      // });
     }
 
     setLoading(false);
   };
+
+  React.useEffect(() => {
+    console.log({ currentUser });
+  }, [currentUser]);
 
   const handleClickShowPassword = () =>
     setPasswordVisibility(!passwordVisibility);
 
   return (
     <div className="flex min-h-full justify-center items-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
+      {useDocumentTitle("Login")}
       <div className="w-full max-w-md">
         <div className="flex items-center flex-col">
           <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">

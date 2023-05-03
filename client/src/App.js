@@ -14,8 +14,10 @@ import Profile from "components/profile";
 import PrivacyPolicyPage from "components/common/privacyPolicyPage";
 
 import "react-toastify/dist/ReactToastify.css";
+import { AuthContext } from "FirebaseUtils/authenticate";
 
 function App() {
+  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
   const theme = createTheme({
     breakpoints: {
       values: {
@@ -29,7 +31,15 @@ function App() {
   });
 
   const isAuthenticated = () => {
-    return JSON.parse(localStorage.getItem("currentUser")) ? true : false;
+    if (currentUser === null) return false;
+    else if (Object.keys(currentUser).length === 2) return true;
+    else {
+      const data = JSON.parse(localStorage.getItem("currentUser"));
+      console.log(data);
+      if (data === null) return false;
+      else if (Object.keys(data).length === 2) return true;
+      else return false;
+    }
   };
 
   return (

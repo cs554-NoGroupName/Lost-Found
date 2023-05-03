@@ -34,6 +34,7 @@ import { genderOptions } from "utils/constants";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import useDocumentTitle from "components/common/useDocumentTitle";
 
 function Profile() {
   const [currentUser] = React.useContext(AuthContext);
@@ -46,7 +47,7 @@ function Profile() {
     currentUser?.userData
   );
   const [updateLoading, setUpdateLoading] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [imageObj, setImageObj] = React.useState(null);
 
   const handlemodalView = () => setModalView(true);
@@ -557,19 +558,22 @@ function Profile() {
   };
 
   return (
-    <LayoutProvider>
-      <div className="sm:block flex justify-around sm:mx-0 md:mx-[40px] mx-0">
-        {loading ? (
-          <Loading loading={loading} width={50} color="#367272" />
-        ) : (
-          <>
-            <ProfileView />
-            <EditProfile />
-            {modalView && <UploadPictureModal />}
-          </>
-        )}
-      </div>
-    </LayoutProvider>
+    <>
+      {useDocumentTitle("Profile")}
+      <LayoutProvider>
+        <div className="sm:block flex justify-around sm:mx-0 md:mx-[40px] mx-0">
+          {loading ? (
+            <Loading loading={loading} width={50} color="#367272" />
+          ) : (
+            <>
+              <ProfileView />
+              <EditProfile />
+              {modalView && <UploadPictureModal />}
+            </>
+          )}
+        </div>
+      </LayoutProvider>
+    </>
   );
 }
 

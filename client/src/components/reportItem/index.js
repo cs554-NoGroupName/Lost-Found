@@ -25,6 +25,7 @@ import DefaultProfile from "../../utils/images/no-image-icon.png";
 
 import "./styles.css";
 import PreviewModal from "./previewModal";
+import useDocumentTitle from "components/common/useDocumentTitle";
 // import { AuthContext } from "../../FirebaseUtils/authenticate";
 
 function ReportItem() {
@@ -485,6 +486,8 @@ function ReportItem() {
 
   return (
     <LayoutProvider>
+
+      {useDocumentTitle("Report Item")}
       <div className="page_title flex items-center sm:text-sm md:text-lg text-2xl">
         <div className="mr-1">
           <FlagIcon sx={{ fontSize: 28 }} />
