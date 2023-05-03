@@ -1,18 +1,25 @@
 import React, { useContext, useEffect, useState } from "react";
+import lodash from "lodash";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { AuthContext } from "FirebaseUtils/authenticate";
+import "./styles.css";
 
 import {
   Backdrop,
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
   CardMedia,
   Chip,
   Fade,
+  FormControl,
+  InputLabel,
+  MenuItem,
   Modal,
+  Select,
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
@@ -34,6 +41,9 @@ const modalStyle = {
 const Home = () => {
   const { currentUser } = useContext(AuthContext);
   const [itemsData, setItemsData] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [filteredData, setFilteredData] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   // API Call on load
@@ -52,19 +62,52 @@ const Home = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    console.log("Current user:", currentUser)
+  }, [currentUser]);
+
+  useEffect(() => {
+    const getUniqueTags = () => {
+      let temp = [];
+  
+      for (const item of itemsData) {
+        // console.log(item)
+        const value = item.tags.map(tag => tag);
+        temp = lodash.uniq([...temp, ...value]);
+      }
+      return temp;
+    };
+    if (itemsData) {
+      setTags(getUniqueTags());
+    }
+  }, [itemsData]);
+
+  const toggleFilter = () => {
+    setShowFilters(!showFilters);
+  };
+
+  const filterByField = (field, value) => {
+    setFilteredData(itemsData.filter(item => item[field] === value));
+  };
+
+  const filterByTag = (tag) => {
+    setFilteredData(itemsData.filter(item => item.tags.includes(tag)));
+  };
+
+  const clearFilter = () => {
+    setFilteredData(null);
+  };
+
+  console.log("TAGS:", tags);
+
   const cardBuilder = (item) => {
     return (
-      <Card
-        key={item.id}
-        sx={{ maxWidth: 345 }}
-      >
-        <CardHeader
-          title={item.name}
-          subheader={item.category}
-        />
+      <Card key={item.id} sx={{ maxWidth: 345 }}>
+        <CardHeader title={item.name} subheader={item.category} />
         <CardMedia
+          className="card-media"
           component="img"
-          height="auto"
+          height="200px"
           width="100%"
           image={item.images[0]}
           alt={item.name}
@@ -108,10 +151,10 @@ const Home = () => {
 
   const closeModal = () => setShowModal(false);
 
-  const itemsCard = () => {
+  const itemsCard = (data) => {
     return (
       <Grid item display="flex" spacing={4} xs={6}>
-        {itemsData.map((item) => {
+        {data.map((item) => {
           return (
             <>
               {currentUser ? (
@@ -130,6 +173,49 @@ const Home = () => {
     <LayoutProvider>
       <div>
         {/* Items displayed in cards using Material UI Grid */}
+        {showFilters ? <div>
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200 }} className="flexer">
+            <InputLabel id="status-filter-label">Status</InputLabel>
+            <Select
+              labelId="status-filter-label"
+              id="status-filter"
+              onChange={(e) => filterByField("status", e.target.value)}
+              label="Status"
+            >
+              <MenuItem value="open">Open</MenuItem>
+              <MenuItem value="closed">Closed</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200 }} className="flexer">
+            <InputLabel id="type-filter-label">Type</InputLabel>
+            <Select
+              labelId="type-filter-label"
+              id="type-filter"
+              onChange={(e) => filterByField("type", e.target.value)}
+              label="Type"
+            >
+              <MenuItem value="lost">Lost</MenuItem>
+              <MenuItem value="found">Found</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200 }} className="flexer">
+            <InputLabel id="tags-filter-label">Tag</InputLabel>
+            <Select
+              labelId="tags-filter-label"
+              id="tags-filter"
+              onChange={(e) => filterByTag(e.target.value)}
+              label="Tag"
+            >
+              {tags.map((tag) => {
+                return <MenuItem value={tag}>{tag}</MenuItem>
+              })}
+            </Select>
+          </FormControl>
+        </div> : <></>}
+        <div className="flexer">
+          <Button onClick={toggleFilter}>{showFilters ? "Hide Filters" : "Show Filters"}</Button>
+          <Button onClick={clearFilter}>Clear Filters</Button>
+        </div>
         <Box sx={{ flexGrow: 1 }}>
           {itemsData ? (
             <Grid
@@ -139,7 +225,7 @@ const Home = () => {
               direction="row"
               container
             >
-              {itemsCard()}
+              {itemsCard(filteredData ? filteredData : itemsData)}
             </Grid>
           ) : (
             <></>
