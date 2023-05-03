@@ -10,10 +10,9 @@
   logoBlue: #324b4b;
 } */
 
-body {
+/* body {
   overflow: hidden;
-}
-
+} */
 .scroller::-webkit-scrollbar {
   width: 5px;
 }
@@ -36,6 +35,19 @@ body {
   border-radius: 4px;
   background-color: theme("colors.logoBlue");
   cursor: pointer;
+}
+
+.btn_default__light {
+  width: fit-content;
+  padding: 5px 8px;
+  color: theme("colors.logoBlue");
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  border: 2px solid theme("colors.logoBlue");
+  border-radius: 4px;
 }
 
 .btn_default__delete {
@@ -73,21 +85,20 @@ body {
   height: 30px;
 }
 
-.btn_edit_profile {
-  border: 2px solid #393e46;
-  border-radius: 6px;
-  padding: 4px;
-  font-size: 16px;
-  line-height: 18px;
-  margin-left: 14px;
-  margin-bottom: 12px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
 .text_ellipsis {
   white-space: nowrap;
   text-overflow: ellipsis;
   width: 400px;
   overflow: hidden;
+}
+
+.page_title {
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 6px;
+  /* font-size: 20px; */
+  color: #095252;
+  background-color: #eec0c6;
+  background-image: linear-gradient(315deg, #6aa6a6 0%, #95b1b0 74%);
+  padding: 8px;
 }

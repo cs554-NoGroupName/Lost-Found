@@ -5,13 +5,16 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CloseIcon from "@mui/icons-material/Close";
 import SVGComponent from "../common/Logo";
-// import { login } from "../../utils/apis/auth";
-import { toast } from "react-toastify";
+import { login } from "../../utils/apis/auth";
 import Loading from "../common/Loading";
-import "./styles.css";
 import { useNavigate } from "react-router";
+import firebase from "firebase/compat/app";
+import "./styles.css";
+import { AuthContext } from "../../FirebaseUtils/authenticate";
+import { toast } from "react-toastify";
 
 function Login() {
+  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
   const navigate = useNavigate();
   const [userData, setUserData] = React.useState({ email: "", password: "" });
   const [passwordVisibility, setPasswordVisibility] = React.useState(false);
@@ -43,18 +46,36 @@ function Login() {
     if (!passwordValidation(password)) errorObj.password = true;
 
     setErrors(errorObj);
+
     if (Object.keys(errorObj).length === 0) {
-      console.log("in login");
-      // const loginData = await login(userData);
-      // const { data, status } = loginData;
-      // if (status !== 200) toast.error(data?.error);
-      // else {
-      //   localStorage.setItem("auth", true);
-      //   localStorage.setItem("token", data?.token);
-      // window.location.href = "/";
-      navigate("/");
-      // }
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          firebase
+            .auth()
+            .currentUser.getIdToken(true)
+            .then(async (res) => {
+              const loginData = await login(res);
+              const { data, status } = loginData;
+              if (status !== 200) toast.error(data?.error);
+              else {
+                setCurrentUser({ ...currentUser, userData: data });
+                navigate("/");
+              }
+            })
+            .catch((err) => {
+              const errorCode = err.code;
+              const errorMessage = err.message;
+              console.log(errorCode, errorMessage);
+            });
+        })
+        .catch((error) => {
+          const { code } = error;
+          if (code === "auth/user-not-found") toast.error("User not found");
+        });
     }
+
     setLoading(false);
   };
 
@@ -71,7 +92,7 @@ function Login() {
           <div className="w-[25rem] md:hidden sm:hidden">
             <SVGComponent />
           </div>
-          <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl text-3xl font-bold tracking-tight text-gray-900">
             Sign in to your account
           </h2>
         </div>

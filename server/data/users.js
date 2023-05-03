@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
-import mongoCollections from '../config/mongoCollections';
+import mongoCollections from '../config/mongoCollections.js';
 const users = mongoCollections.users;
-import validation from '../utils/validation';
+import validation from '../utils/validation.js';
 
 export const createUser = async (
   firstName,
@@ -10,7 +10,8 @@ export const createUser = async (
   phone,
   dob,
   gender,
-  user_firebase_id
+  user_firebase_id,
+  image_url
 ) => {
   firstName = validation.checkNames(firstName, 'firstName');
   lastName = validation.checkNames(lastName, 'lastName');
@@ -28,6 +29,10 @@ export const createUser = async (
     dob,
     gender,
     user_firebase_id,
+    image_url,
+    reported: [],
+    bookmarked: [],
+    claimed: [],
   };
   const insertInfo = await userCollection.insertOne(newUser);
   if (!insertInfo.acknowledged) throw 'Could not add user';

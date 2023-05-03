@@ -5,23 +5,21 @@ import {
   emailValidation,
   nameValidation,
   passwordValidation,
-  usernameValidation,
 } from "../../utils/helper";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import SVGComponent from "../common/Logo";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import "./styles.css";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { toast } from "react-toastify";
-// import { signup } from "../../utils/apis/auth";
 import Loading from "../common/Loading";
 import { useNavigate } from "react-router";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
+import { signup } from "utils/apis/auth";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -37,7 +35,6 @@ function SignUp() {
       return setErrors({
         firstName: true,
         lastName: true,
-        username: true,
         phone: true,
         dob: true,
         gender: true,
@@ -51,7 +48,6 @@ function SignUp() {
     const errorObj = {};
     if (!signupData?.firstName) errorObj.firstName = true;
     if (!signupData?.agreedTerms) errorObj.agreedTerms = true;
-    if (!signupData?.username) errorObj.username = true;
     if (!signupData?.lastName) errorObj.lastName = true;
     if (!signupData?.email) errorObj.email = true;
     if (!signupData?.phone) errorObj.phone = true;
@@ -68,16 +64,8 @@ function SignUp() {
     else setErrors({});
 
     setLoading(true);
-    const {
-      firstName,
-      lastName,
-      username,
-      email,
-      phone,
-      dob,
-      gender,
-      password,
-    } = signupData;
+    const { firstName, lastName, email, phone, dob, gender, password } =
+      signupData;
 
     const today = new Date(dob);
     const yyyy = today.getFullYear();
@@ -91,7 +79,6 @@ function SignUp() {
     const apiBody = {
       firstName,
       lastName,
-      username,
       email,
       password,
       phone,
@@ -99,16 +86,17 @@ function SignUp() {
       gender,
     };
 
-    // const singupInfo = await signup(apiBody);
+    const singupInfo = await signup(apiBody);
 
-    // const { data, status } = singupInfo;
-    // if (status !== 201) toast.error(data?.error);
-    // else {
-    //   toast.success(
-    //     "User registered successfully. Please check your inbox to verify your account."
-    //   );
-    //   setTimeout(() => navigate("/"), 4000);
-    // }
+    const { data, status } = singupInfo;
+    console.log({ singupInfo });
+    if (status !== 201) toast.error(data?.error);
+    else {
+      toast.success(
+        "User registered successfully. Please check your inbox to verify your account."
+      );
+      setTimeout(() => navigate("/login"), 4000);
+    }
     setLoading(false);
   };
 
@@ -213,41 +201,41 @@ function SignUp() {
             </div>
           </div>
 
-          <div className="flex justify-between">
-            <div className="mr-1 w-6/12">
-              <TextField
-                size="small"
-                id="email"
-                label="Email"
-                variant="outlined"
-                required
-                type="email"
-                fullWidth
-                margin="dense"
-                value={signupData?.email ?? ""}
-                name="email"
-                placeholder="johndoe@example.com"
-                helperText={
-                  errors?.email ? (
-                    <span className=" flex items-center">
-                      <CloseIcon fontSize="small" />
-                      Enter a valid email
-                    </span>
-                  ) : (
-                    false
-                  )
-                }
-                error={errors?.email}
-                onChange={(e) => {
-                  let { name, value } = e.target;
-                  if (value === "") setError(name);
-                  if (!emailValidation(value)) setError(name);
-                  else removeError(name);
-                  setValues(name, value);
-                }}
-              />
-            </div>
-            <div className="ml-1 w-6/12">
+          {/* <div className="flex justify-between"> */}
+          <div className="mr-1">
+            <TextField
+              size="small"
+              id="email"
+              label="Email"
+              variant="outlined"
+              required
+              type="email"
+              fullWidth
+              margin="dense"
+              value={signupData?.email ?? ""}
+              name="email"
+              placeholder="johndoe@example.com"
+              helperText={
+                errors?.email ? (
+                  <span className=" flex items-center">
+                    <CloseIcon fontSize="small" />
+                    Enter a valid email
+                  </span>
+                ) : (
+                  false
+                )
+              }
+              error={errors?.email}
+              onChange={(e) => {
+                let { name, value } = e.target;
+                if (value === "") setError(name);
+                if (!emailValidation(value)) setError(name);
+                else removeError(name);
+                setValues(name, value);
+              }}
+            />
+          </div>
+          {/* <div className="ml-1 w-6/12">
               <TextField
                 size="small"
                 id="username"
@@ -279,8 +267,8 @@ function SignUp() {
                   setValues(name, value);
                 }}
               />
-            </div>
-          </div>
+            </div> */}
+          {/* </div> */}
           <div className="my-1">
             <div className="flex justify-between">
               <div className="mr-1 w-6/12">

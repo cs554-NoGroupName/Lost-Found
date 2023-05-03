@@ -1,10 +1,10 @@
 import express from 'express';
-import configRoutes from './routes';
 import dotenv from 'dotenv';
+dotenv.config();
 import cors from 'cors';
+import { configRoutes } from './routes/index.js';
 import { VerifyToken } from './middleware/VerifyToken.js';
 
-dotenv.config();
 const app = express();
 const port = process.env.NODE_PORT || 4000;
 

@@ -1,4 +1,4 @@
-const dbConnection = require('./mongoConnection');
+import dbConnection from './mongoConnection.js';
 
 const getCollectionFn = (collection) => {
   let _col = undefined;
@@ -13,7 +13,7 @@ const getCollectionFn = (collection) => {
   };
 };
 
-module.exports = {
-  events: getCollectionFn('items'),
+export default {
   users: getCollectionFn('users'),
+  items: getCollectionFn('items'),
 };
