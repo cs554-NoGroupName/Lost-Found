@@ -31,13 +31,14 @@ function Nav() {
   const [currentUser, setCurrentUser] = React.useContext(AuthContext);
   const navigate = useNavigate();
   const signOutUser = async () => {
-    console.log({ currentUser });
+    // console.log({ currentUser });
     firebase
       .auth()
       .signOut()
       .then((res) => {
         handleCloseUserMenu();
         setCurrentUser(null);
+        localStorage.setItem("currentUser", null);
         navigate("/login");
       })
       .catch((err) => console.log({ err }));
@@ -174,7 +175,11 @@ function Nav() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar
+                  alt="Remy Sharp"
+                  src={currentUser?.userData?.image_url}
+                  sx={{ borderRadius: "100px", border: "1px solid #fff" }}
+                />
               </IconButton>
             </Tooltip>
             <Menu

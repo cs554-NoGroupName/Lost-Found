@@ -37,7 +37,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 function Profile() {
   const [currentUser] = React.useContext(AuthContext);
-  const data = currentUser?.userData;
   const editorRef = React.useRef(null);
   const [modalView, setModalView] = React.useState(false);
   const [zoom, setZoom] = React.useState(1);
@@ -47,6 +46,7 @@ function Profile() {
     currentUser?.userData
   );
   const [updateLoading, setUpdateLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [imageObj, setImageObj] = React.useState(null);
 
   const handlemodalView = () => setModalView(true);
@@ -141,10 +141,9 @@ function Profile() {
     setUpdateLoading(false);
   };
 
-  const { firstName, lastName, email, phone, dob, gender, image_url } = data;
-
   const EditProfile = () => {
-    const { firstName, lastName, email, phone, dob, gender } = updateUserData;
+    const { firstName, lastName, email, phone, dob, gender } =
+      updateUserData ?? {};
     return (
       <Card
         sx={{
@@ -379,7 +378,15 @@ function Profile() {
     );
   };
 
+  React.useEffect(() => {
+    if (currentUser === null) setLoading(true);
+    if (currentUser?.userData) setTimeout(() => setLoading(false), 2000);
+    setUpdateUserData(currentUser?.userData);
+  }, [currentUser]);
+
   const ProfileView = () => {
+    const { firstName, lastName, email, phone, dob, gender, image_url } =
+      currentUser?.userData ?? {};
     return (
       <Card
         sx={{
@@ -461,7 +468,7 @@ function Profile() {
         aria-describedby="modal-modal-description"
       >
         <div className="profile_upload_modal">
-          <div className="user_profile_picture">
+          <div className="">
             <AvatarEditor
               ref={editorRef}
               image={imageObj ? URL.createObjectURL(imageObj) : DefaultProfile}
@@ -476,7 +483,7 @@ function Profile() {
             {imageObj && (
               <div>
                 <div className="flex align-middle mt-2">
-                  <span className="text-xl mr-2">Zoom</span>
+                  <span className="text-lg mr-1">Zoom</span>
                   <Slider
                     min={0}
                     max={2}
@@ -490,7 +497,7 @@ function Profile() {
                   />
                 </div>
                 <div className="flex align-middle mt-2">
-                  <span className="text-xl mr-2">Border radius</span>
+                  <span className="text-lg mr-1">Border radius</span>
                   <Slider
                     min={10}
                     max={150}
@@ -552,9 +559,15 @@ function Profile() {
   return (
     <LayoutProvider>
       <div className="sm:block flex justify-around sm:mx-0 md:mx-[40px] mx-0">
-        <ProfileView />
-        <EditProfile />
-        {modalView && <UploadPictureModal />}
+        {loading ? (
+          <Loading loading={loading} width={50} color="#367272" />
+        ) : (
+          <>
+            <ProfileView />
+            <EditProfile />
+            {modalView && <UploadPictureModal />}
+          </>
+        )}
       </div>
     </LayoutProvider>
   );

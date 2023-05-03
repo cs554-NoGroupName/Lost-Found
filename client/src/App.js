@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Route, BrowserRouter, Routes, Navigate } from "react-router-dom";
 import LoginPage from "components/login";
 import ForgotPassword from "components/forgotPassword";
@@ -10,15 +10,12 @@ import ReportItem from "components/reportItem";
 import { ThemeProvider, createTheme } from "@mui/material";
 import Page404 from "components/common/Page404";
 import "./App.css";
-import { AuthContext } from "./FirebaseUtils/authenticate";
 import Profile from "components/profile";
 import PrivacyPolicyPage from "components/common/privacyPolicyPage";
 
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const [currentUser] = useContext(AuthContext);
-
   const theme = createTheme({
     breakpoints: {
       values: {
@@ -32,10 +29,7 @@ function App() {
   });
 
   const isAuthenticated = () => {
-    console.log({ currentUser });
-    return currentUser?.firebase !== null && currentUser?.userData
-      ? true
-      : false;
+    return JSON.parse(localStorage.getItem("currentUser")) ? true : false;
   };
 
   return (

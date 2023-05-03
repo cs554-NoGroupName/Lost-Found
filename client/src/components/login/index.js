@@ -14,7 +14,7 @@ import { AuthContext } from "../../FirebaseUtils/authenticate";
 import { toast } from "react-toastify";
 
 function Login() {
-  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
+  const [setCurrentUser] = React.useContext(AuthContext);
   const navigate = useNavigate();
   const [userData, setUserData] = React.useState({ email: "", password: "" });
   const [passwordVisibility, setPasswordVisibility] = React.useState(false);
@@ -60,18 +60,28 @@ function Login() {
               const { data, status } = loginData;
               if (status !== 200) toast.error(data?.error);
               else {
-                setCurrentUser({ ...currentUser, userData: data });
+                setCurrentUser({
+                  firebaseData: userCredential?.user,
+                  userData: data,
+                });
+                localStorage.setItem(
+                  "currentUser",
+                  JSON.stringify({
+                    firebaseData: userCredential?.user,
+                    userData: data,
+                  })
+                );
                 navigate("/");
               }
             })
             .catch((err) => {
-              const errorCode = err.code;
-              const errorMessage = err.message;
-              console.log(errorCode, errorMessage);
+              // const errorCode = err.code;
+              // const errorMessage = err.message;
             });
         })
         .catch((error) => {
           const { code } = error;
+          //NOTE: need to check more error codes to show specific errors
           if (code === "auth/user-not-found") toast.error("User not found");
         });
     }

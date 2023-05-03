@@ -12,6 +12,10 @@ export const AuthProvider = ({ children }) => {
       if (user !== null) {
         const loginData = await login(await user?.getIdToken(true));
         setCurrentUser({ firebase: user, userData: loginData?.data });
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify({ firebase: user, userData: loginData?.data })
+        );
       }
     });
   }, []);
