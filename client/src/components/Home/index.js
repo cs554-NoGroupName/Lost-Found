@@ -39,7 +39,7 @@ const modalStyle = {
 };
 
 const Home = () => {
-  const [currentUser] = React.useContext(AuthContext);
+  const [currentUser] = useContext(AuthContext);
   const [itemsData, setItemsData] = useState([]);
   const [tags, setTags] = useState([]);
   const [filteredData, setFilteredData] = useState(null);
