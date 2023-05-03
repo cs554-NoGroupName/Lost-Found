@@ -21,7 +21,7 @@ import Actions from './ActionContainer';
 import CustomSelect from './CustomSelect';
 import ClaimsAndDisputes from './ClaimsAndDisputes';
 
-import { lostData, foundData } from './testData';
+import { foundData } from './testData';
 
 
 function ItemDetails() {
