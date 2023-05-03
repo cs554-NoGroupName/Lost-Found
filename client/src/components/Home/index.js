@@ -173,7 +173,7 @@ const Home = () => {
     <LayoutProvider>
       <div>
         {/* Items displayed in cards using Material UI Grid */}
-        {showFilters ? <div>
+        {showFilters ? <div className="flexer">
           <FormControl variant="outlined" sx={{ m: 1, minWidth: 200 }} className="flexer">
             <InputLabel id="status-filter-label">Status</InputLabel>
             <Select
