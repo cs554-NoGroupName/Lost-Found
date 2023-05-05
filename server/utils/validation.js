@@ -95,6 +95,63 @@ const checkPassword = (input) => {
   return input;
 };
 
+// check type shoud be either lost or found
+const checkType = (input) => {
+  input = checkInputString(input, 'type');
+  input = input.toLowerCase();
+  if (!/^(lost|found)$/.test(input)) {
+    throw 'Please select a valid type';
+  }
+  return input;
+};
+// itemName should be a string and 3 characters long
+const checkItemName = (input) => {
+  input = checkInputString(input, 'itemName');
+  if (input.length < 3) {
+    throw 'Item name should be of length 3 or greater';
+  }
+  return input;
+};
+// description should be a string and 10 characters long
+const checkDescription = (input) => {
+  input = checkInputString(input, 'description');
+  if (input.length < 10) {
+    throw 'Description should be of length 10 or greater';
+  }
+  return input;
+};
+// category should be a string
+const checkCategory = (input) => {
+  input = checkInputString(input, 'category');
+  return input;
+};
+// tags should be a string  and comma seperated and should be atleast 1 tag
+const checkTags = (input) => {
+  input = checkInputString(input, 'tags');
+  const tags = input.split(',');
+  if (tags.length < 1) {
+    throw 'Please enter atleast 1 tag';
+  }
+  return input;
+};
+
+// lastSeenLocation should be a string
+const checkLastSeenLocation = (input) => {
+  input = checkInputString(input, 'lastSeenLocation');
+  return input;
+};
+
+// lastSeenDate should be a string and in the iso format
+const checkLastSeenDate = (input) => {
+  input = checkInputString(input, 'lastSeenDate');
+  // check if the date is in the iso format with the help of date object
+  const date = new Date(input);
+  if (date.toISOString() !== input) {
+    throw 'Please enter the date in the ISO format';
+  }
+  return input;
+};
+
 export default {
   checkInputString,
   checkInputNumber,
@@ -106,4 +163,12 @@ export default {
   checkGender,
   checkObjectId,
   checkPassword,
+
+  checkType,
+  checkItemName,
+  checkDescription,
+  checkCategory,
+  checkTags,
+  checkLastSeenLocation,
+  checkLastSeenDate,
 };
