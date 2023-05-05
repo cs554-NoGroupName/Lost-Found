@@ -163,7 +163,12 @@ function ReportItem() {
 
   const sectionHeading = (num, title) => {
     return (
-      <div className="flex items-center text-[24px] text-bold text-logoBlue my-2">
+      <div
+        className={`flex items-center text-[24px] text-bold text-logoBlue my-2 ${
+          num === 2 &&
+          "sm:my-2 md:mt-[89px] lg:mt-[89px] xl:mt-[89px] 2xl:mt-[89px]"
+        }`}
+      >
         <div className="section_number">{num}</div>
         &nbsp;{title}
       </div>
@@ -173,341 +178,342 @@ function ReportItem() {
   const renderForm = () => {
     return (
       <div>
-        <div>
-          <div className="mx-1 mt-3 w-6/12 sm:w-full md:w-full">
-            <TextField
-              id="type"
-              select
-              label="Type"
-              fullWidth
-              required
-              margin="dense"
-              value={itemData?.type ?? ""}
-              name="type"
-              placeholder="Lost/Found"
-              error={errors?.type}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                if (value !== "") {
-                  setValues(name, value);
-                  removeError(name);
-                } else setError(name);
-              }}
-            >
-              {itemTypeOptions.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
-            {errors?.type && (
-              <span className="helperText__gender text-base flex items-center ">
-                <CloseIcon fontSize="small" />
-                Choose type
-              </span>
-            )}
-          </div>
-          {sectionHeading(1, "What")}
-          <div className="mx-2 w-6/12 sm:w-full md:w-full">
-            <TextField
-              id="itemName"
-              label="Item Name"
-              variant="outlined"
-              required
-              type="name"
-              fullWidth
-              margin="dense"
-              value={itemData?.itemName ?? ""}
-              name="itemName"
-              placeholder="Apple Airpods pro"
-              helperText={
-                errors?.itemName ? (
-                  <span className=" flex items-center">
-                    <CloseIcon fontSize="small" />
-                    Only Aphabets and numbers allowed
-                  </span>
-                ) : (
-                  false
-                )
-              }
-              error={errors?.itemName}
-              onChange={(e) => {
-                let { name, value } = e.target;
-                if (value === "") setError(name);
-                if (!nameValidation(value)) setError(name);
-                else removeError(name);
-                setValues(name, value);
-              }}
-            />
-          </div>
-          <div className="mx-2 w-8/12 sm:w-full md:w-full">
-            <TextField
-              id="description"
-              label="Description"
-              variant="outlined"
-              required
-              type="text"
-              fullWidth
-              margin="dense"
-              minRows={2}
-              multiline
-              value={itemData?.description ?? ""}
-              name="description"
-              placeholder="White color engraved name on it as `Joey`"
-              helperText={
-                //NOTE is this field required and also what about the validation
-                errors?.description ? (
-                  <span className=" flex items-center">
-                    <CloseIcon fontSize="small" />
-                    Enter some description
-                  </span>
-                ) : (
-                  false
-                )
-              }
-              error={errors?.description}
-              onChange={(e) => {
-                let { name, value } = e.target;
-                if (value === "") setError(name);
-                if (!validateDescription(value)) setError(name);
-                else removeError(name);
-                setValues(name, value);
-              }}
-            />
-          </div>
-          <div className="mx-2 w-6/12 sm:w-full md:w-full">
-            <TextField
-              id="category"
-              label="Category"
-              required
-              select
-              fullWidth
-              placeholder="eg. electronics"
-              margin="dense"
-              name="category"
-              error={errors?.category}
-              helperText={
-                errors?.category ? (
-                  <span className="text-base flex items-center">
-                    <CloseIcon fontSize="small" />
-                    Select one category
-                  </span>
-                ) : (
-                  false
-                )
-              }
-              value={itemData?.category}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                if (value !== "") {
-                  setValues(name, value);
-                  removeError(name);
-                } else setError(name);
-              }}
-            >
-              {categoryOptions.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
-          </div>
-          <div className="mx-2 w-6/12 sm:w-full md:w-full">
-            <TextField
-              id="tags"
-              label="Tags"
-              variant="outlined"
-              required
-              type="text"
-              fullWidth
-              placeholder="eg. earphones"
-              margin="dense"
-              name="tags"
-              error={errors?.tags}
-              helperText={
-                errors?.tags ? (
-                  <span className="text-base flex items-center">
-                    <CloseIcon fontSize="small" />
-                    Enter atleast one tag
-                  </span>
-                ) : (
-                  <span className="text-base flex items-center">
-                    <InfoOutlinedIcon fontSize="small" />
-                    &nbsp;Enter tags(comma seperated)
-                  </span>
-                )
-              }
-              value={itemData?.tags}
-              onChange={(e) => {
-                let { name, value } = e.target;
-                if (!validateTags(value)) setError(name);
-                else removeError(name);
-                setValues(name, value);
-              }}
-            />
-          </div>
-
-          <div>
-            <div className="flex items-center">
-              {" "}
-              <div
-                className="btn_default__light w-fit"
-                onClick={handlemodalView}
+        <div className="sm:block md:flex lg:flex xl:flex 2xl:flex">
+          <div className="sm:mr-0 mr-5 w-[100%]">
+            <div className="mx-1 mt-3 w-full sm:w-full md:w-full">
+              <TextField
+                id="type"
+                select
+                label="Type"
+                fullWidth
+                required
+                margin="dense"
+                value={itemData?.type ?? ""}
+                name="type"
+                placeholder="Lost/Found"
+                error={errors?.type}
+                onChange={(e) => {
+                  const { name, value } = e.target;
+                  if (value !== "") {
+                    setValues(name, value);
+                    removeError(name);
+                  } else setError(name);
+                }}
               >
-                Upload Image:
-                <IconButton aria-label="upload picture" component="label">
-                  <PhotoCamera color="#393e46" />
-                </IconButton>
-              </div>
-              {errors?.image && (
-                <div>
-                  <span className="flex items-center text-red-600">
-                    <CloseIcon fontSize="small" />
-                    Image required
-                  </span>
-                </div>
+                {itemTypeOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+              {errors?.type && (
+                <span className="helperText__gender text-base flex items-center ">
+                  <CloseIcon fontSize="small" />
+                  Choose type
+                </span>
               )}
             </div>
-            <Modal
-              open={modalView}
-              onClose={() => {
-                setImageObj(null);
-                handleClose();
-              }}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <div className="profile_upload_modal">
-                <img
-                  src={
-                    imageObj ? URL.createObjectURL(imageObj) : DefaultProfile
-                  }
-                  alt="item"
-                  width={400}
-                  height={200}
-                />
-                <div>
-                  {imageObj ? (
-                    <div className="flex mt-4">
-                      <button
-                        className="btn_default mx-2"
-                        onClick={handleClose}
-                      >
-                        Submit
-                      </button>
-                      <button
-                        className="btn_default__cancel"
-                        onClick={() => {
-                          setImageObj(null);
-                          handleClose();
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </div>
+            {sectionHeading(1, "What")}
+            <div className="mx-1 w-full sm:w-full md:w-full">
+              <TextField
+                id="itemName"
+                label="Item Name"
+                variant="outlined"
+                required
+                type="name"
+                fullWidth
+                margin="dense"
+                value={itemData?.itemName ?? ""}
+                name="itemName"
+                placeholder="Apple Airpods pro"
+                helperText={
+                  errors?.itemName ? (
+                    <span className=" flex items-center">
+                      <CloseIcon fontSize="small" />
+                      Only Aphabets and numbers allowed
+                    </span>
                   ) : (
-                    <IconButton
-                      color="primary"
-                      aria-label="upload picture"
-                      component="label"
-                      disableRipple={true}
-                    >
-                      <input
-                        hidden
-                        accept=".png, .jpg, .jpeg"
-                        type="file"
-                        onChange={(e) => {
-                          e.preventDefault();
-                          setImageObj(e.target.files[0]);
-                        }}
-                      />
-                      Browse
-                    </IconButton>
-                  )}
-                </div>
-              </div>
-            </Modal>
-          </div>
-        </div>
-
-        <div>
-          {sectionHeading(2, "Where")}
-          <div className="mx-2 w-6/12 sm:w-full md:w-full">
-            <TextField
-              id="lastSeenLocation"
-              select
-              label="Last Seen Location"
-              fullWidth
-              required
-              margin="dense"
-              value={itemData?.lastSeenLocation ?? ""}
-              name="lastSeenLocation"
-              placeholder="select a location"
-              error={errors?.lastSeenLocation}
-              onChange={(e) => {
-                const { name, value } = e.target;
-                if (value !== "") {
-                  setValues(name, value);
-                  removeError(name);
-                } else setError(name);
-              }}
-            >
-              {locationOptions.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
-            {errors?.gender && (
-              <span className="helperText__gender flex items-center ">
-                <CloseIcon fontSize="small" />
-                Choose a location
-              </span>
-            )}
-          </div>
-          <div className="mx-2 mt-3 w-6/12 sm:w-full md:w-full">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateTimePicker
-                label="Lost Date and Time"
-                disableFuture
-                inputFormat="MM/DD/YYYY hh:mm aa"
-                format="LLL"
-                value={itemData?.dateTime ?? null}
-                renderInput={(params) => (
-                  <TextField
-                    required
-                    margin="dense"
-                    onKeyDown={(e) => e.preventDefault()}
-                    error={errors?.dateTime}
-                    helperText={
-                      errors?.dateTime ? (
-                        <span className="helperText__dob  flex items-center">
-                          <CloseIcon fontSize="small" />
-                          Enter a valid date
-                        </span>
-                      ) : (
-                        false
-                      )
-                    }
-                    {...params}
-                  />
-                )}
+                    false
+                  )
+                }
+                error={errors?.itemName}
                 onChange={(e) => {
-                  if (e === null) removeError("dateTime");
-                  setValues("dateTime", e);
+                  let { name, value } = e.target;
+                  if (value === "") setError(name);
+                  if (!nameValidation(value)) setError(name);
+                  else removeError(name);
+                  setValues(name, value);
                 }}
-                onError={(e, f) => {
-                  if (e === "invalidDate") setError("dateTime");
-                  if (e === null) removeError("dateTime");
-                }}
-                // maxDate={dayjs(new Date(+new Date() - 410200000000 - 86400000))}
-                // minDate={dayjs(new Date(+new Date() - 3156000000000))}
-                openTo={"day"}
               />
-            </LocalizationProvider>
+            </div>
+            <div className="mx-1 w-full sm:w-full md:w-full">
+              <TextField
+                id="description"
+                label="Description"
+                variant="outlined"
+                required
+                type="text"
+                fullWidth
+                margin="dense"
+                minRows={2}
+                multiline
+                value={itemData?.description ?? ""}
+                name="description"
+                placeholder="White color engraved name on it as `Joey`"
+                helperText={
+                  //NOTE is this field required and also what about the validation
+                  errors?.description ? (
+                    <span className=" flex items-center">
+                      <CloseIcon fontSize="small" />
+                      Enter some description
+                    </span>
+                  ) : (
+                    false
+                  )
+                }
+                error={errors?.description}
+                onChange={(e) => {
+                  let { name, value } = e.target;
+                  if (value === "") setError(name);
+                  if (!validateDescription(value)) setError(name);
+                  else removeError(name);
+                  setValues(name, value);
+                }}
+              />
+            </div>
+            <div className="mx-1 w-full sm:w-full md:w-full">
+              <TextField
+                id="category"
+                label="Category"
+                required
+                select
+                fullWidth
+                placeholder="eg. electronics"
+                margin="dense"
+                name="category"
+                error={errors?.category}
+                helperText={
+                  errors?.category ? (
+                    <span className="text-base flex items-center">
+                      <CloseIcon fontSize="small" />
+                      Select one category
+                    </span>
+                  ) : (
+                    false
+                  )
+                }
+                value={itemData?.category}
+                onChange={(e) => {
+                  const { name, value } = e.target;
+                  if (value !== "") {
+                    setValues(name, value);
+                    removeError(name);
+                  } else setError(name);
+                }}
+              >
+                {categoryOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </div>
+            <div className="mx-1 w-full sm:w-full md:w-full">
+              <TextField
+                id="tags"
+                label="Tags"
+                variant="outlined"
+                required
+                type="text"
+                fullWidth
+                placeholder="eg. earphones"
+                margin="dense"
+                name="tags"
+                error={errors?.tags}
+                helperText={
+                  errors?.tags ? (
+                    <span className="text-base flex items-center">
+                      <CloseIcon fontSize="small" />
+                      Enter atleast one tag
+                    </span>
+                  ) : (
+                    <span className="text-base flex items-center">
+                      <InfoOutlinedIcon fontSize="small" />
+                      &nbsp;Enter tags(comma seperated)
+                    </span>
+                  )
+                }
+                value={itemData?.tags}
+                onChange={(e) => {
+                  let { name, value } = e.target;
+                  if (!validateTags(value)) setError(name);
+                  else removeError(name);
+                  setValues(name, value);
+                }}
+              />
+            </div>
+
+            <div>
+              <div className="flex items-center">
+                {" "}
+                <div
+                  className="btn_default__light w-fit"
+                  onClick={handlemodalView}
+                >
+                  Upload Image:
+                  <IconButton aria-label="upload picture" component="label">
+                    <PhotoCamera color="#393e46" />
+                  </IconButton>
+                </div>
+                {errors?.image && (
+                  <div>
+                    <span className="flex items-center text-red-600">
+                      <CloseIcon fontSize="small" />
+                      Image required
+                    </span>
+                  </div>
+                )}
+              </div>
+              <Modal
+                open={modalView}
+                onClose={() => {
+                  setImageObj(null);
+                  handleClose();
+                }}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <div className="profile_upload_modal">
+                  <img
+                    src={
+                      imageObj ? URL.createObjectURL(imageObj) : DefaultProfile
+                    }
+                    alt="item"
+                    width={400}
+                    height={200}
+                  />
+                  <div>
+                    {imageObj ? (
+                      <div className="flex mt-4">
+                        <button
+                          className="btn_default mx-1"
+                          onClick={handleClose}
+                        >
+                          Submit
+                        </button>
+                        <button
+                          className="btn_default__cancel"
+                          onClick={() => {
+                            setImageObj(null);
+                            handleClose();
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <IconButton
+                        color="primary"
+                        aria-label="upload picture"
+                        component="label"
+                        disableRipple={true}
+                      >
+                        <input
+                          hidden
+                          accept=".png, .jpg, .jpeg"
+                          type="file"
+                          onChange={(e) => {
+                            e.preventDefault();
+                            setImageObj(e.target.files[0]);
+                          }}
+                        />
+                        Browse
+                      </IconButton>
+                    )}
+                  </div>
+                </div>
+              </Modal>
+            </div>
+          </div>
+
+          <div className="sm:ml-0 ml-5 w-[100%]">
+            {sectionHeading(2, "Where")}
+            <div className="mx-1 w-full sm:w-full md:w-full">
+              <TextField
+                id="lastSeenLocation"
+                select
+                label="Last Seen Location"
+                fullWidth
+                required
+                margin="dense"
+                value={itemData?.lastSeenLocation ?? ""}
+                name="lastSeenLocation"
+                placeholder="select a location"
+                error={errors?.lastSeenLocation}
+                onChange={(e) => {
+                  const { name, value } = e.target;
+                  if (value !== "") {
+                    setValues(name, value);
+                    removeError(name);
+                  } else setError(name);
+                }}
+              >
+                {locationOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+              {errors?.gender && (
+                <span className="helperText__gender flex items-center ">
+                  <CloseIcon fontSize="small" />
+                  Choose a location
+                </span>
+              )}
+            </div>
+            <div className="mx-1 mt-3 w-full sm:w-full md:w-full">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  label="Lost Date and Time"
+                  disableFuture
+                  inputFormat="MM/DD/YYYY hh:mm aa"
+                  format="LLL"
+                  value={itemData?.dateTime ?? null}
+                  renderInput={(params) => (
+                    <TextField
+                      required
+                      margin="dense"
+                      onKeyDown={(e) => e.preventDefault()}
+                      error={errors?.dateTime}
+                      helperText={
+                        errors?.dateTime ? (
+                          <span className="helperText__dob  flex items-center">
+                            <CloseIcon fontSize="small" />
+                            Enter a valid date
+                          </span>
+                        ) : (
+                          false
+                        )
+                      }
+                      {...params}
+                    />
+                  )}
+                  onChange={(e) => {
+                    if (e === null) removeError("dateTime");
+                    setValues("dateTime", e);
+                  }}
+                  onError={(e, f) => {
+                    if (e === "invalidDate") setError("dateTime");
+                    if (e === null) removeError("dateTime");
+                  }}
+                  // maxDate={dayjs(new Date(+new Date() - 410200000000 - 86400000))}
+                  // minDate={dayjs(new Date(+new Date() - 3156000000000))}
+                  openTo={"day"}
+                />
+              </LocalizationProvider>
+            </div>
           </div>
         </div>
-
         <div>
           <button
             className="btn_default mt-4"
