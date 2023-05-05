@@ -15,33 +15,26 @@ import MenuItem from "@mui/material/MenuItem";
 import SVGComponent from "components/common/Logo";
 import "./styles.css";
 import { Divider } from "@mui/material";
-import firebase from "firebase/compat/app";
-import { AuthContext } from "FirebaseUtils/authenticate";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
+import { useDispatch, useSelector } from "react-redux";
+import { setLogin } from "redux/reducer";
 
 const pages = [
   { name: "Home", route: "/" },
   { name: "Report Item", route: "/report-item" },
 ];
 const settings = [
-  { name: "My Profile", route: "/profile" },
-  { name: "My Activites", route: "/My-Activites" },
+  { name: "My Profile", route: "/profile", Icon: AccountCircleIcon },
+  { name: "My Activites", route: "/My-Activites", Icon: ScatterPlotIcon },
 ];
 
 function Nav() {
-  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
-  const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const state = useSelector((state) => state?.userData?.userData);
   const signOutUser = async () => {
-    // console.log({ currentUser });
-    firebase
-      .auth()
-      .signOut()
-      .then((res) => {
-        handleCloseUserMenu();
-        setCurrentUser(null);
-        localStorage.setItem("currentUser", null);
-        navigate("/login");
-      })
-      .catch((err) => console.log({ err }));
+    dispatch(setLogin({data: {}}))
   };
 
   const { pathname } = window.location;
@@ -70,7 +63,10 @@ function Nav() {
       sx={{
         top: 0,
         zIndex: 999,
-        backgroundColor: "#367272",
+        backgroundColor: "#1c2536",
+        height: "80px",
+        boxShadow: "0px 0px 4px 2px #1c2536",
+        placeContent: "center",
       }}
     >
       <Container maxWidth="2xl" disableGutters sx={{ padding: "0px 10px" }}>
@@ -119,21 +115,21 @@ function Nav() {
               }}
             >
               {pages.map(({ name, route }) => (
-                <MenuItem key={name} onClick={handleCloseNavMenu}>
-                  <Link to={route}>
+                <Link to={route}>
+                  <MenuItem key={name} onClick={handleCloseNavMenu}>
                     <Typography
                       textAlign="center"
                       sx={{
-                        color: pathname === route ? "#367272" : "black",
-                        fontWeight: pathname === route ? 700 : 500,
+                        fontWeight: 600,
+                        color: pathname === route ? "#1c2536" : "#868b91",
                         textTransform: "capitalize",
-                        fontSize: "1.2rem",
+                        fontSize: "1.3rem",
                       }}
                     >
                       {name}
                     </Typography>
-                  </Link>
-                </MenuItem>
+                  </MenuItem>
+                </Link>
               ))}
             </Menu>
 
@@ -145,40 +141,55 @@ function Nav() {
             sx={{
               flexGrow: 1,
               display: { xs: "none", md: "flex" },
-              marginLeft: "10px",
+              marginLeft: "40px",
             }}
           >
             {pages.map(({ name, route }) => (
-              <Button
-                key={name}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                <Link to={route}>
+              <Link to={route}>
+                <Button
+                  key={name}
+                  onClick={handleCloseNavMenu}
+                  sx={{
+                    my: 2,
+                    display: "block",
+                    padding: "2px 10px",
+                    marginRight: "10px",
+                    "&.MuiButtonBase-root:hover": {
+                      backgroundColor: "#ffffff10",
+                      borderRadius: "10px",
+                    },
+                  }}
+                >
                   <Typography
                     textAlign="center"
                     sx={{
-                      color: "white",
-                      textDecoration: pathname === route ? "underline" : "none",
+                      // '&.MuiTypography-root:hover': {
+                      //   transform: 'scale(1.1)'
+                      // },
+                      color: pathname === route ? "#fff" : "#9da4ae",
                       textTransform: "capitalize",
-                      fontWeight: pathname === route ? "700" : 500,
-                      fontSize: "1.2rem",
+                      fontWeight: pathname === route ? "600" : 500,
+                      // fontSize: pathname === route ? '1.3rem':"1.2rem",
+                      fontSize: "1.3rem",
                     }}
                   >
                     {name}
                   </Typography>
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             ))}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton
+                onClick={handleOpenUserMenu}
+                sx={{ p: 0, border: "1px solid #fff" }}
+              >
                 <Avatar
-                  alt="Remy Sharp"
-                  src={currentUser?.userData?.image_url}
-                  sx={{ borderRadius: "100px", border: "1px solid #fff" }}
+                  alt="user_profile"
+                  src={state?.image_url}
+                  sx={{ borderRadius: "100px", border: "1px solid #1c2536" }}
                 />
               </IconButton>
             </Tooltip>
@@ -198,17 +209,41 @@ function Nav() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map(({ name, route }) => (
+              {settings.map(({ name, route, Icon }) => (
                 <MenuItem key={name} onClick={handleCloseUserMenu}>
                   <Link to={route}>
-                    <Typography textAlign="center">{name}</Typography>
+                    <Typography
+                      textAlign="center"
+                      sx={{
+                        bg: "#9da4ae",
+                        color: pathname === route ? "#1c2536" : "#45494e",
+                        textTransform: "capitalize",
+                        fontWeight: pathname === route ? "600" : 500,
+                      }}
+                    >
+                      <Icon />
+                      &nbsp;{name}
+                    </Typography>
                   </Link>
                 </MenuItem>
               ))}
 
               <Divider />
               <MenuItem key={"sign-out"} onClick={signOutUser}>
-                <Typography textAlign="center">Sign Out</Typography>
+                <Typography
+                  textAlign="center"
+                  sx={{
+                    color: "#0058ff",
+                    textTransform: "capitalize",
+                    fontWeight: 700,
+                    fontSize: "1rem",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <ExitToAppIcon />
+                  &nbsp;Sign Out
+                </Typography>
               </MenuItem>
             </Menu>
           </Box>

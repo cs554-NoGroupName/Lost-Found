@@ -2,15 +2,21 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
+import { PersistGate } from "redux-persist/integration/react";
+import store from "./redux/store";
+import { Provider } from "react-redux";
+import persistStore from "redux-persist/es/persistStore";
 
-import { AuthProvider } from "./FirebaseUtils/authenticate";
+let persistor = persistStore(store);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <AuthProvider>
-    <App />
-  </AuthProvider>
+  <Provider store={store}>
+    <PersistGate persistor={persistor}>
+      <App />
+    </PersistGate>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -4,6 +4,7 @@ import { IconButton, MenuItem, Modal, TextField } from "@mui/material";
 import LayoutProvider from "components/common/Layout";
 // import { AuthContext } from "../../firebase/auth";
 import {
+  dataURLtoFile,
   nameValidation,
   validateDescription,
   validateTags,
@@ -26,7 +27,10 @@ import DefaultProfile from "../../utils/images/no-image-icon.png";
 import "./styles.css";
 import PreviewModal from "./previewModal";
 import useDocumentTitle from "components/common/useDocumentTitle";
-// import { AuthContext } from "../../FirebaseUtils/authenticate";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { reportItem } from "utils/apis/item";
+import { useSelector } from "react-redux";
 
 function ReportItem() {
   // const [currentUser] = React.useContext(AuthContext);
@@ -34,6 +38,9 @@ function ReportItem() {
     type: "Lost",
     category: "Electronics",
   });
+
+  const state = useSelector((state) => state?.userData?.userData);
+  const navigate = useNavigate();
 
   const [reviewData, setReviewData] = React.useState({});
 
@@ -51,6 +58,8 @@ function ReportItem() {
   const setError = (name) => {
     setErrors({ ...errors, [name]: true });
   };
+
+  console.log({ state });
 
   const removeError = (name) => {
     const errorObj = errors;
@@ -86,57 +95,69 @@ function ReportItem() {
     if (!itemData?.category) errorObj.category = true;
     if (!itemData?.tags) errorObj.tags = true;
     // if (!itemData?.image) errorObj.image = true;
+    if (!imageObj) errorObj.image = true;
     if (!itemData?.lastSeenLocation) errorObj.lastSeenLocation = true;
     if (!itemData?.dateTime) errorObj.dateTime = true;
 
     if (Object.keys(errorObj).length !== 0) return setErrors(errorObj);
     else setErrors({});
-    setPreviewModal(true);
-    setLoading(true);
     const {
       itemName,
       type,
       description,
       category,
       tags,
-      image,
       lastSeenLocation,
       dateTime,
     } = itemData;
-    // const today = new Date(dateTime);
-    // console.log({ today });
-    // const yyyy = today.getFullYear();
-    // let mm = today.getMonth() + 1; // Months start at 0!
-    // let dd = today.getDate();
-
-    // if (dd < 10) dd = "0" + dd;
-    // if (mm < 10) mm = "0" + mm;
-
-    // const formattedToday = mm + "/" + dd + "/" + yyyy;
     const apiBody = {
       itemName,
       type,
       description,
       category,
       tags,
-      image,
       lastSeenLocation,
-      dateTime: dateTime.$d.toString(),
+      lastSeenDate: dateTime?.$d,
+      imageUrl: imageObj,
     };
     setReviewData(apiBody);
 
-    console.log({ apiBody });
+    setPreviewModal(true);
+  };
 
-    // const singupInfo = await signup(apiBody);
+  const submitItemData = async () => {
+    setLoading(true);
+    const formdata = new FormData();
+    const {
+      itemName,
+      type,
+      description,
+      category,
+      tags,
+      lastSeenLocation,
+      dateTime,
+    } = itemData;
 
-    // const { data, status } = singupInfo;
-    // if (status !== 201) toast.error(data?.error);
-    // else {
-    //   toast.success(
-    //     "User registered successfully. Please check your inbox to verify your account."
-    //   );
-    //   setTimeout(() => navigate("/"), 4000);
-    // }
+    formdata.append("itemName", itemName);
+    formdata.append("description", description);
+    formdata.append("type", type);
+    formdata.append("category", category);
+    formdata.append("tags", tags);
+    formdata.append("lastSeenLocation", lastSeenLocation);
+    formdata.append("lastSeenDate", dateTime?.$d?.toISOString());
+    // formdata.append("imageUrl", dataURLtoFile(imageObj, itemName));
+    formdata.append("imageUrl", imageObj);
+    const reportData = await reportItem(formdata, {
+      Authorization: "Bearer " + state?.token,
+    });
+    const { status, data } = reportData;
+    if (status !== 201) toast.error(data?.error);
+    else {
+      toast.success("Item posted successfully.");
+      toast.success("Redirecting...");
+      console.log({ data });
+      setTimeout(() => navigate("/items/" + data._id), 4000);
+    }
     setLoading(false);
   };
 
@@ -327,12 +348,25 @@ function ReportItem() {
           </div>
 
           <div>
-            <div className="btn_default__light w-fit" onClick={handlemodalView}>
+            <div className="flex items-center">
               {" "}
-              Upload Image:
-              <IconButton aria-label="upload picture" component="label">
-                <PhotoCamera color="#393e46" />
-              </IconButton>
+              <div
+                className="btn_default__light w-fit"
+                onClick={handlemodalView}
+              >
+                Upload Image:
+                <IconButton aria-label="upload picture" component="label">
+                  <PhotoCamera color="#393e46" />
+                </IconButton>
+              </div>
+              {errors?.image && (
+                <div>
+                  <span className="flex items-center text-red-600">
+                    <CloseIcon fontSize="small" />
+                    Image required
+                  </span>
+                </div>
+              )}
             </div>
             <Modal
               open={modalView}
@@ -355,9 +389,12 @@ function ReportItem() {
                 <div>
                   {imageObj ? (
                     <div className="flex mt-4">
-                      {/* <button className="btn_default mx-2" onClick={uploadImage}>
-                      <Loading loading={updateLoading} width={18} /> Upload
-                    </button> */}
+                      <button
+                        className="btn_default mx-2"
+                        onClick={handleClose}
+                      >
+                        Submit
+                      </button>
                       <button
                         className="btn_default__cancel"
                         onClick={() => {
@@ -485,22 +522,16 @@ function ReportItem() {
   };
 
   return (
-    <LayoutProvider>
-
+    <LayoutProvider title={`Report ${itemData?.type} Item`}>
       {useDocumentTitle("Report Item")}
-      <div className="page_title flex items-center sm:text-sm md:text-lg text-2xl">
-        <div className="mr-1">
-          <FlagIcon sx={{ fontSize: 28 }} />
-        </div>
-        Report {itemData?.type} Item
-      </div>
-
       {renderForm()}
 
       <PreviewModal
+        loading={loading}
         open={previewModal}
         onClose={closePreviewModal}
         data={reviewData}
+        onSubmit={submitItemData}
       />
     </LayoutProvider>
   );

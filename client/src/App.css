@@ -3,16 +3,18 @@
 @tailwind utilities;
 
 /* .sample_class {
-  logoblue: #367272;
+  logoblue: #1c2536;
   lightwhite: #e6e6e6;
   logolightblue: #6aa6a6;
   logolighterblue: #95b1b0;
   logoBlue: #324b4b;
-} */
+   test colors
+ first: #4A5569;
+  second: #2E3643;
+  third: #111A2B;
+  four: #070F1D;
+ yellow: #ff9717 }*/
 
-/* body {
-  overflow: hidden;
-} */
 .scroller::-webkit-scrollbar {
   width: 5px;
 }
@@ -29,11 +31,13 @@
 .btn_default {
   width: auto;
   padding: 7px 20px;
-  color: white;
+  color: black;
+  /* color: white; */
   font-size: 18px;
   font-weight: 500;
   border-radius: 4px;
-  background-color: theme("colors.logoBlue");
+  background-color: #ff9717;
+  /* background-color: theme("colors.logoBlue"); */
   cursor: pointer;
 }
 
@@ -96,9 +100,10 @@
   text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 6px;
-  /* font-size: 20px; */
-  color: #095252;
-  background-color: #eec0c6;
-  background-image: linear-gradient(315deg, #6aa6a6 0%, #95b1b0 74%);
+  color: #1c2536;
+  /* background-color: #818994; */
   padding: 8px;
+}
+
+.color_palette {
 }

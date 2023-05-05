@@ -10,14 +10,14 @@
 .css-qywfm8-MuiDivider-wrapper {
   font-size: 24px !important;
   font-weight: bold !important;
-  color: #367272 !important;
+  color: #1c2536 !important;
   display: flex !important;
   align-items: center !important;
 }
 
 .section_number {
   width: 35px;
-  background-color: #367272;
+  background-color: #1c2536;
   color: white;
   display: flex;
   justify-content: center;
@@ -41,7 +41,7 @@
 }
 
 .modal_header {
-  background-color: #367272;
+  background-color: #1c2536;
   width: 100%;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
@@ -62,7 +62,7 @@
   display: flex;
   justify-content: space-around;
   padding: 8px;
-  box-shadow: 0px 0px 5px 0px #367272;
+  box-shadow: 0px 0px 5px 0px #1c2536;
   margin-top: -10px;
 }
 

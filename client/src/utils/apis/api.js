@@ -12,7 +12,6 @@ export const makeApiCall = async (endpoint, method, body, headers = null) => {
       data: body,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Bypass-Tunnel-Reminder": "mani",
         ...headers,
       },
     }).then((res) => {

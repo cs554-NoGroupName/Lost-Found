@@ -7,7 +7,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import SVGComponent from "../common/Logo";
 // import { toast } from "react-toastify";
-import Loading from "../common/Loading";
+import Loading from "../common/BtnLoading";
 import "./styles.css";
 import { useParams } from "react-router";
 // import { resetPassword } from "../../utils/apis/auth";

@@ -3,7 +3,6 @@ import { Divider, Link } from "@mui/material";
 import "./styles.css";
 import SVGComponent from "../common/Logo";
 import { useParams } from "react-router-dom";
-import useDocumentTitle from "components/common/useDocumentTitle";
 // import { verifyUser } from "../../utils/apis/auth";
 
 function VerifyUser() {
@@ -26,8 +25,6 @@ function VerifyUser() {
 
   return (
     <div className="flex min-h-full justify-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
-
-      {useDocumentTitle("Verifying")}
       <div className="w-full max-w-lg space-y-4">
         <div className="flex items-center flex-col">
           <div className="w-40">

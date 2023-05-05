@@ -1,5 +1,5 @@
 import * as React from "react";
-const SVGComponent = ({ type, fillColor = "#367272", h = "108", w = "400" }) =>
+const SVGComponent = ({ type, fillColor = "#1c2536", h = "108", w = "400" }) =>
   type === "phone" ? (
     <svg
       width="317.2840942382812"

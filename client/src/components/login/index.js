@@ -6,17 +6,16 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CloseIcon from "@mui/icons-material/Close";
 import SVGComponent from "../common/Logo";
 import { login } from "../../utils/apis/auth";
-import Loading from "../common/Loading";
-import { useNavigate } from "react-router";
-import firebase from "firebase/compat/app";
+import Loading from "../common/BtnLoading";
+import { useNavigate, Navigate } from "react-router";
 import "./styles.css";
-import { AuthContext } from "../../FirebaseUtils/authenticate";
 import { toast } from "react-toastify";
-import useDocumentTitle from "components/common/useDocumentTitle";
+import { useDispatch } from "react-redux";
+import { setLogin } from "redux/reducer";
 
 function Login() {
-  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [userData, setUserData] = React.useState({ email: "", password: "" });
   const [passwordVisibility, setPasswordVisibility] = React.useState(false);
   const [errors, setErrors] = React.useState({ email: false, password: false });
@@ -38,7 +37,6 @@ function Login() {
 
   const validateData = async (e) => {
     e.preventDefault();
-    console.log("here");
     setLoading(true);
     const { email, password } = userData;
 
@@ -50,237 +48,150 @@ function Login() {
     setErrors(errorObj);
 
     if (Object.keys(errorObj).length === 0) {
-      const fireBaseData = await firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password);
-      const userToken = await firebase.auth().currentUser.getIdToken(true);
-      // .then((userCredential) => {
-
-      const loginData = await login(userToken);
+      const loginData = await login({ email, password });
       const { data, status } = loginData;
       if (status !== 200) toast.error(data?.error);
-      else {
-        const user = {
-          firebaseData: fireBaseData?.user,
-          userData: data,
-        };
-        await setCurrentUser(user);
-        await localStorage.setItem("currentUser", JSON.stringify(user));
-        navigate("/");
-      }
-      console.log({ currentUser });
-      // firebase
-      //       .auth()
-      //       .currentUser.getIdToken(true)
-      //       .then(async (res) => {
-      //         const loginData = await login(res);
-      //         const { data, status } = await loginData;
-      //         if (status !== 200) toast.error(data?.error);
-      //         else {
-      //           setCurrentUser({
-      //             firebaseData: userCredential?.user,
-      //             userData: data,
-      //           });
-      //           localStorage.setItem(
-      //             "currentUser",
-      //             JSON.stringify({
-      //               firebaseData: userCredential?.user,
-      //               userData: data,
-      //             })
-      //           );
-
-      //           console.log({ loginData });
-      //           navigate("/");
-      //         }
-      //       })
-      //       .catch((err) => {
-      //         // const errorCode = err.code;
-      //         // const errorMessage = err.message;
-      //       });
-      //   })
-      //   .catch((error) => {
-      //     const { code } = error;
-      //     //NOTE: need to check more error codes to show specific errors
-      //     if (code === "auth/user-not-found") toast.error("User not found");
-      //   });
-
-      // firebase
-      // .auth()
-      // .signInWithEmailAndPassword(email, password)
-      // .then((userCredential) => {
-      //   firebase
-      //     .auth()
-      //     .currentUser.getIdToken(true)
-      //     .then(async (res) => {
-      //       const loginData = await login(res);
-      //       const { data, status } = await loginData;
-      //       if (status !== 200) toast.error(data?.error);
-      //       else {
-      //         setCurrentUser({
-      //           firebaseData: userCredential?.user,
-      //           userData: data,
-      //         });
-      //         localStorage.setItem(
-      //           "currentUser",
-      //           JSON.stringify({
-      //             firebaseData: userCredential?.user,
-      //             userData: data,
-      //           })
-      //         );
-
-      //         console.log({ loginData });
-      //         navigate("/");
-      //       }
-      //     })
-      //     .catch((err) => {
-      //       // const errorCode = err.code;
-      //       // const errorMessage = err.message;
-      //     });
-      // })
-      // .catch((error) => {
-      //   const { code } = error;
-      //   //NOTE: need to check more error codes to show specific errors
-      //   if (code === "auth/user-not-found") toast.error("User not found");
-      // });
+      else dispatch(setLogin({ data }));
     }
 
     setLoading(false);
   };
 
-  React.useEffect(() => {
-    console.log({ currentUser });
-  }, [currentUser]);
-
   const handleClickShowPassword = () =>
     setPasswordVisibility(!passwordVisibility);
 
-  return (
-    <div className="flex min-h-full justify-center items-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
-      {useDocumentTitle("Login")}
-      <div className="w-full max-w-md">
-        <div className="flex items-center flex-col">
-          <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">
-            <SVGComponent type="phone" />
+  if (JSON.parse(localStorage.getItem("userData")) !== null)
+    return <Navigate to="/" />;
+  else
+    return (
+      <div className="flex min-h-full justify-center items-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md">
+          <div className="flex items-center flex-col">
+            <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">
+              <SVGComponent type="phone" />
+            </div>
+            <div className="w-[25rem] md:hidden sm:hidden">
+              <SVGComponent />
+            </div>
+            <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl text-3xl font-bold text-logo tracking-tight text-gray-900">
+              Sign in to your account
+            </h2>
           </div>
-          <div className="w-[25rem] md:hidden sm:hidden">
-            <SVGComponent />
-          </div>
-          <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl text-3xl font-bold tracking-tight text-gray-900">
-            Sign in to your account
-          </h2>
-        </div>
-        <div className="p-4">
-          <div className="rounded-md">
-            <TextField
-              className="my-2"
-              id="email"
-              label="Email"
-              variant="outlined"
-              required
-              type="text"
-              fullWidth
-              placeholder="johndoe@example.com"
-              margin="dense"
-              name="email"
-              error={errors?.email}
-              helperText={
-                errors?.email ? (
-                  <span className="flex items-center">
-                    <CloseIcon fontSize="small" />
-                    Please enter a valid email
-                  </span>
-                ) : (
-                  false
-                )
-              }
-              value={userData?.email}
-              onChange={(e) => {
-                let { name, value } = e.target;
-                value = value.trim();
-                if (value === "") setError(name);
-                if (!emailValidation(value)) setError(name);
-                else removeError(name);
-                setValues(name, value);
-              }}
-            />
-
-            <div className="relative">
+          <div className="p-4">
+            <div className="rounded-md">
               <TextField
-                id="password"
-                label="Password"
+                className="my-2"
+                id="email"
+                label="Email"
                 variant="outlined"
                 required
+                type="text"
                 fullWidth
-                type={passwordVisibility ? "text" : "password"}
+                placeholder="johndoe@example.com"
                 margin="dense"
-                name="password"
-                placeholder="********"
-                error={errors?.password}
-                value={userData?.password}
+                name="email"
+                error={errors?.email}
                 helperText={
-                  errors?.password ? (
+                  errors?.email ? (
                     <span className="flex items-center">
                       <CloseIcon fontSize="small" />
-                      Password cannot be less than 8 characters
+                      Please enter a valid email
                     </span>
                   ) : (
                     false
                   )
                 }
+                value={userData?.email}
                 onChange={(e) => {
-                  // password will come here
                   let { name, value } = e.target;
                   value = value.trim();
                   if (value === "") setError(name);
-                  if (value?.length < 8) setError(name);
+                  if (!emailValidation(value)) setError(name);
                   else removeError(name);
                   setValues(name, value);
                 }}
               />
-              <div className="show_pass_btn" onClick={handleClickShowPassword}>
-                {passwordVisibility ? (
-                  <VisibilityIcon fontSize="medium" />
-                ) : (
-                  <VisibilityOffIcon fontSize="medium" />
-                )}
+
+              <div className="relative">
+                <TextField
+                  id="password"
+                  label="Password"
+                  variant="outlined"
+                  required
+                  fullWidth
+                  type={passwordVisibility ? "text" : "password"}
+                  margin="dense"
+                  name="password"
+                  placeholder="********"
+                  error={errors?.password}
+                  value={userData?.password}
+                  helperText={
+                    errors?.password ? (
+                      <span className="flex items-center">
+                        <CloseIcon fontSize="small" />
+                        Password cannot be less than 8 characters
+                      </span>
+                    ) : (
+                      false
+                    )
+                  }
+                  onChange={(e) => {
+                    // password will come here
+                    let { name, value } = e.target;
+                    value = value.trim();
+                    if (value === "") setError(name);
+                    if (value?.length < 8) setError(name);
+                    else removeError(name);
+                    setValues(name, value);
+                  }}
+                />
+                <div
+                  className="show_pass_btn"
+                  onClick={handleClickShowPassword}
+                >
+                  {passwordVisibility ? (
+                    <VisibilityIcon fontSize="medium" />
+                  ) : (
+                    <VisibilityOffIcon fontSize="medium" />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex items-center justify-end text-logoBlue text-xl sm:text-lg font-bold">
-            <div
-              onClick={() => navigate("/forgot-password")}
-              className="text-logoBlue cursor-pointer hover:underline "
-            >
-              Forgot your password?
+            <div className="flex items-center justify-end text-logoBlue text-xl sm:text-lg font-bold">
+              <div
+                onClick={() => navigate("/forgot-password")}
+                className="text-logoBlue cursor-pointer hover:underline "
+              >
+                Forgot your password?
+              </div>
             </div>
-          </div>
 
-          <button
-            className="btn_default flex items-center mt-2"
-            onClick={validateData}
-            disabled={errors?.password || errors?.email || loading}
-          >
-            <Loading loading={loading} width={18} />
-            Sign in
-          </button>
-        </div>
-        <div>
-          <Divider />
-          <div className="sm:text-lg text-xl text-black text-center">
-            Don’t have an account?&nbsp;
-            <span
-              onClick={() => navigate("/signup")}
-              className="text-logoBlue cursor-pointer hover:underline font-bold"
+            <button
+              className="btn_default flex items-center mt-2"
+              onClick={validateData}
+              disabled={errors?.password || errors?.email || loading}
             >
-              Sign up
-            </span>
-            &nbsp;for free
+              <Loading loading={loading} width={18} />
+              Sign in
+            </button>
+          </div>
+          <div>
+            <Divider />
+            <div className="sm:text-lg text-xl text-black text-center">
+              Don’t have an account?&nbsp;
+              <span
+                onClick={() => navigate("/signup")}
+                className="text-logoBlue cursor-pointer hover:underline font-bold"
+              >
+                Sign up
+              </span>
+              &nbsp;for free
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
 }
 
 export default Login;

@@ -15,12 +15,11 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import "./styles.css";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { toast } from "react-toastify";
-import Loading from "../common/Loading";
+import Loading from "../common/BtnLoading";
 import { useNavigate } from "react-router";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { signup } from "utils/apis/auth";
-import useDocumentTitle from "components/common/useDocumentTitle";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -120,8 +119,6 @@ function SignUp() {
 
   return (
     <div className="min-h-full flex justify-center sm:py-2 lg:py-2 md:py-5 lg:px-8 sm:px-0">
-
-      {useDocumentTitle("Singup for a account")}
       <div className="sm:block md:block items-center justify-center flex">
         <div className="flex items-center flex-col px-8 md:px-16">
           <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">
