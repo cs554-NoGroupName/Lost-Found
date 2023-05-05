@@ -4,6 +4,6 @@ import { report } from '../controllers/items.js';
 const router = express.Router();
 import upload from '../utils/uploadImage.js';
 
-router.post('/report', VerifyToken, upload.single('image'), report);
+router.post('/report', VerifyToken, upload.single('imageUrl'), report);
 
 export default router;
