@@ -65,7 +65,6 @@ export const updateUserByFirebaseId = async (
   user_firebase_id,
   firstName,
   lastName,
-  email,
   phone,
   dob,
   gender
@@ -74,7 +73,6 @@ export const updateUserByFirebaseId = async (
   const updatedUser = {
     firstName,
     lastName,
-    email,
     phone,
     dob,
     gender,
@@ -112,6 +110,23 @@ export const deleteUserById = async (id) => {
   return { deleted: true };
 };
 
+export const updateUserImage = async (user_firebase_id, image_url) => {
+  const userCollection = await users();
+  const updatedUser = {
+    image_url,
+  };
+  const updatedInfo = await userCollection.updateOne(
+    { user_firebase_id: user_firebase_id },
+    { $set: updatedUser }
+  );
+  if (updatedInfo.modifiedCount === 0 && updatedInfo.matchedCount !== 0) {
+    throw 'No changes are made';
+  } else if (updatedInfo.modifiedCount === 0) {
+    throw 'Could not update user';
+  }
+  return await getUserByFirebaseId(user_firebase_id);
+};
+
 export default {
   createUser,
   getUserById,
@@ -120,4 +135,5 @@ export default {
   updateUserByFirebaseId,
   deleteUserByFirebaseId,
   deleteUserById,
+  updateUserImage,
 };
