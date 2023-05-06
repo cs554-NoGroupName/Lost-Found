@@ -29,7 +29,7 @@ export async function report(req, res) {
   try {
     const file = req.file;
     if (!file) {
-      return res.status(400).json({ error: 'Please upload a image!' });
+      return res.status(400).json({ message: 'Please upload a image!' });
     }
     const imageData = req.file.buffer;
     const blobName = `${Date.now()}-${file.originalname}`;
@@ -40,7 +40,7 @@ export async function report(req, res) {
     });
     imageUrl = blockBlobClient.url;
   } catch (e) {
-    return res.status(400).json({ error: e });
+    return res.status(400).json({ message: e });
   }
 
   try {
@@ -64,6 +64,6 @@ export async function report(req, res) {
     );
     res.status(201).json(newItem);
   } catch (e) {
-    res.status(400).json({ error: e });
+    res.status(400).json({ message: e });
   }
 }
