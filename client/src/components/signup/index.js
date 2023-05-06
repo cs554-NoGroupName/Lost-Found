@@ -31,6 +31,7 @@ function SignUp() {
   const [loading, setLoading] = React.useState(false);
 
   const validateData = async () => {
+    if (Object.keys(errors).length !== 0) return false;
     if (Object.keys(signupData).length === 0) {
       return setErrors({
         firstName: true,

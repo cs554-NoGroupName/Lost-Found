@@ -63,6 +63,7 @@ function ReportItem() {
   const handleClose = () => setModalView(false);
 
   const validateData = () => {
+    if (Object.keys(errors).length !== 0) return false;
     if (Object.keys(itemData).length === 0) {
       return setErrors({
         itemName: true,
@@ -338,86 +339,70 @@ function ReportItem() {
               />
             </div>
 
-            <div>
-              <div className="flex items-center">
-                {" "}
-                <div
-                  className="btn_default__light w-fit"
-                  onClick={handlemodalView}
-                >
-                  Upload Image:
-                  <IconButton aria-label="upload picture" component="label">
-                    <PhotoCamera color="#393e46" />
+            <div className="flex items-center">
+              <div>
+                {imageObj ? (
+                  <>
+                    <img
+                      src={
+                        imageObj
+                          ? URL.createObjectURL(imageObj)
+                          : DefaultProfile
+                      }
+                      alt="item"
+                      width={400}
+                      height={200}
+                    />
+                    <button
+                      className="btn_default__cancel mt-2"
+                      onClick={() => {
+                        setImageObj(null);
+                        handleClose();
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <IconButton
+                    sx={{
+                      color: "#393e46",
+                      fontSize: "22px",
+                      display: "flex",
+                      border: "2px solid #1c2536",
+                      borderRadius: "4px",
+                      marginRight: "10px",
+                      padding: " 4px 10px",
+                    }}
+                    aria-label="upload picture"
+                    component="label"
+                    disableRipple={true}
+                  >
+                    <input
+                      hidden
+                      accept=".png, .jpg, .jpeg"
+                      type="file"
+                      onChange={(e) => {
+                        e.preventDefault();
+                        if (e.target.files[0]?.size / (1024 * 1024) > 5)
+                          return toast.error("File size more than 5MB");
+                        setImageObj(e.target.files[0]);
+                        removeError("image");
+                      }}
+                    />
+                    <PhotoCamera color="#393e46" sx={{ fontSize: "25px" }} />
+                    &nbsp;Upload Image
                   </IconButton>
-                </div>
-                {errors?.image && (
-                  <div>
-                    <span className="flex items-center text-red-600">
-                      <CloseIcon fontSize="small" />
-                      Image required
-                    </span>
-                  </div>
                 )}
               </div>
-              <Modal
-                open={modalView}
-                onClose={() => {
-                  setImageObj(null);
-                  handleClose();
-                }}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <div className="profile_upload_modal">
-                  <img
-                    src={
-                      imageObj ? URL.createObjectURL(imageObj) : DefaultProfile
-                    }
-                    alt="item"
-                    width={400}
-                    height={200}
-                  />
-                  <div>
-                    {imageObj ? (
-                      <div className="flex mt-4">
-                        <button
-                          className="btn_default mx-1"
-                          onClick={handleClose}
-                        >
-                          Submit
-                        </button>
-                        <button
-                          className="btn_default__cancel"
-                          onClick={() => {
-                            setImageObj(null);
-                            handleClose();
-                          }}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    ) : (
-                      <IconButton
-                        color="primary"
-                        aria-label="upload picture"
-                        component="label"
-                        disableRipple={true}
-                      >
-                        <input
-                          hidden
-                          accept=".png, .jpg, .jpeg"
-                          type="file"
-                          onChange={(e) => {
-                            e.preventDefault();
-                            setImageObj(e.target.files[0]);
-                          }}
-                        />
-                        Browse
-                      </IconButton>
-                    )}
-                  </div>
+              {errors?.image && (
+                <div>
+                  <span className="flex items-center text-[#d32f2f]">
+                    <CloseIcon fontSize="small" />
+                    Image required
+                  </span>
                 </div>
-              </Modal>
+              )}
             </div>
           </div>
 

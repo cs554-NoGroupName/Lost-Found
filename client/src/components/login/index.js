@@ -7,7 +7,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import SVGComponent from "../common/Logo";
 import { login } from "../../utils/apis/auth";
 import Loading from "../common/BtnLoading";
-import { useNavigate, Navigate } from "react-router";
+import { useNavigate } from "react-router";
 import "./styles.css";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -52,7 +52,7 @@ function Login() {
       const { data, status } = loginData;
       if (status !== 200) toast.error(data?.error);
       else {
-        localStorage.setItem('token', data?.token)
+        localStorage.setItem("token", data?.token);
         dispatch(setUserData({ data }));
       }
     }
@@ -63,138 +63,132 @@ function Login() {
   const handleClickShowPassword = () =>
     setPasswordVisibility(!passwordVisibility);
 
-  if (JSON.parse(localStorage.getItem("userData")) !== null)
-    return <Navigate to="/" />;
-  else
-    return (
-      <div className="flex min-h-full justify-center items-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md">
-          <div className="flex items-center flex-col">
-            <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">
-              <SVGComponent type="phone" />
-            </div>
-            <div className="w-[25rem] md:hidden sm:hidden">
-              <SVGComponent />
-            </div>
-            <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl text-3xl font-bold text-logo tracking-tight text-gray-900">
-              Sign in to your account
-            </h2>
+  return (
+    <div className="flex min-h-full justify-center items-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md">
+        <div className="flex items-center flex-col">
+          <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">
+            <SVGComponent type="phone" />
           </div>
-          <div className="p-4">
-            <div className="rounded-md">
+          <div className="w-[25rem] md:hidden sm:hidden">
+            <SVGComponent />
+          </div>
+          <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl text-3xl font-bold text-logo tracking-tight text-gray-900">
+            Sign in to your account
+          </h2>
+        </div>
+        <div className="p-4">
+          <div className="rounded-md">
+            <TextField
+              className="my-2"
+              id="email"
+              label="Email"
+              variant="outlined"
+              required
+              type="text"
+              fullWidth
+              placeholder="johndoe@example.com"
+              margin="dense"
+              name="email"
+              error={errors?.email}
+              helperText={
+                errors?.email ? (
+                  <span className="flex items-center">
+                    <CloseIcon fontSize="small" />
+                    Please enter a valid email
+                  </span>
+                ) : (
+                  false
+                )
+              }
+              value={loginData?.email}
+              onChange={(e) => {
+                let { name, value } = e.target;
+                value = value.trim();
+                if (value === "") setError(name);
+                if (!emailValidation(value)) setError(name);
+                else removeError(name);
+                setValues(name, value);
+              }}
+            />
+
+            <div className="relative">
               <TextField
-                className="my-2"
-                id="email"
-                label="Email"
+                id="password"
+                label="Password"
                 variant="outlined"
                 required
-                type="text"
                 fullWidth
-                placeholder="johndoe@example.com"
+                type={passwordVisibility ? "text" : "password"}
                 margin="dense"
-                name="email"
-                error={errors?.email}
+                name="password"
+                placeholder="********"
+                error={errors?.password}
+                value={loginData?.password}
                 helperText={
-                  errors?.email ? (
+                  errors?.password ? (
                     <span className="flex items-center">
                       <CloseIcon fontSize="small" />
-                      Please enter a valid email
+                      Password cannot be less than 8 characters
                     </span>
                   ) : (
                     false
                   )
                 }
-                value={loginData?.email}
                 onChange={(e) => {
+                  // password will come here
                   let { name, value } = e.target;
                   value = value.trim();
                   if (value === "") setError(name);
-                  if (!emailValidation(value)) setError(name);
+                  if (value?.length < 8) setError(name);
                   else removeError(name);
                   setValues(name, value);
                 }}
               />
-
-              <div className="relative">
-                <TextField
-                  id="password"
-                  label="Password"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  type={passwordVisibility ? "text" : "password"}
-                  margin="dense"
-                  name="password"
-                  placeholder="********"
-                  error={errors?.password}
-                  value={loginData?.password}
-                  helperText={
-                    errors?.password ? (
-                      <span className="flex items-center">
-                        <CloseIcon fontSize="small" />
-                        Password cannot be less than 8 characters
-                      </span>
-                    ) : (
-                      false
-                    )
-                  }
-                  onChange={(e) => {
-                    // password will come here
-                    let { name, value } = e.target;
-                    value = value.trim();
-                    if (value === "") setError(name);
-                    if (value?.length < 8) setError(name);
-                    else removeError(name);
-                    setValues(name, value);
-                  }}
-                />
-                <div
-                  className="show_pass_btn"
-                  onClick={handleClickShowPassword}
-                >
-                  {passwordVisibility ? (
-                    <VisibilityIcon fontSize="medium" />
-                  ) : (
-                    <VisibilityOffIcon fontSize="medium" />
-                  )}
-                </div>
+              <div className="show_pass_btn" onClick={handleClickShowPassword}>
+                {passwordVisibility ? (
+                  <VisibilityIcon fontSize="medium" />
+                ) : (
+                  <VisibilityOffIcon fontSize="medium" />
+                )}
               </div>
             </div>
-
-            <div className="flex items-center justify-end text-logoBlue text-xl sm:text-lg font-bold">
-              <div
-                onClick={() => navigate("/forgot-password")}
-                className="text-logoBlue cursor-pointer hover:underline "
-              >
-                Forgot your password?
-              </div>
-            </div>
-
-            <button
-              className="btn_default flex items-center mt-2"
-              onClick={validateData}
-              disabled={errors?.password || errors?.email || loading}
-            >
-              <Loading loading={loading} width={18} />
-              Sign in
-            </button>
           </div>
-          <div>
-            <Divider />
-            <div className="sm:text-lg text-xl text-black text-center">
-              Don’t have an account?&nbsp;
-              <span
-                onClick={() => navigate("/signup")}
-                className="text-logoBlue cursor-pointer hover:underline font-bold"
-              >
-                Sign up
-              </span>
-              &nbsp;for free
+
+          <div className="flex items-center justify-end text-logoBlue text-xl sm:text-lg font-bold">
+            <div
+              onClick={() => navigate("/forgot-password")}
+              className="text-logoBlue cursor-pointer hover:underline "
+            >
+              Forgot your password?
             </div>
+          </div>
+
+          <button
+            className="btn_default flex items-center mt-2"
+            onClick={validateData}
+            disabled={errors?.password || errors?.email || loading}
+          >
+            <Loading loading={loading} width={18} />
+            Sign in
+          </button>
+        </div>
+        <div>
+          <Divider />
+          <div className="sm:text-lg text-xl text-black text-center">
+            Don’t have an account?&nbsp;
+            <span
+              onClick={() => navigate("/signup")}
+              className="text-logoBlue cursor-pointer hover:underline font-bold"
+            >
+              Sign up
+            </span>
+            &nbsp;for free
           </div>
         </div>
       </div>
-    );
+    </div>
+  );
 }
 
 export default Login;
