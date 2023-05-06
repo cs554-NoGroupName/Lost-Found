@@ -37,6 +37,7 @@ function ForgotPassword() {
 
   return (
     <div className="flex min-h-full justify-center items-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
+      {useDocumentTitle('Forgot Password')}
       <div className="w-full max-w-lg space-y-4">
         <div className="flex items-center flex-col">
           <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">

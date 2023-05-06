@@ -1,5 +1,5 @@
 import React from "react";
-import { IconButton, MenuItem, Modal, TextField } from "@mui/material";
+import { IconButton, MenuItem, TextField } from "@mui/material";
 import LayoutProvider from "components/common/Layout";
 import {
   nameValidation,
@@ -38,7 +38,6 @@ function ReportItem() {
   const [errors, setErrors] = React.useState({});
   const [loading, setLoading] = React.useState(false);
 
-  const [modalView, setModalView] = React.useState(false);
   const [imageObj, setImageObj] = React.useState(null);
 
   const setValues = (name, value) => {
@@ -58,9 +57,6 @@ function ReportItem() {
   const closePreviewModal = () => {
     setPreviewModal(false);
   };
-
-  const handlemodalView = () => setModalView(true);
-  const handleClose = () => setModalView(false);
 
   const validateData = () => {
     if (Object.keys(errors).length !== 0) return false;
@@ -357,7 +353,6 @@ function ReportItem() {
                       className="btn_default__cancel mt-2"
                       onClick={() => {
                         setImageObj(null);
-                        handleClose();
                       }}
                     >
                       Cancel
