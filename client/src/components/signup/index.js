@@ -89,7 +89,6 @@ function SignUp() {
     const singupInfo = await signup(apiBody);
 
     const { data, status } = singupInfo;
-    console.log({ singupInfo });
     if (status !== 201) toast.error(data?.error);
     else {
       toast.success(

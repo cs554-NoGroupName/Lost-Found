@@ -1,26 +1,20 @@
 import React from "react";
 import { IconButton, MenuItem, Modal, TextField } from "@mui/material";
-
 import LayoutProvider from "components/common/Layout";
-// import { AuthContext } from "../../firebase/auth";
 import {
-  dataURLtoFile,
   nameValidation,
   validateDescription,
   validateTags,
 } from "utils/helper";
-import FlagIcon from "@mui/icons-material/Flag";
 import CloseIcon from "@mui/icons-material/Close";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { PhotoCamera } from "@mui/icons-material";
-// import dayjs from "dayjs";
 import {
   categoryOptions,
   itemTypeOptions,
   locationOptions,
 } from "utils/constants";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
-// import Loading from "components/common/Loading";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import DefaultProfile from "../../utils/images/no-image-icon.png";
 
@@ -30,16 +24,12 @@ import useDocumentTitle from "components/common/useDocumentTitle";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { reportItem } from "utils/apis/item";
-import { useSelector } from "react-redux";
 
 function ReportItem() {
-  // const [currentUser] = React.useContext(AuthContext);
   const [itemData, setItemData] = React.useState({
     type: "Lost",
     category: "Electronics",
   });
-
-  const state = useSelector((state) => state?.userData?.userData);
   const navigate = useNavigate();
 
   const [reviewData, setReviewData] = React.useState({});
@@ -58,8 +48,6 @@ function ReportItem() {
   const setError = (name) => {
     setErrors({ ...errors, [name]: true });
   };
-
-  console.log({ state });
 
   const removeError = (name) => {
     const errorObj = errors;
@@ -147,15 +135,12 @@ function ReportItem() {
     formdata.append("lastSeenDate", dateTime?.$d?.toISOString());
     // formdata.append("imageUrl", dataURLtoFile(imageObj, itemName));
     formdata.append("imageUrl", imageObj);
-    const reportData = await reportItem(formdata, {
-      Authorization: "Bearer " + state?.token,
-    });
+    const reportData = await reportItem(formdata);
     const { status, data } = reportData;
     if (status !== 201) toast.error(data?.error);
     else {
       toast.success("Item posted successfully.");
       toast.success("Redirecting...");
-      console.log({ data });
       setTimeout(() => navigate("/items/" + data._id), 4000);
     }
     setLoading(false);

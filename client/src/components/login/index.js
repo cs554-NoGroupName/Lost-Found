@@ -11,12 +11,12 @@ import { useNavigate, Navigate } from "react-router";
 import "./styles.css";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setLogin } from "redux/reducer";
+import { setUserData } from "redux/reducer";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [userData, setUserData] = React.useState({ email: "", password: "" });
+  const [loginData, setLoginData] = React.useState({ email: "", password: "" });
   const [passwordVisibility, setPasswordVisibility] = React.useState(false);
   const [errors, setErrors] = React.useState({ email: false, password: false });
   const [loading, setLoading] = React.useState(false);
@@ -32,13 +32,13 @@ function Login() {
   };
 
   const setValues = (name, value) => {
-    setUserData({ ...userData, [name]: value });
+    setLoginData({ ...loginData, [name]: value });
   };
 
   const validateData = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const { email, password } = userData;
+    const { email, password } = loginData;
 
     let errorObj = {};
     if (!emailValidation(email)) errorObj.email = true;
@@ -51,7 +51,10 @@ function Login() {
       const loginData = await login({ email, password });
       const { data, status } = loginData;
       if (status !== 200) toast.error(data?.error);
-      else dispatch(setLogin({ data }));
+      else {
+        localStorage.setItem('token', data?.token)
+        dispatch(setUserData({ data }));
+      }
     }
 
     setLoading(false);
@@ -101,7 +104,7 @@ function Login() {
                     false
                   )
                 }
-                value={userData?.email}
+                value={loginData?.email}
                 onChange={(e) => {
                   let { name, value } = e.target;
                   value = value.trim();
@@ -124,7 +127,7 @@ function Login() {
                   name="password"
                   placeholder="********"
                   error={errors?.password}
-                  value={userData?.password}
+                  value={loginData?.password}
                   helperText={
                     errors?.password ? (
                       <span className="flex items-center">

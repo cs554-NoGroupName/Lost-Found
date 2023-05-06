@@ -60,7 +60,6 @@ function ResetPassword() {
     // const { data, status } = resetInfo;
     // if (status !== 200) toast.error(data?.error);
     // else setResetStatus(true);
-    console.log({ params });
     setResetStatus(false); //NOTE remove this line
     setLoading(false);
   };
