@@ -42,7 +42,7 @@ export async function register(req, res) {
     );
     res.status(201).json(newUser);
   } catch (e) {
-    res.status(400).json({ error: e });
+    res.status(400).json({ message: e });
   }
 }
 
@@ -55,6 +55,6 @@ export async function getUser(req, res) {
     user_data.token = await user.user.getIdToken();
     res.status(200).json(user_data);
   } catch (e) {
-    res.status(400).json({ error: e });
+    res.status(400).json({ message: e });
   }
 }

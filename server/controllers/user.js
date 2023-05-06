@@ -28,7 +28,7 @@ export const updateUser = async (req, res) => {
     );
     return res.status(200).json(updatedUser);
   } catch (e) {
-    return res.status(400).json({ error: e });
+    return res.status(400).json({ message: e });
   }
 };
 
@@ -38,7 +38,7 @@ export const deleteUser = async (req, res) => {
     await deleteUserByFirebaseId(uid);
     return res.status(200).json({ deleted: true });
   } catch (e) {
-    return res.status(400).json({ error: e });
+    return res.status(400).json({ message: e });
   }
 };
 
@@ -48,7 +48,7 @@ export const getUser = async (req, res) => {
     const user = await getUserByFirebaseId(uid);
     return res.status(200).json(user);
   } catch (e) {
-    return res.status(400).json({ error: e });
+    return res.status(400).json({ message: e });
   }
 };
 
@@ -57,7 +57,7 @@ export const updateImage = async (req, res) => {
   try {
     const file = req.file;
     if (!file) {
-      return res.status(400).json({ error: 'Please upload a image!' });
+      return res.status(400).json({ message: 'Please upload a image!' });
     }
     const imageData = req.file.buffer;
     const blobName = `${Date.now()}-${file.originalname}`;
@@ -70,6 +70,6 @@ export const updateImage = async (req, res) => {
     const updatedUser = await updateUserImage(uid, imageUrl);
     return res.status(200).json(updatedUser);
   } catch (e) {
-    return res.status(400).json({ error: e });
+    return res.status(400).json({ message: e });
   }
 };
