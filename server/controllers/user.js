@@ -5,6 +5,13 @@ import {
   updateUserImage,
 } from '../data/users.js';
 import validation from '../utils/validation.js';
+import { BlobServiceClient } from '@azure/storage-blob';
+import dotenv from 'dotenv';
+dotenv.config();
+const blobServiceClient = BlobServiceClient.fromConnectionString(
+  process.env.AZURE_STORAGE_CONNECTION_STRING
+);
+const containerClient = blobServiceClient.getContainerClient('images');
 
 export const updateUser = async (req, res) => {
   let { firstName, lastName, phone, dob, gender } = req.body;

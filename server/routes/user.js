@@ -6,13 +6,15 @@ import {
   deleteUser,
 } from '../controllers/user.js';
 import { VerifyToken } from '../middleware/VerifyToken.js';
+import upload from '../utils/uploadImage.js';
+
 const router = express.Router();
 
 router.get('/', VerifyToken, getUser);
 
 router.post('/update', VerifyToken, updateUser);
 
-router.post('/image', VerifyToken, updateImage);
+router.post('/image', VerifyToken, upload.single('imageUrl'), updateImage);
 
 router.get('/delete', VerifyToken, deleteUser);
 
