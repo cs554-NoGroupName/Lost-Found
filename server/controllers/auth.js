@@ -4,6 +4,8 @@ import validation from '../utils/validation.js';
 import { auth } from '../config/firebase-config.js';
 import { createAvatar } from '@dicebear/core';
 import { lorelei } from '@dicebear/collection';
+import { app_auth } from '../config/firebase-auth.js';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 export async function register(req, res) {
   let { email, password, firstName, lastName, gender, phone, dob } = req.body;
   try {
@@ -40,17 +42,19 @@ export async function register(req, res) {
     );
     res.status(201).json(newUser);
   } catch (e) {
-    res.status(400).json({ error: e });
+    res.status(400).json({ message: e });
   }
 }
 
 export async function getUser(req, res) {
   try {
-    if (req.user) {
-      const user = await users.getUserByFirebaseId(req.user.uid);
-      res.json(user);
-    }
+    const { email, password } = req.body;
+    const user = await signInWithEmailAndPassword(app_auth, email, password);
+    const user_firebase_id = user.user.uid;
+    const user_data = await users.getUserByFirebaseId(user_firebase_id);
+    user_data.token = await user.user.getIdToken();
+    res.status(200).json(user_data);
   } catch (e) {
-    res.status(400).json({ error: e });
+    res.status(400).json({ message: e });
   }
 }

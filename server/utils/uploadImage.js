@@ -1,23 +1,22 @@
 import multer from 'multer';
-
-// use multer to upload image to firebase storage
+const storage = multer.memoryStorage();
 const upload = multer({
-  storage: multer.memoryStorage(),
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // no larger than 5mb, you can change as needed.
+  },
   fileFilter: (req, file, cb) => {
     if (
       file.mimetype === 'image/png' ||
       file.mimetype === 'image/jpg' ||
-      file.mimetype === 'image/jpeg'
+      file.mimetype === 'image/jpeg' ||
+      file.mimetype === 'image/gif'
     ) {
       cb(null, true);
     } else {
       cb(null, false);
-      return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+      return cb(new Error('Only .png, .jpg, .jpeg and .gif format allowed!'));
     }
   },
-  limits: {
-    fileSize: 5 * 1024 * 1024, // keep images size < 5 MB
-  },
 });
-
 export default upload;

@@ -10,7 +10,14 @@ import redis from 'redis';
 const client = redis.createClient();
 client.connect().then(() => {});
 import validation from '../utils/validation.js';
-import { storage } from '../config/firebase-config.js';
+import { BlobServiceClient } from '@azure/storage-blob';
+import dotenv from 'dotenv';
+dotenv.config();
+const blobServiceClient = BlobServiceClient.fromConnectionString(
+  process.env.AZURE_STORAGE_CONNECTION_STRING
+);
+const containerClient = blobServiceClient.getContainerClient('images');
+
 export async function report(req, res) {
   let {
     type,
@@ -19,39 +26,36 @@ export async function report(req, res) {
     category,
     tags,
     lastSeenLocation,
-    lostDate,
-    sendDate,
+    lastSeenDate,
     imageUrl,
   } = req.body;
   let { uid } = req.user;
 
-  const file = req.file;
-  const fileName = Date.now().toString();
-  const bucket = storage.bucket();
-  const blob = bucket.file(fileName);
-  const blobWriter = blob.createWriteStream({
-    metadata: {
-      contentType: file.mimetype,
-    },
-  });
-  blobWriter.on('error', (err) => {
-    console.log(err);
-  });
-  const publicUrl = `https://storage.googleapis.com/${bucket.itemName}/${fileName}`;
-  blobWriter.on('finish', async () => {
-    imageUrl = publicUrl;
-  });
-  console.log('imageUrl', imageUrl);
   try {
-    // type = validation.checkType(type);
-    // itemName = validation.checkItemName(itemName);
-    // description = validation.checkDescription(description);
-    // category = validation.checkCategory(category);
-    // tags = validation.checkTags(tags);
-    // lastSeenLocation = validation.checkLastSeenLocation(lastSeenLocation);
-    // lostDate = validation.checkLostDate(lostDate);
-    // sendDate = validation.checkSendDate(sendDate);
-    // imageUrl = validation.checkImageUrl(imageUrl);
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ message: 'Please upload a image!' });
+    }
+    const imageData = req.file.buffer;
+    const blobName = `${Date.now()}-${file.originalname}`;
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    const file_type = file.mimetype;
+    const uploadBlobResponse = await blockBlobClient.uploadData(imageData, {
+      blobHTTPHeaders: { blobContentType: file_type },
+    });
+    imageUrl = blockBlobClient.url;
+  } catch (e) {
+    return res.status(400).json({ message: e });
+  }
+
+  try {
+    type = validation.checkType(type);
+    itemName = validation.checkItemName(itemName);
+    description = validation.checkDescription(description);
+    category = validation.checkCategory(category);
+    tags = validation.checkTags(tags);
+    lastSeenLocation = validation.checkLastSeenLocation(lastSeenLocation);
+    lastSeenDate = validation.checkLastSeenDate(lastSeenDate);
     const newItem = await createItem(
       type,
       itemName,
@@ -59,15 +63,14 @@ export async function report(req, res) {
       category,
       tags,
       lastSeenLocation,
-      lostDate,
-      sendDate,
+      lastSeenDate,
       imageUrl,
       uid
     );
     await client.set('getItem', JSON.stringify(getItem));
     res.status(201).json(newItem);
   } catch (e) {
-    res.status(400).json({ error: e });
+    res.status(400).json({ message: e });
   }
 }
 

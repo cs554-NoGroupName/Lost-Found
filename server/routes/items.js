@@ -11,10 +11,12 @@ const router = express.Router();
 import upload from '../utils/uploadImage.js';
 import { verify } from 'jsonwebtoken';
 
-router.post('/report', VerifyToken, upload.single('image'), report);
+// router.post('/report', VerifyToken, upload.single('image'), report);
+router.post('/report', VerifyToken, upload.single('imageUrl'), report);
 router.get('/report', VerifyToken, getReportedItems);
 router.get('/report/:id', VerifyToken, getReportedItemById);
 router.patch('/report/:id', VerifyToken, updateReportedItem);
 router.delete('/report/:id', VerifyToken, deleteReportedIemById);
+
 
 export default router;

@@ -12,20 +12,17 @@ export const createItem = async (
   itemStatus,
   priority,
   lastSeenLocation,
-  lostDate,
-  sendDate,
+  lastSeenDate,
   imageUrl,
   uid
 ) => {
-  //   type = validation.checkType(type);
-  //   itemName = validation.checkItemName(itemName);
-  //   description = validation.checkDescription(description);
-  //   category = validation.checkCategory(category);
-  //   tags = validation.checkTags(tags);
-  //   lastSeenLocation = validation.checkLastSeenLocation(lastSeenLocation);
-  //   lostDate = validation.checkLostDate(lostDate);
-  //   sendDate = validation.checkSendDate(sendDate);
-  //   imageUrl = validation.checkImageUrl(imageUrl);
+  type = validation.checkType(type);
+  itemName = validation.checkItemName(itemName);
+  description = validation.checkDescription(description);
+  category = validation.checkCategory(category);
+  tags = validation.checkTags(tags);
+  lastSeenLocation = validation.checkLastSeenLocation(lastSeenLocation);
+  lastSeenDate = validation.checkLastSeenDate(lastSeenDate);
 
   const itemCollection = await items();
   const newItem = {
@@ -37,8 +34,7 @@ export const createItem = async (
     itemStatus,
     priority,
     lastSeenLocation,
-    lostDate,
-    sendDate,
+    lastSeenDate,
     imageUrl,
     uid,
   };
