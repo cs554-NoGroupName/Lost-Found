@@ -36,7 +36,7 @@ function PreviewModal({ open, onClose, data, loading, onSubmit }) {
             <div className="modal_body__key">Tags:</div>
             <div className="modal_body__value">
               {tags?.split(",").map((tag) => (
-                <Chip label={tag} />
+                <Chip label={tag} key={tag} />
               ))}
             </div>
             <div className="modal_body__key">Image:</div>
