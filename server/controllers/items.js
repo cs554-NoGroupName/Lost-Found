@@ -103,7 +103,7 @@ export async function getReportedItemById(req, res) {
       `Item_${getItemId._id.toString()}`,
       JSON.stringify(getItemId)
     );
-    return res.status(200).json({ data: getItemId });
+    return res.status(200).json(getItemId);
   } catch (e) {
     if (Object.keys(e).includes('status'))
       return res.status(e.status).json({ error: e.message });
