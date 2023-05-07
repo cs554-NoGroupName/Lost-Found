@@ -67,7 +67,7 @@ export async function report(req, res) {
       imageUrl,
       uid
     );
-    await client.set('getItem', JSON.stringify(getItem));
+    await client.set(`Item_${newItem.id.toString()}`, JSON.stringify(getItem));
     res.status(201).json(newItem);
   } catch (e) {
     res.status(400).json({ message: e });
@@ -77,7 +77,7 @@ export async function report(req, res) {
 export async function getReportedItems(req, res) {
   try {
     const getItem = await getAllItems();
-    await client.set('getItem', JSON.stringify(getItem));
+    // await client.set('getItem', JSON.stringify(getItem));
     console.log('Loading items from db');
     return res
       .status(200)
@@ -100,7 +100,10 @@ export async function getReportedItemById(req, res) {
     const getItemId = await getItemById(id);
     // console.log(getItemId);
     console.log('Getting data from db');
-    await client.set(getItemId._id.toString(), JSON.stringify(getItemId));
+    await client.set(
+      `Item_${getItemId._id.toString()}`,
+      JSON.stringify(getItemId)
+    );
     return res.status(200).json({ data: getItemId });
   } catch (e) {
     if (Object.keys(e).includes('status'))
@@ -177,8 +180,11 @@ export async function updateReportedItem(req, res) {
       category
     );
 
-    await client.set(updatedItem._id.toString(), JSON.stringify(updatedItem));
-    await client.set('getItem', JSON.stringify(await getAllItems()));
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    // await client.set('getItem', JSON.stringify(await getAllItems()));
     return res
       .status(200)
       .json({ message: 'Item updated successfully', data: updatedItem });
@@ -186,7 +192,7 @@ export async function updateReportedItem(req, res) {
     if (Object.keys(e).includes('status'))
       return res
         .status(e.status)
-        .json({ message: 'Item updated successfully', error: e.message });
+        .json({error: e.message });
     return res.status(500).json({ error: e });
   }
 }
@@ -204,7 +210,7 @@ export async function deleteReportedIemById(req, res) {
     const deleteItem = await deleteItemById(id);
     const exists = await client.exists(id);
     if (exists) await client.del(id);
-    await client.set('getItem', JSON.stringify(await getAllItems()));
+    // await client.set('getItem', JSON.stringify(await getAllItems()));
     return res
       .status(200)
       .json({ message: 'Item deleted successfully', data: deleteItem });

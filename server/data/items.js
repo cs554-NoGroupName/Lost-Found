@@ -134,7 +134,7 @@ export const updateItem = async (...args) => {
     { _id: new ObjectId(id) },
     { $set: updateItem }
   );
-  if (updatedInfo.modifiedCount === 0) throw 'Could not update recipe';
+  if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
 
   return await getItemById(id);
 };
