@@ -33,7 +33,7 @@ export const createItem = async (
     lastSeenDate,
     imageUrl,
     uid,
-    itemStatus: 'active',
+    itemStatus: 'reported',
     claimed: false,
     claimedBy: '',
     claims: [],
