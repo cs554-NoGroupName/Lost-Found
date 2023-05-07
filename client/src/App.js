@@ -7,6 +7,7 @@ import ResetPassword from "components/resetPassword";
 import { ToastContainer } from "react-toastify";
 import Home from "components/Home";
 import ReportItem from "components/reportItem";
+import ItemDetails from "components/item";
 import { ThemeProvider, createTheme } from "@mui/material";
 import Page404 from "components/common/Page404";
 import "./App.css";
@@ -43,19 +44,18 @@ function App() {
             <Route
               path="/"
               exact
-              element={
-                isAuthenticated() ? <Home /> : <Navigate to="/login" replace />
-              }
+              element={<Home />}
             />
             <Route
               path="/report-item"
               exact
+              element={<ReportItem />}
+            />
+             <Route
+              path="/item/:id"
+              exact
               element={
-                isAuthenticated() ? (
-                  <ReportItem />
-                ) : (
-                  <Navigate to="/login" replace />
-                )
+                isAuthenticated() ? <ItemDetails /> : <Navigate to="/item/:id" replace />
               }
             />
             <Route
