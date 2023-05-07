@@ -1,9 +1,9 @@
 .user_profile_picture {
   max-width: 300px;
   max-height: 300px;
-  /* aspect-ratio: 1/1;
   object-fit: contain;
-  border-radius: 100px; */
+  height: 300px;
+  width: 300px;
 }
 
 .btn_edit_profile {

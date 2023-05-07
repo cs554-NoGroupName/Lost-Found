@@ -3,7 +3,10 @@ import lodash from "lodash";
 import testData from "./testData.json";
 // import axios from "axios";
 import { Link } from "react-router-dom";
+import LayoutProvider from "components/common/Layout";
 import { AuthContext } from "FirebaseUtils/authenticate";
+import useDocumentTitle from "components/common/useDocumentTitle";
+import LoadingText from "components/common/loadingText";
 import "./styles.css";
 
 import {
@@ -25,7 +28,6 @@ import {
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
 
-import LayoutProvider from "components/common/Layout";
 // import { GET_ITEMS_LIST } from "routes";
 
 const modalStyle = {
@@ -44,6 +46,7 @@ const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric
 
 const Home = () => {
   const [currentUser] = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
   const [itemsData, setItemsData] = useState([]);
   const [tags, setTags] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -69,8 +72,10 @@ const Home = () => {
         setItemsData(testData);
         updateTodayItems(testData);
         updateLastSevenDaysItems(testData);
+        setLoading(false);
       } catch (err) {
         console.log(err);
+        setLoading(false);
       }
     }
 
@@ -351,6 +356,8 @@ const Home = () => {
 
   return (
     <LayoutProvider>
+      {useDocumentTitle("Home")}
+      <div>{loading ? <LoadingText /> : "Home"}</div>
       <div>
         {/* Items displayed in cards using Material UI Grid */}
         {/* Filter options */}

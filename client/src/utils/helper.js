@@ -26,7 +26,7 @@ export const passwordValidation = (password) => {
 };
 
 export const nameValidation = (name) => {
-  const regex = /^[a-zA-Z ]{2,20}$/;
+  const regex = /^[a-zA-Z1-9 ]{3,40}$/;
   return regex.test(name);
 };
 
@@ -115,7 +115,8 @@ export const validateTags = (value) => {
   return regexTags.test(value);
 };
 
-export const validateDescription = (value) => value.length > 20;
+export const validateDescription = (value) => value.length > 10;
+
 export const validateComment = (value) => value.trim().length > 0;
 
 export const validateDateDiff = (startDate, endDate) => {

@@ -7,7 +7,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import SVGComponent from "../common/Logo";
 // import { toast } from "react-toastify";
-import Loading from "../common/Loading";
+import Loading from "../common/BtnLoading";
 import "./styles.css";
 import { useParams } from "react-router";
 // import { resetPassword } from "../../utils/apis/auth";
@@ -36,6 +36,7 @@ function ResetPassword() {
   };
 
   const validateData = async () => {
+    console.log(params);
     if (Object.keys(resetData).length === 0) {
       return setErrors({
         password: true,
@@ -60,7 +61,6 @@ function ResetPassword() {
     // const { data, status } = resetInfo;
     // if (status !== 200) toast.error(data?.error);
     // else setResetStatus(true);
-    console.log({ params });
     setResetStatus(false); //NOTE remove this line
     setLoading(false);
   };

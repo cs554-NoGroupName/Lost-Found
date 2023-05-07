@@ -15,7 +15,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import "./styles.css";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { toast } from "react-toastify";
-import Loading from "../common/Loading";
+import Loading from "../common/BtnLoading";
 import { useNavigate } from "react-router";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
@@ -31,6 +31,7 @@ function SignUp() {
   const [loading, setLoading] = React.useState(false);
 
   const validateData = async () => {
+    if (Object.keys(errors).length !== 0) return false;
     if (Object.keys(signupData).length === 0) {
       return setErrors({
         firstName: true,
@@ -89,7 +90,6 @@ function SignUp() {
     const singupInfo = await signup(apiBody);
 
     const { data, status } = singupInfo;
-    console.log({ singupInfo });
     if (status !== 201) toast.error(data?.error);
     else {
       toast.success(
