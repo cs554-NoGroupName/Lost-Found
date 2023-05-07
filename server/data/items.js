@@ -51,6 +51,12 @@ export const getItemById = async (id) => {
   const itemCollection = await items();
   const item = await itemCollection.findOne({ _id: new ObjectId(id) });
   if (!item) throw 'Item not found';
+  // append user details
+  const userCollection = await mongoCollections.users();
+  const user = await userCollection.findOne({
+    user_firebase_id: item.uid,
+  });
+  item.reportedBy = user;
   return item;
 };
 
