@@ -9,8 +9,6 @@ export const createItem = async (
   description,
   category,
   tags,
-  itemStatus,
-  priority,
   lastSeenLocation,
   lastSeenDate,
   imageUrl,
@@ -53,14 +51,13 @@ export const createItem = async (
 export const getItemById = async (id) => {
   const itemCollection = await items();
   const item = await itemCollection.findOne({ _id: new ObjectId(id) });
-  let error = {};
-  // if (!item) throw 'Item not found';
-  if (!item) {
-    error['status'] = 404;
-    error['message'] = 'Item not found';
-    throw error;
-  }
-
+  // let error = {};
+  if (!item) throw 'Item not found';
+  // if (!item) {
+  //   error['status'] = 404;
+  //   error['message'] = 'Item not found';
+  //   throw error;
+  // }
   return item;
 };
 
