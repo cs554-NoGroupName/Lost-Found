@@ -24,11 +24,13 @@ import useDocumentTitle from "components/common/useDocumentTitle";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { reportItem } from "utils/apis/item";
+import dayjs from "dayjs";
 
 function ReportItem() {
   const [itemData, setItemData] = React.useState({
     type: "Lost",
     category: "Electronics",
+    dateTime: dayjs(new Date().toISOString()),
   });
   const navigate = useNavigate();
 
@@ -59,7 +61,7 @@ function ReportItem() {
   };
 
   const validateData = () => {
-    if (Object.keys(errors).length !== 0) return false;
+    // if (Object.keys(errors).length !== 0) return;
     if (Object.keys(itemData).length === 0) {
       return setErrors({
         itemName: true,
@@ -148,7 +150,7 @@ function ReportItem() {
       <div
         className={`flex items-center text-[24px] text-bold text-logoBlue my-2 ${
           num === 2 &&
-          "sm:my-2 md:mt-[89px] lg:mt-[89px] xl:mt-[89px] 2xl:mt-[89px]"
+          "sm:my-2 md:mt-[89px] lg:mt-[89px] xl:mt-[89px] 2xl:mt-[89px] mt-[89px]"
         }`}
       >
         <div className="section_number">{num}</div>
@@ -160,7 +162,7 @@ function ReportItem() {
   const renderForm = () => {
     return (
       <div>
-        <div className="sm:block md:flex lg:flex xl:flex 2xl:flex">
+        <div className="sm:block md:flex lg:flex xl:flex 2xl:flex flex">
           <div className="sm:mr-0 mr-5 w-[100%]">
             <div className="mx-1 mt-3 w-full sm:w-full md:w-full">
               <TextField
@@ -353,9 +355,10 @@ function ReportItem() {
                       className="btn_default__cancel mt-2"
                       onClick={() => {
                         setImageObj(null);
+                        setError("image");
                       }}
                     >
-                      Cancel
+                      Change image
                     </button>
                   </>
                 ) : (
@@ -443,7 +446,8 @@ function ReportItem() {
                   disableFuture
                   inputFormat="MM/DD/YYYY hh:mm aa"
                   format="LLL"
-                  value={itemData?.dateTime ?? null}
+                  sx={{ border: errors?.dateTime ? "1px solid red" : "" }}
+                  value={itemData?.dateTime ?? dayjs(new Date().toISOString())}
                   renderInput={(params) => (
                     <TextField
                       required
@@ -471,7 +475,8 @@ function ReportItem() {
                     if (e === "invalidDate") setError("dateTime");
                     if (e === null) removeError("dateTime");
                   }}
-                  // maxDate={dayjs(new Date(+new Date() - 410200000000 - 86400000))}
+                  maxDate={dayjs(new Date().toISOString())}
+                  defaultValue={dayjs(new Date().toISOString())}
                   // minDate={dayjs(new Date(+new Date() - 3156000000000))}
                   openTo={"day"}
                 />
