@@ -8,12 +8,6 @@ const token = localStorage.getItem("token");
 export const makeApiCall = async (endpoint, method, body, headers = null) => {
   let results = {};
   try {
-    // console.log(typeof token, token);
-    const headersObj = {
-      ...headers,
-      "Access-Control-Allow-Origin": "*",
-      Authorization: "Bearer " + localStorage.getItem("token"),
-    };
     await axios({
       url: baseUrl + endpoint,
       method,
