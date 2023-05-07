@@ -7,3 +7,8 @@ export const login = async (body) => {
 export const signup = async (data) => {
   return await makeApiCall("/auth/register", "POST", data);
 };
+
+export const forgotPassword = async (data) => {
+  return await makeApiCall("/auth/forgot", "POST", data);
+};
+

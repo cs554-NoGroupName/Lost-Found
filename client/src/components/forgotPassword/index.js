@@ -4,8 +4,8 @@ import { emailValidation } from "../../utils/helper";
 import CloseIcon from "@mui/icons-material/Close";
 import "./styles.css";
 import SVGComponent from "../common/Logo";
-// import { forgotpassword } from '../../utils/apis/auth';
-// import { toast } from "react-toastify";
+import { forgotPassword } from "../../utils/apis/auth";
+import { toast } from "react-toastify";
 import Loading from "../common/BtnLoading";
 import { useNavigate } from "react-router";
 import useDocumentTitle from "components/common/useDocumentTitle";
@@ -13,7 +13,6 @@ import useDocumentTitle from "components/common/useDocumentTitle";
 function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = React.useState("");
-  // const [passwordVisibility, setPasswordVisibility] = React.useState(false);
   const [error, setError] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
@@ -26,10 +25,10 @@ function ForgotPassword() {
     if (!error) {
       setLoading(true);
       setResetSuccess(false); //NOTE remove this line
-      // const response = await forgotpassword({ email: email });
-      // const { status, data } = response;
-      // if (status !== 200) toast.error(data?.error);
-      // else setResetSuccess(true);
+      const response = await forgotPassword({ email: email });
+      const { status, data } = response;
+      if (status !== 200) toast.error(data?.error);
+      else setResetSuccess(true);
       setLoading(false);
     }
     setLoading(false);
@@ -37,7 +36,7 @@ function ForgotPassword() {
 
   return (
     <div className="flex min-h-full justify-center items-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
-      {useDocumentTitle('Forgot Password')}
+      {useDocumentTitle("Forgot Password")}
       <div className="w-full max-w-lg space-y-4">
         <div className="flex items-center flex-col">
           <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">
@@ -46,9 +45,9 @@ function ForgotPassword() {
           <div className="w-[25rem] md:hidden sm:hidden">
             <SVGComponent />
           </div>
-          <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl font-bold tracking-tight text-gray-900">
+          <div className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl text-3xl font-bold tracking-tight text-gray-900">
             Forgot password
-          </h2>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -65,7 +64,7 @@ function ForgotPassword() {
               </div>
               <TextField
                 className="my-2"
-                id="forgotpassword-email"
+                id="forgotPassword-email"
                 label="Email"
                 variant="outlined"
                 required
@@ -101,7 +100,7 @@ function ForgotPassword() {
                   onClick={validateData}
                   disabled={error || loading}
                 >
-                  <Loading loading={loading} width={18} />
+                  <Loading loading={loading} width={18} color="#1c2536" />
                   Send me an email
                 </button>
               </div>
