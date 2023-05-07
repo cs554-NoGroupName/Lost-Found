@@ -34,7 +34,6 @@ export const createItem = async (
     imageUrl,
     uid,
     itemStatus: 'reported',
-    claimed: false,
     claimedBy: '',
     claims: [],
     disputes: [],
@@ -51,13 +50,13 @@ export const createItem = async (
 export const getItemById = async (id) => {
   const itemCollection = await items();
   const item = await itemCollection.findOne({ _id: new ObjectId(id) });
-  // let error = {};
   if (!item) throw 'Item not found';
-  // if (!item) {
-  //   error['status'] = 404;
-  //   error['message'] = 'Item not found';
-  //   throw error;
-  // }
+  // append user details
+  const userCollection = await mongoCollections.users();
+  const user = await userCollection.findOne({
+    user_firebase_id: item.uid,
+  });
+  item.reportedBy = user;
   return item;
 };
 

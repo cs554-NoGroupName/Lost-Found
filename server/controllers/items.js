@@ -98,7 +98,6 @@ export async function getReportedItemById(req, res) {
 
   try {
     const getItemId = await getItemById(id);
-    // console.log(getItemId);
     console.log('Getting data from db');
     await client.set(
       `Item_${getItemId._id.toString()}`,
@@ -190,9 +189,7 @@ export async function updateReportedItem(req, res) {
       .json({ message: 'Item updated successfully', data: updatedItem });
   } catch (e) {
     if (Object.keys(e).includes('status'))
-      return res
-        .status(e.status)
-        .json({error: e.message });
+      return res.status(e.status).json({ error: e.message });
     return res.status(500).json({ error: e });
   }
 }
