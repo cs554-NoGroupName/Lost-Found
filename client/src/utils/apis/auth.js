@@ -1,14 +1,7 @@
 import { makeApiCall } from "./api";
 
-export const login = async (token) => {
-  return await makeApiCall(
-    "/auth/login",
-    "POST",
-    {},
-    {
-      Authorization: `Bearer ${token}`
-    }
-  );
+export const login = async (body) => {
+  return await makeApiCall("/auth/login", "POST", body);
 };
 
 export const signup = async (data) => {

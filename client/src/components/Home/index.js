@@ -1,13 +1,19 @@
 import LayoutProvider from "components/common/Layout";
-import { AuthContext } from "../../FirebaseUtils/authenticate";
 import React from "react";
+import useDocumentTitle from "components/common/useDocumentTitle";
+import LoadingText from "components/common/loadingText";
 
 function Home() {
-  const [currentUser] = React.useContext(AuthContext);
-  console.log({ currentUser });
+  const [state, setState] = React.useState(true);
+
+  React.useEffect(() => {
+    setTimeout(() => setState(false), 5000);
+  }, []);
+
   return (
     <LayoutProvider>
-      <div>Home</div>
+      {useDocumentTitle("Home")}
+      <div>{state ? <LoadingText /> : "Home"}</div>
     </LayoutProvider>
   );
 }
