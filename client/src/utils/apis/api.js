@@ -2,9 +2,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
-const errosStatusCodes = [500, 409, 404, 400];
+const errosStatusCodes = [500, 409, 404, 400, 401];
 export const makeApiCall = async (endpoint, method, body, headers = null) => {
   let results = {};
+  const token = localStorage.getItem("token");
   try {
     await axios({
       url: baseUrl + endpoint,
@@ -12,7 +13,8 @@ export const makeApiCall = async (endpoint, method, body, headers = null) => {
       data: body,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Bypass-Tunnel-Reminder": "mani",
+        Authorization: "Bearer " + token ?? "",
+
         ...headers,
       },
     }).then((res) => {
@@ -24,20 +26,11 @@ export const makeApiCall = async (endpoint, method, body, headers = null) => {
   } catch (err) {
     const { response } = err;
     const { status, data } = response;
-    console.log({ err });
     if (errosStatusCodes.includes(status)) {
       // toast.error(data?.error);
       const err = { status, data };
       return err;
     }
-    // if (status === 401 || status === 502) setTimeout(logoutUser, 3000);
     toast.error("Something went wrong!");
   }
 };
-
-// const logoutUser = () => {
-//   localStorage.removeItem("auth");
-//   localStorage.removeItem("token");
-//   window.location.href = "/login";
-//   return;
-// };

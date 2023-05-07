@@ -1,17 +1,18 @@
 import { Chip, Modal } from "@mui/material";
 import React from "react";
 import "./styles.css";
+import Loading from "components/common/BtnLoading";
 
-function PreviewModal({ open, onClose, data }) {
+function PreviewModal({ open, onClose, data, loading, onSubmit }) {
   const {
     itemName,
     type,
     description,
     category,
     tags,
-    image,
+    imageUrl,
     lastSeenLocation,
-    dateTime,
+    lastSeenDate,
   } = data;
   return (
     <div>
@@ -42,8 +43,9 @@ function PreviewModal({ open, onClose, data }) {
             <div>
               <img
                 src={
-                  image ??
-                  "https://plainenglish.io/assets/post-content/javascript-operator.jpg"
+                  imageUrl
+                    ? URL.createObjectURL(imageUrl)
+                    : "https://plainenglish.io/assets/post-content/javascript-operator.jpg"
                 }
                 width={200}
                 alt={itemName}
@@ -52,20 +54,21 @@ function PreviewModal({ open, onClose, data }) {
             <div className="modal_body__key">Last Seen Location:</div>
             <div className="modal_body__value">{lastSeenLocation}</div>
             <div className="modal_body__key">Lost Date & Time</div>
-            <div className="modal_body__value">{dateTime}</div>
+            <div className="modal_body__value">{lastSeenDate?.toString()}</div>
           </div>
           <div className="modal_footer">
             <button
               className="btn_default"
-              // onClick={validateData}
-              // disabled={loading}
+              onClick={onSubmit}
+              disabled={loading}
             >
+              <Loading />
               Confirm
             </button>
             <button
               className="btn_default__light"
               onClick={onClose}
-              // disabled={loading}
+              disabled={loading}
             >
               Cancel
             </button>

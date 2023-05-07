@@ -5,7 +5,10 @@ import { auth } from '../config/firebase-config.js';
 import { createAvatar } from '@dicebear/core';
 import { lorelei } from '@dicebear/collection';
 import { app_auth } from '../config/firebase-auth.js';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from 'firebase/auth';
 export async function register(req, res) {
   let { email, password, firstName, lastName, gender, phone, dob } = req.body;
   try {
@@ -54,6 +57,17 @@ export async function getUser(req, res) {
     const user_data = await users.getUserByFirebaseId(user_firebase_id);
     user_data.token = await user.user.getIdToken();
     res.status(200).json(user_data);
+  } catch (e) {
+    res.status(400).json({ message: e });
+  }
+}
+
+export async function forgot(req, res) {
+  try {
+    let { email } = req.body;
+    email = validation.checkEmail(email);
+    await sendPasswordResetEmail(app_auth, email);
+    res.status(200).json({ message: 'Email sent' });
   } catch (e) {
     res.status(400).json({ message: e });
   }

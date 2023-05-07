@@ -6,17 +6,17 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CloseIcon from "@mui/icons-material/Close";
 import SVGComponent from "../common/Logo";
 import { login } from "../../utils/apis/auth";
-import Loading from "../common/Loading";
+import Loading from "../common/BtnLoading";
 import { useNavigate } from "react-router";
-import firebase from "firebase/compat/app";
 import "./styles.css";
-import { AuthContext } from "../../FirebaseUtils/authenticate";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUserData } from "redux/reducer";
 
 function Login() {
-  const [currentUser, setCurrentUser] = React.useContext(AuthContext);
   const navigate = useNavigate();
-  const [userData, setUserData] = React.useState({ email: "", password: "" });
+  const dispatch = useDispatch();
+  const [loginData, setLoginData] = React.useState({ email: "", password: "" });
   const [passwordVisibility, setPasswordVisibility] = React.useState(false);
   const [errors, setErrors] = React.useState({ email: false, password: false });
   const [loading, setLoading] = React.useState(false);
@@ -32,13 +32,13 @@ function Login() {
   };
 
   const setValues = (name, value) => {
-    setUserData({ ...userData, [name]: value });
+    setLoginData({ ...loginData, [name]: value });
   };
 
   const validateData = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const { email, password } = userData;
+    const { email, password } = loginData;
 
     let errorObj = {};
     if (!emailValidation(email)) errorObj.email = true;
@@ -48,32 +48,13 @@ function Login() {
     setErrors(errorObj);
 
     if (Object.keys(errorObj).length === 0) {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          firebase
-            .auth()
-            .currentUser.getIdToken(true)
-            .then(async (res) => {
-              const loginData = await login(res);
-              const { data, status } = loginData;
-              if (status !== 200) toast.error(data?.error);
-              else {
-                setCurrentUser({ ...currentUser, userData: data });
-                navigate("/");
-              }
-            })
-            .catch((err) => {
-              const errorCode = err.code;
-              const errorMessage = err.message;
-              console.log(errorCode, errorMessage);
-            });
-        })
-        .catch((error) => {
-          const { code } = error;
-          if (code === "auth/user-not-found") toast.error("User not found");
-        });
+      const loginData = await login({ email, password });
+      const { data, status } = loginData;
+      if (status !== 200) toast.error(data?.error);
+      else {
+        localStorage.setItem("token", data?.token);
+        dispatch(setUserData({ data }));
+      }
     }
 
     setLoading(false);
@@ -92,7 +73,7 @@ function Login() {
           <div className="w-[25rem] md:hidden sm:hidden">
             <SVGComponent />
           </div>
-          <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl text-3xl font-bold text-logo tracking-tight text-gray-900">
             Sign in to your account
           </h2>
         </div>
@@ -120,7 +101,7 @@ function Login() {
                   false
                 )
               }
-              value={userData?.email}
+              value={loginData?.email}
               onChange={(e) => {
                 let { name, value } = e.target;
                 value = value.trim();
@@ -143,7 +124,7 @@ function Login() {
                 name="password"
                 placeholder="********"
                 error={errors?.password}
-                value={userData?.password}
+                value={loginData?.password}
                 helperText={
                   errors?.password ? (
                     <span className="flex items-center">
