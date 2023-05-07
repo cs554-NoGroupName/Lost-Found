@@ -31,12 +31,17 @@ export const createItem = async (
     description,
     category,
     tags,
-    itemStatus,
-    priority,
     lastSeenLocation,
     lastSeenDate,
     imageUrl,
     uid,
+    itemStatus: 'reported',
+    claimed: false,
+    claimedBy: '',
+    claims: [],
+    disputes: [],
+    timelineDetails: [],
+    comments: [],
   };
   const insertInfo = await itemCollection.insertOne(newItem);
   if (!insertInfo.acknowledged) throw 'Could not add item';
