@@ -4,13 +4,6 @@ dotenv.config();
 import cors from 'cors';
 import { configRoutes } from './routes/index.js';
 import { VerifyToken } from './middleware/VerifyToken.js';
-import {
-  getAllItems,
-  getItemsById,
-  updateReportedItem,
-} from './middleware/items.js';
-// import { updateReportedItem } from './controllers/items.js';
-// import { getAllItems } from './data/items.js';
 
 const app = express();
 const port = process.env.NODE_PORT || 4000;
@@ -21,8 +14,6 @@ app.use(cors());
 app.use('/images', express.static('images'));
 console.log(VerifyToken);
 app.use('protected/', VerifyToken);
-app.get('/items/report', VerifyToken, getAllItems);
-app.get('/items/report/:id', VerifyToken, getItemsById);
 
 configRoutes(app);
 
