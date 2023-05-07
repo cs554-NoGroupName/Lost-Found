@@ -5,14 +5,20 @@ import {
   updateItem,
   deleteItemById,
   getItemsByUserId,
+  updateClaims,
 } from '../data/items.js';
 import redis from 'redis';
-const client = redis.createClient();
+import dotenv from 'dotenv';
+dotenv.config();
+const client = redis.createClient({
+  socket: {
+    port: 6379,
+    host: 'redis',
+  },
+});
 client.connect().then(() => {});
 import validation from '../utils/validation.js';
 import { BlobServiceClient } from '@azure/storage-blob';
-import dotenv from 'dotenv';
-dotenv.config();
 const blobServiceClient = BlobServiceClient.fromConnectionString(
   process.env.AZURE_STORAGE_CONNECTION_STRING
 );
@@ -71,6 +77,34 @@ export async function report(req, res) {
     res.status(201).json(newItem);
   } catch (e) {
     res.status(400).json({ message: e });
+  }
+}
+
+export async function claimRequest(req, res) {
+  let { id } = req.params;
+  let { uid } = req.user;
+  try {
+    id = validation.checkObjectId(id);
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+  try {
+    const item = await getItemById(id);
+    if (item.uid === uid) throw 'You cannot claim your own item';
+    if (item.itemStatus === 'claimed') throw 'Item already claimed';
+    if (item.itemStatus === 'resolved') throw 'Item already resolved';
+    // check if user has already requested for the item
+    const found = item.claims.find((claim) => claim.userId === uid);
+    if (found) throw 'You have already requested for this item';
+
+    const updatedItem = await updateClaims(id, uid);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
   }
 }
 
