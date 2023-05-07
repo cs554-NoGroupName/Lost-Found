@@ -57,6 +57,14 @@ export const getItemById = async (id) => {
     user_firebase_id: item.uid,
   });
   item.reportedBy = user;
+  // for each userId in claims array append user details
+  for (let i = 0; i < item.claims.length; i++) {
+    const user = await userCollection.findOne({
+      user_firebase_id: item.claims[i].userId,
+    });
+    item.claims[i].userDetails = user;
+  }
+
   return item;
 };
 
@@ -70,6 +78,42 @@ export const getItemsByUserId = async (uid) => {
   const itemCollection = await items();
   const itemList = await itemCollection.find({ uid }).toArray();
   return itemList;
+};
+
+export const updateClaims = async (id, uid) => {
+  const itemCollection = await items();
+  const item = await itemCollection.findOne({ _id: new ObjectId(id) });
+  if (!item) throw 'Item not found';
+  if (item.uid === uid) throw 'You cannot claim your own item';
+  if (item.itemStatus === 'claimed') throw 'Item already claimed';
+  if (item.itemStatus === 'resolved') throw 'Item already resolved';
+  const claimObj = {
+    userId: uid,
+    claimStatus: 'pending',
+    claimDate: new Date().toISOString(),
+  };
+
+  const updatedInfo = await itemCollection.updateOne(
+    { _id: new ObjectId(id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        claims: claimObj,
+      },
+    }
+  );
+  if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
+  // for each userId in claims array append user details
+  const userCollection = await mongoCollections.users();
+  const claims = await itemCollection.findOne({ _id: new ObjectId(id) });
+  for (let i = 0; i < claims.claims.length; i++) {
+    const user = await userCollection.findOne({
+      user_firebase_id: claims.claims[i].userId,
+    });
+    claims.claims[i].userDetails = user;
+  }
+
+  return claims;
 };
 
 export const updateItem = async (...args) => {
