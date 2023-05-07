@@ -20,7 +20,7 @@
 
 .layout_title {
   margin: 0px;
-  color: theme("colors.logoBlue");
+  color: theme('colors.logoBlue');
   font-weight: 700;
   line-height: 1.2;
 }
@@ -39,29 +39,11 @@
   font-weight: 900;
   color: #1c2536;
   letter-spacing: 0.2em;
-  &::before,
-  &::after {
-    content: "";
-    display: block;
-    width: 15px;
-    height: 15px;
-    background: #ff9717;
-    position: absolute;
-    animation: load 0.7s infinite alternate ease-in-out;
-  }
-
-  &::before {
-    top: 0;
-  }
-
-  &::after {
-    bottom: 0;
-  }
 }
 
-loader::before,
-loader::after {
-  content: "";
+.loader::before,
+.loader::after {
+  content: '';
   display: block;
   width: 15px;
   height: 15px;
@@ -70,11 +52,11 @@ loader::after {
   animation: load 0.7s infinite alternate ease-in-out;
 }
 
-loader::before {
+.loader::before {
   top: 0;
 }
 
-loader::after {
+.loader::after {
   bottom: 0;
 }
 
