@@ -35,7 +35,7 @@ function Nav() {
   const state = useSelector((state) => state?.userData?.userData);
   const signOutUser = async () => {
     dispatch(setUserData({ data: {} }));
-    localStorage.setItem('token', null)
+    localStorage.setItem("token", null);
   };
 
   const { pathname } = window.location;
@@ -210,42 +210,50 @@ function Nav() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map(({ name, route, Icon }) => (
-                <MenuItem key={name} onClick={handleCloseUserMenu}>
-                  <Link to={route}>
-                    <Typography
-                      textAlign="center"
-                      sx={{
-                        bg: "#9da4ae",
-                        color: pathname === route ? "#1c2536" : "#45494e",
-                        textTransform: "capitalize",
-                        fontWeight: pathname === route ? "600" : 500,
-                      }}
-                    >
-                      <Icon />
-                      &nbsp;{name}
-                    </Typography>
-                  </Link>
-                </MenuItem>
-              ))}
+              <div>
+                <div className="py-1 px-2 bg-[#95b1b038] border-b border-[#6aa6a647] mb-1">
+                  <div className="text-logoBlue text-lg font-bold">Account</div>
+                  <div className="text-logoDarkBlue text-lg text-ellipsis overflow-hidden w-[140px] whitespace-nowrap">
+                    {state?.firstName} {state?.lastName}
+                  </div>
+                </div>
+                {settings.map(({ name, route, Icon }) => (
+                  <MenuItem key={name} onClick={handleCloseUserMenu}>
+                    <Link to={route}>
+                      <Typography
+                        textAlign="center"
+                        sx={{
+                          bg: "#9da4ae",
+                          color: pathname === route ? "#1c2536" : "#45494e",
+                          textTransform: "capitalize",
+                          fontWeight: pathname === route ? "600" : 500,
+                        }}
+                      >
+                        <Icon />
+                        &nbsp;{name}
+                      </Typography>
+                    </Link>
+                  </MenuItem>
+                ))}
 
-              <Divider />
-              <MenuItem key={"sign-out"} onClick={signOutUser}>
-                <Typography
-                  textAlign="center"
-                  sx={{
-                    color: "#0058ff",
-                    textTransform: "capitalize",
-                    fontWeight: 700,
-                    fontSize: "1rem",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <ExitToAppIcon />
-                  &nbsp;Sign Out
-                </Typography>
-              </MenuItem>
+                <Divider />
+                <MenuItem key={"sign-out"} onClick={signOutUser}>
+                  <Typography
+                    textAlign="center"
+                    sx={{
+                      color: "#0058ff",
+                      textTransform: "capitalize",
+                      fontWeight: 700,
+                      fontSize: "1rem",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <ExitToAppIcon />
+                    &nbsp;Sign Out
+                  </Typography>
+                </MenuItem>
+              </div>
             </Menu>
           </Box>
         </Toolbar>

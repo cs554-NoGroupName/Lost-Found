@@ -31,13 +31,12 @@
 .btn_default {
   width: auto;
   padding: 7px 20px;
-  color: black;
+  color: theme("colors.logoBlue");;
   /* color: white; */
   font-size: 18px;
   font-weight: 500;
   border-radius: 4px;
   background-color: #ff9717;
-  /* background-color: theme("colors.logoBlue"); */
   cursor: pointer;
 }
 

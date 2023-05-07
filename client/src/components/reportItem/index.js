@@ -150,7 +150,7 @@ function ReportItem() {
       <div
         className={`flex items-center text-[24px] text-bold text-logoBlue my-2 ${
           num === 2 &&
-          "sm:my-2 md:mt-[89px] lg:mt-[89px] xl:mt-[89px] 2xl:mt-[89px]"
+          "sm:my-2 md:mt-[89px] lg:mt-[89px] xl:mt-[89px] 2xl:mt-[89px] mt-[89px]"
         }`}
       >
         <div className="section_number">{num}</div>
@@ -162,7 +162,7 @@ function ReportItem() {
   const renderForm = () => {
     return (
       <div>
-        <div className="sm:block md:flex lg:flex xl:flex 2xl:flex">
+        <div className="sm:block md:flex lg:flex xl:flex 2xl:flex flex">
           <div className="sm:mr-0 mr-5 w-[100%]">
             <div className="mx-1 mt-3 w-full sm:w-full md:w-full">
               <TextField
