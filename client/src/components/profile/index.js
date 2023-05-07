@@ -123,7 +123,6 @@ function Profile() {
     };
 
     const editInfo = await updateUserProfileData(apiBody);
-    console.log({ editInfo });
     const { data, status } = editInfo;
     if (status !== 200) toast.error(data?.error);
     else {

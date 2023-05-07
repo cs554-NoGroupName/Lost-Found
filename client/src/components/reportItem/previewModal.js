@@ -22,7 +22,7 @@ function PreviewModal({ open, onClose, data, loading, onSubmit }) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <div className="modal w-[650px] sm:w-[90%] sm:max-h-[80%]">
+        <div className="modal w-[650px] sm:w-[350px] sm:max-h-[80%]">
           <div className="modal_header">Review information</div>
           <div className="modal_body">
             <div className="modal_body__key">Type:</div>
