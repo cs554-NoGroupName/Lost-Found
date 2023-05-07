@@ -32,7 +32,11 @@ import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import useDocumentTitle from "components/common/useDocumentTitle";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserProfileData, uploadUserProfilePhoto } from "utils/apis/user";
+import {
+  getUserDetails,
+  updateUserProfileData,
+  uploadUserProfilePhoto,
+} from "utils/apis/user";
 import { toast } from "react-toastify";
 import { setUserData } from "redux/reducer";
 
@@ -46,13 +50,27 @@ function Profile() {
   const [updateLoading, setUpdateLoading] = React.useState(false);
   const [imageUplaodLoading, setImageUplaodLoading] = React.useState(false);
   const [imageObj, setImageObj] = React.useState(null);
+  const [profileData, setProfileData] = React.useState(state);
 
   const handlemodalView = () => setModalView(true);
   const handleClose = () => setModalView(false);
 
   React.useEffect(() => {
     setUpdateUserData(state);
+    setProfileData(state);
   }, [state]);
+
+  React.useEffect(() => {
+    getUserDetails()
+      .then((res) => {
+        const { status, data } = res;
+        if (status !== 200) toast.error("Something went wrong");
+        else dispatch(setUserData({ data }));
+      })
+      .catch((err) => {
+        console.log({ err });
+      });
+  }, [dispatch]);
 
   const uploadImage = async () => {
     setImageUplaodLoading(true);
@@ -135,7 +153,7 @@ function Profile() {
 
   const ProfileView = () => {
     const { firstName, lastName, email, phone, dob, gender, image_url } =
-      state ?? {};
+      profileData ?? {};
     return (
       <Card
         sx={{

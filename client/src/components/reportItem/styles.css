@@ -21,9 +21,9 @@
   color: white;
   display: flex;
   justify-content: center;
-  border-radius: 100px;
+  border-radius: 100%;
   align-items: center;
-  height: 30px;
+  height: 35px;
 }
 
 .modal {

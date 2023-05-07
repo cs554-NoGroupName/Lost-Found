@@ -12,6 +12,7 @@ import "./styles.css";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setUserData } from "redux/reducer";
+import useDocumentTitle from "components/common/useDocumentTitle";
 
 function Login() {
   const navigate = useNavigate();
@@ -65,6 +66,7 @@ function Login() {
 
   return (
     <div className="flex min-h-full justify-center items-center py-8 lg:py-6 md:py-5 px-4 sm:px-6 lg:px-8">
+      {useDocumentTitle("Login")}
       <div className="w-full max-w-md">
         <div className="flex items-center flex-col">
           <div className="sm:w-[12rem] md:w-[18rem] h-[8rem] sm:flex md:flex sm:mb-4 md:mb-12 lg:mb-16 hidden">
@@ -73,9 +75,9 @@ function Login() {
           <div className="w-[25rem] md:hidden sm:hidden">
             <SVGComponent />
           </div>
-          <h2 className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl text-3xl font-bold text-logo tracking-tight text-gray-900">
+          <div className="my-3 text-center sm:text-xl md:text-2xl lg:text-2xl text-3xl font-bold text-logo tracking-tight text-gray-900">
             Sign in to your account
-          </h2>
+          </div>
         </div>
         <div className="p-4">
           <div className="rounded-md">
