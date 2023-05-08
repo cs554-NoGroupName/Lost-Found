@@ -58,6 +58,7 @@ export const getUserByFirebaseId = async (user_firebase_id) => {
     .toArray();
   user.reported = reportedItems;
   //  fetch requested_claimed items
+  if (!user.requested_claims) user.requested_claims = [];
   for (let i = 0; i < user.requested_claims.length; i++) {
     const item = await itemCollection.findOne({
       _id: new ObjectId(user.requested_claims[i]),
