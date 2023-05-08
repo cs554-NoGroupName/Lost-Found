@@ -20,7 +20,6 @@ client.connect().then(() => {
   console.log('Redis connected');
 });
 
-console.log('In items controller');
 import validation from '../utils/validation.js';
 import { BlobServiceClient } from '@azure/storage-blob';
 const blobServiceClient = BlobServiceClient.fromConnectionString(
@@ -77,7 +76,7 @@ export async function report(req, res) {
       imageUrl,
       uid
     );
-    await client.set(`Item_${newItem.id.toString()}`, JSON.stringify(getItem));
+    await client.set(`Item_${newItem._id.toString()}`, JSON.stringify(newItem));
     res.status(201).json(newItem);
   } catch (e) {
     res.status(400).json({ message: e });
