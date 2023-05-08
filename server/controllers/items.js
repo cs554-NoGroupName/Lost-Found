@@ -7,16 +7,20 @@ import {
   getItemsByUserId,
   updateClaims,
 } from '../data/items.js';
-import redis from 'redis';
 import dotenv from 'dotenv';
 dotenv.config();
+import redis from 'redis';
+
 const client = redis.createClient({
-  socket: {
-    port: 6379,
-    host: 'redis',
-  },
+  password: process.env.REDIS_PASSWORD,
+  url: `rediss://${process.env.REDIS_HOST}:6380`,
 });
-client.connect().then(() => {});
+
+client.connect().then(() => {
+  console.log('Redis connected');
+});
+
+console.log('In items controller');
 import validation from '../utils/validation.js';
 import { BlobServiceClient } from '@azure/storage-blob';
 const blobServiceClient = BlobServiceClient.fromConnectionString(
