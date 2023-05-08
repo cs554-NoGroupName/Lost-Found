@@ -340,39 +340,46 @@ function Nav() {
                   </div>
                 </div>
                 <div>
-                  {state?.received_claims.map((claim) => {
-                    const { id, itemName, imageUrl } = claim;
-                    return (
-                      <div onClick={() => handleCloseUserNotifs()}>
-                        <Link to={"/item/" + id}>
-                          <ListItem alignItems="flex-start" disablePadding>
-                            <ListItemAvatar>
-                              <Avatar alt={itemName} src={imageUrl} />
-                            </ListItemAvatar>
-                            <ListItemText
-                              primary={
-                                <Typography
-                                  sx={{ display: "inline", fontSize: "18px" }}
-                                >
-                                  Claim Request
-                                </Typography>
-                              }
-                              secondary={
-                                <React.Fragment>
+                  {state?.received_claims?.length !== 0 ? (
+                    state?.received_claims.map((claim) => {
+                      const { id, itemName, imageUrl } = claim;
+                      return (
+                        <div onClick={() => handleCloseUserNotifs()}>
+                          <Link to={"/item/" + id}>
+                            <ListItem alignItems="flex-start" disablePadding>
+                              <ListItemAvatar>
+                                <Avatar alt={itemName} src={imageUrl} />
+                              </ListItemAvatar>
+                              <ListItemText
+                                primary={
                                   <Typography
-                                    sx={{ display: "inline", fontSize: "16px" }}
+                                    sx={{ display: "inline", fontSize: "18px" }}
                                   >
-                                    Someone sent you a request for {itemName}
+                                    Claim Request
                                   </Typography>
-                                </React.Fragment>
-                              }
-                            />
-                          </ListItem>
-                          <Divider variant="inset" component="li" />
-                        </Link>
-                      </div>
-                    );
-                  })}
+                                }
+                                secondary={
+                                  <React.Fragment>
+                                    <Typography
+                                      sx={{
+                                        display: "inline",
+                                        fontSize: "16px",
+                                      }}
+                                    >
+                                      Someone sent you a request for {itemName}
+                                    </Typography>
+                                  </React.Fragment>
+                                }
+                              />
+                            </ListItem>
+                            <Divider variant="inset" component="li" />
+                          </Link>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div>Nothing for now!</div>
+                  )}
                 </div>
               </div>
             </Menu>
