@@ -13,7 +13,7 @@ import {
 
 import LayoutProvider from "components/common/Layout";
 import Comments from "./Comments";
-// import TimelineTracker from "./TimelineTracker";
+import TimelineTracker from "./TimelineTracker";
 // import CustomSelect from "./CustomSelect";
 import ClaimsAndDisputes from "./ClaimsAndDisputes";
 import LoadingText from "components/common/loadingText";
@@ -584,7 +584,7 @@ function ItemDetails() {
             )}
           </div>
         </div>
-        {/* <TimelineTracker timeline={itemData.timelineDetails} /> */}
+        <TimelineTracker timeline={itemData?.timelineDetails} />
         {itemData?.type === "found" && (
           <>
             <Divider sx={{ backgroundColor: "#ff9717", margin: "10px 0px" }} />
