@@ -9,16 +9,9 @@ import {
 } from '../data/items.js';
 import dotenv from 'dotenv';
 dotenv.config();
-import redis from 'redis';
 
-const client = redis.createClient({
-  password: process.env.REDIS_PASSWORD,
-  url: `rediss://${process.env.REDIS_HOST}:6380`,
-});
-
-client.connect().then(() => {
-  console.log('Redis connected');
-});
+import getClient from '../utils/redisClient.js';
+const client = await getClient();
 
 import validation from '../utils/validation.js';
 import { BlobServiceClient } from '@azure/storage-blob';

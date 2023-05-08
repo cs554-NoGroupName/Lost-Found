@@ -1,23 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import redis from 'redis';
-
-// const client = redis.createClient({
-//   password: process.env.REDIS_PASSWORD,
-//   socket: {
-//     port: process.env.REDIS_PORT || 6379,
-//     host: process.env.REDIS_HOST || 'redis',
-//   },
-// });
-
-const client = redis.createClient({
-  password: process.env.REDIS_PASSWORD,
-  url: `rediss://${process.env.REDIS_HOST}:6380`,
-});
-
-client.connect().then(() => {
-  console.log('Redis connected');
-});
+import getClient from '../utils/redisClient.js';
+const client = await getClient();
 
 export const getAllItems = async (req, res, next) => {
   let exists = await client.exists('getItem');
