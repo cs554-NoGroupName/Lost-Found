@@ -31,4 +31,17 @@ export const itemTypeOptions = ["Lost", "Found"];
 
 export const locationOptions = ["Babbio", "Gateway North", "Gateway South"];
 
-export const categoryOptions = ['Personal belongings','Documents', 'Books', 'Clothing', 'Tools', 'Medications','Household items', 'Sporting equipment', 'Electronics', 'Toys', 'Tools', 'Others']
+export const categoryOptions = [
+  "Personal belongings",
+  "Documents",
+  "Books",
+  "Clothing",
+  "Tools",
+  "Medications",
+  "Household items",
+  "Sporting equipment",
+  "Electronics",
+  "Toys",
+  "Tools",
+  "Others",
+];

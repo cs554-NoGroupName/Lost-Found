@@ -1,6 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 const baseUrl = process.env.REACT_APP_BASE_URL;
+// const baseUrl = "http://localhost:4000";
 
 const errosStatusCodes = [500, 409, 404, 400, 401];
 export const makeApiCall = async (endpoint, method, body, headers = null) => {
@@ -15,6 +16,7 @@ export const makeApiCall = async (endpoint, method, body, headers = null) => {
       headers: token
         ? {
             ...headers,
+            "Access-Control-Allow-Origin": "*",
             Authorization: `Bearer ${token}`,
           }
         : headers,
@@ -27,6 +29,7 @@ export const makeApiCall = async (endpoint, method, body, headers = null) => {
   } catch (err) {
     const { response } = err;
     const { status, data } = response;
+
     if (errosStatusCodes.includes(status)) {
       // toast.error(data?.error);
       const err = { status, data };
