@@ -162,7 +162,8 @@ export const updateClaims = async (id, uid) => {
     const user = await userMinDetails(claims.claims[i].userId);
     claims.claims[i].userDetails = user;
   }
-
+  const reportedBy = await userMinDetails(item.uid);
+  item.reportedBy = reportedBy;
   return claims;
 };
 
@@ -171,7 +172,7 @@ export const resolveClaimById = async (id, claimId, uid) => {
   const item = await itemCollection.findOne({ _id: new ObjectId(id) });
   if (!item) throw 'Item not found';
   if (item.uid !== uid) throw 'You cannot resolve this item';
-  if (item.itemStatus === 'resolved') throw 'Item already resolved';
+  if (item.itemStatus === 'claimed') throw 'Item already resolved';
 
   const updatedInfo = await itemCollection.updateOne(
     { _id: new ObjectId(id) },
@@ -234,8 +235,74 @@ export const resolveClaimById = async (id, claimId, uid) => {
     const user = await userMinDetails(claims.claims[i].userId);
     claims.claims[i].userDetails = user;
   }
-
+  const reportedBy = await userMinDetails(claims.uid);
+  claims.reportedBy = reportedBy;
   return claims;
+};
+
+export const rejectClaimById = async (id, claimId, uid) => {
+  const itemCollection = await items();
+  const item = await itemCollection.findOne({ _id: new ObjectId(id) });
+  if (!item) throw 'Item not found';
+  if (item.uid !== uid) throw 'You cannot reject this item';
+  if (item.itemStatus === 'claimed') throw 'Item already resolved';
+
+  // also update claim status in item's claims array
+  const updatedItem = await itemCollection.updateOne(
+    { _id: new ObjectId(id), 'claims.userId': claimId },
+    // only update claims array with the new uid
+    {
+      $set: {
+        'claims.$.claimStatus': 'rejected',
+      },
+    }
+  );
+
+  // for each userId in claims array append user details
+  const claims = await itemCollection.findOne({ _id: new ObjectId(id) });
+  for (let i = 0; i < claims.claims.length; i++) {
+    const user = await userMinDetails(claims.claims[i].userId);
+    claims.claims[i].userDetails = user;
+  }
+  const reportedBy = await userMinDetails(claims.uid);
+  claims.reportedBy = reportedBy;
+  return claims;
+};
+
+export const updateDispute = async (id, uid, dispute) => {
+  const itemCollection = await items();
+  const item = await itemCollection.findOne({ _id: new ObjectId(id) });
+  if (!item) throw 'Item not found';
+  if (item.uid !== uid) throw 'You cannot update this item';
+  if (item.itemStatus !== 'claimed') throw 'Item not claimed';
+
+  const disputeObj = {
+    dispute,
+    disputeDate: new Date().toISOString(),
+    userId: uid,
+    status: 'pending',
+  };
+
+  const updatedInfo = await itemCollection.updateOne(
+    { _id: new ObjectId(id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        disputes: disputeObj,
+      },
+    }
+  );
+
+  if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
+  // for each userId in claims array append user details
+  const disputes = await itemCollection.findOne({ _id: new ObjectId(id) });
+  for (let i = 0; i < disputes.disputes.length; i++) {
+    const user = await userMinDetails(disputes.disputes[i].userId);
+    disputes.disputes[i].userDetails = user;
+  }
+  const reportedBy = await userMinDetails(disputes.uid);
+  disputes.reportedBy = reportedBy;
+  return disputes;
 };
 
 export const updateItem = async (...args) => {
