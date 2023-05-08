@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import lodash from "lodash";
 import testData from "./testData.json";
 // import axios from "axios";
 import { Link } from "react-router-dom";
 import LayoutProvider from "components/common/Layout";
-import { AuthContext } from "FirebaseUtils/authenticate";
 import useDocumentTitle from "components/common/useDocumentTitle";
 import LoadingText from "components/common/loadingText";
 import "./styles.css";
@@ -25,6 +24,7 @@ import {
   Modal,
   Select,
   Typography,
+  useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
 
@@ -45,7 +45,7 @@ const modalStyle = {
 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
 const Home = () => {
-  const [currentUser] = useContext(AuthContext);
+  const currentUser = localStorage.getItem("token");
   const [loading, setLoading] = useState(true);
   const [itemsData, setItemsData] = useState([]);
   const [tags, setTags] = useState([]);
@@ -60,6 +60,8 @@ const Home = () => {
   const [lastSevenDays, setLastSevenDays] = useState([]);
 
   const [todayItems, setTodayItems] = useState(false);
+
+  const theme = useTheme();
 
   // API Call on load
   useEffect(() => {
@@ -181,27 +183,31 @@ const Home = () => {
   const cardBuilder = (item) => {
     return (
       <Card key={item?.id} sx={{ maxWidth: 345 }}>
-        <CardHeader title={item?.name} subheader={item?.category} />
+        <CardHeader title={item?.name} subheader={item?.category} subheaderTypographyProps={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}} sx={{ color: theme.palette.primary.contrastText,
+          backgroundColor: theme.palette.primary.main}} />
         <CardMedia
-          className="card-media"
+          // className="card-media"
           component="img"
           height="200px"
           width="100%"
+          sx={{
+            objectFit: "contain"
+          }}
           image={item?.images?.[0]}
           alt={item?.name}
         />
-        <CardContent>
+        <CardContent sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
           {item?.type ? <div>Type: {item?.type}</div> : <></>}
           {item?.status ? <div>Status: {item?.status}</div> : <></>}
           {item?.description ? (
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
               {item?.description}
             </Typography>
           ) : (
             <></>
           )}
         </CardContent>
-        <CardContent>
+        <CardContent sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
           {item?.tags && item?.tags?.length > 0 ? (
             <>{itemTags(item?.tags)}</>
           ) : (
@@ -219,6 +225,7 @@ const Home = () => {
           variant="outlined"
           style={{ marginRight: "5px", marginBottom: "2px" }}
           label={tag}
+          sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}
         />
       );
     });
@@ -365,7 +372,7 @@ const Home = () => {
         // <div className="flexer">
         <Grid container spacing={0}>
           <Grid item md={3} sm={6} xs={12}>
-          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200 }} className="flexer">
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
             <InputLabel id="category-filter-label">Category</InputLabel>
             <Select
               value={filterCategory}
@@ -381,7 +388,7 @@ const Home = () => {
           </FormControl>
           </Grid>
           <Grid item md={3} sm={6} xs={12}>
-          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200 }} className="flexer">
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
             <InputLabel id="status-filter-label">Status</InputLabel>
             <Select
               value={filterStatus}
@@ -396,7 +403,7 @@ const Home = () => {
           </FormControl>
           </Grid>
           <Grid item md={3} sm={6} xs={12}>
-          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200 }} className="flexer">
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
             <InputLabel id="type-filter-label">Type</InputLabel>
             <Select
               value={filterType}
@@ -411,7 +418,7 @@ const Home = () => {
           </FormControl>
           </Grid>
           <Grid item md={3} sm={6} xs={12}>
-          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200 }} className="flexer">
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
             <InputLabel id="tags-filter-label">Tag</InputLabel>
             <Select
               value={filterTags}
