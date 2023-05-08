@@ -29,15 +29,13 @@ body::-webkit-scrollbar-thumb {
   width: max-content;
 }
 
-.css-185gdzj-MuiCardHeader-root,
-.css-46bh2p-MuiCardContent-root,
+/* .css-46bh2p-MuiCardContent-root,
 .css-46bh2p-MuiCardContent-root:last-child,
 .css-1012bww-MuiChip-root,
-.css-r40f8v-MuiTypography-root,
-.css-nrdprl-MuiTypography-root {
+.css-r40f8v-MuiTypography-root {
   color: white !important;
-  background-color: #367272 !important;
-}
+  background-color: theme('colors.logoBlue') !important;
+} */
 
 .flexer {
   display: flex;
@@ -97,9 +95,9 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  background-color: #367272;
+  background-color: theme('colors.logoBlue');
   color: white;
-  border: 1px solid #367272;
+  border: 1px solid theme('colors.logoBlue');
   border-radius: 20px;
   margin: 10px;
 
@@ -107,9 +105,9 @@ body::-webkit-scrollbar-thumb {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: #367272;
+    background-color: theme('colors.logoBlue');
     color: white;
-    border: 1px solid #367272;
+    border: 1px solid theme('colors.logoBlue');
     border-radius: 20px;
     margin: 10px;
   }
@@ -117,9 +115,9 @@ body::-webkit-scrollbar-thumb {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: #367272;
+    background-color: theme('colors.logoBlue');
     color: white;
-    border: 1px solid #367272;
+    border: 1px solid theme('colors.logoBlue');
     border-radius: 20px;
     margin: 10px;
   }
@@ -128,7 +126,7 @@ body::-webkit-scrollbar-thumb {
 .image-wrapper {
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
-  background-color: #367272;
+  background-color: theme('colors.logoBlue');
   position: relative;
 
   @media only screen and (max-width: 600px) {
@@ -152,10 +150,16 @@ body::-webkit-scrollbar-thumb {
   position: absolute;
   top: 5px;
   right: 10px;
+  border: 1px solid theme('colors.logoBlue');
+  border-radius: 20px;
+  padding: 5px 10px;
+  color: black;
+  font-weight: 600;
+  backdrop-filter: grayscale(100%) contrast(100%);
 }
 
 .row-details {
-  background-color: #367272;
+  background-color: theme('colors.logoBlue');
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   padding: 10px;
