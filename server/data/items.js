@@ -63,8 +63,49 @@ export const getItemById = async (id) => {
 
 export const getAllItems = async () => {
   const itemCollection = await items();
-  const itemList = await itemCollection.find({}).toArray();
-  return itemList;
+  let itemList = await itemCollection.find({}).toArray();
+  let todayDate = new Date();
+  let seven = new Date(
+    todayDate.getFullYear(),
+    todayDate.getMonth(),
+    todayDate.getDate() - 7
+  );
+  let today = itemList.filter((item) => {
+    let date = new Date(item.lastSeenDate);
+    return (
+      date.getDate() === todayDate.getDate() &&
+      date.getMonth() === todayDate.getMonth() &&
+      date.getFullYear() === todayDate.getFullYear()
+    );
+  });
+  console.log('week');
+  let week = itemList.filter((item) => {
+    let date = new Date(item.lastSeenDate);
+
+    return (
+      date >= seven &&
+      !(
+        date.getDate() === todayDate.getDate() &&
+        date.getMonth() === todayDate.getMonth() &&
+        date.getFullYear() === todayDate.getFullYear()
+      )
+    );
+  });
+
+  console.log('beyond');
+  let beyond = itemList.filter((item) => {
+    let date = new Date(item.lastSeenDate);
+
+    return (
+      date < seven &&
+      !(
+        date.getDate() === todayDate.getDate() &&
+        date.getMonth() === todayDate.getMonth() &&
+        date.getFullYear() === todayDate.getFullYear()
+      )
+    );
+  });
+  return { today: today, week: week, beyond: beyond };
 };
 
 export const getItemsByUserId = async (uid) => {
@@ -147,3 +188,5 @@ export const deleteItemById = async (id) => {
   console.log(deletionInfo);
   return getItem;
 };
+
+
