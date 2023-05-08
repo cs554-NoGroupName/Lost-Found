@@ -31,7 +31,7 @@
 .btn_default {
   width: auto;
   padding: 7px 20px;
-  color: theme("colors.logoBlue");;
+  color: theme("colors.logoBlue");
   /* color: white; */
   font-size: 18px;
   font-weight: 500;

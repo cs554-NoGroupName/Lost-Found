@@ -9,6 +9,10 @@ import {
   claimRequest,
   resolveClaim,
   getReportedItemBySearch,
+  disputeRequest,
+  rejectClaim,
+  comment,
+  commentDelete,
 } from '../controllers/items.js';
 
 import { getItemsById } from '../middleware/items.js';
@@ -22,8 +26,16 @@ router.get('/claim/:id', VerifyToken, claimRequest);
 router.get('/resolveClaim/:itemId/:claimId', VerifyToken, resolveClaim);
 router.get('/report/search', VerifyToken, getReportedItemBySearch);
 router.get('/', VerifyToken, getReportedItems);
+router.get('/rejectClaim/:itemId/:claimId', VerifyToken, rejectClaim);
+
+router.post('/dispute/:id', VerifyToken, disputeRequest);
+// router.get('/resolveDispute/:itemId/:disputeId', VerifyToken, resolveDispute);
+router.get('/delete/:id', VerifyToken, deleteReportedIemById);
+
+router.post('/comment/:id', VerifyToken, comment);
+
+router.get('/comment/delete/:id/:commentId', VerifyToken, commentDelete);
 router.get('/:id', VerifyToken, getItemsById, getReportedItemById);
 router.patch('/:id', VerifyToken, updateReportedItem);
-router.delete('/:id', VerifyToken, deleteReportedIemById);
 
 export default router;

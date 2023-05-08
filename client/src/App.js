@@ -7,6 +7,7 @@ import ResetPassword from "components/resetPassword";
 import { ToastContainer } from "react-toastify";
 import Home from "components/Home";
 import ReportItem from "components/reportItem";
+import ItemDetails from "components/item";
 import { ThemeProvider, createTheme } from "@mui/material";
 import Page404 from "components/common/Page404";
 import "./App.css";
@@ -15,6 +16,7 @@ import PrivacyPolicyPage from "components/common/privacyPolicyPage";
 
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
+import MyActivites from "components/myActivities";
 
 function App() {
   const state = useSelector((state) => state?.userData?.userData);
@@ -32,7 +34,7 @@ function App() {
   });
 
   const isAuthenticated = () => {
-    return JSON.stringify(state) !== "{}" ? true : false;
+    return Object.keys(state).length !== 0 ? true : false;
   };
 
   return (
@@ -48,11 +50,33 @@ function App() {
               }
             />
             <Route
+              path="/my-activities"
+              exact
+              element={
+                isAuthenticated() ? (
+                  <MyActivites />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
               path="/report-item"
               exact
               element={
                 isAuthenticated() ? (
                   <ReportItem />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/item/:id"
+              exact
+              element={
+                isAuthenticated() ? (
+                  <ItemDetails />
                 ) : (
                   <Navigate to="/login" replace />
                 )

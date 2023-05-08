@@ -1,8 +1,8 @@
-import { TextField } from '@mui/material';
-import React from 'react';
-import { usePlacesWidget } from 'react-google-autocomplete';
+import { TextField } from "@mui/material";
+import React from "react";
+import { usePlacesWidget } from "react-google-autocomplete";
 
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
 function GoogleAutoCompleteAddress({ sendAddress, error }) {
@@ -14,8 +14,8 @@ function GoogleAutoCompleteAddress({ sendAddress, error }) {
       sendAddress(place);
     },
     options: {
-      componentRestrictions: { country: 'us' },
-      types: ['geocode', 'establishment'],
+      componentRestrictions: { country: "us" },
+      types: ["geocode", "establishment"],
     },
   });
 

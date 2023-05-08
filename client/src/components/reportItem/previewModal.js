@@ -42,12 +42,12 @@ function PreviewModal({ open, onClose, data, loading, onSubmit }) {
             <div className="modal_body__key">Image:</div>
             <div>
               <img
+                className="upload_image_preview"
                 src={
                   imageUrl
                     ? URL.createObjectURL(imageUrl)
                     : "https://plainenglish.io/assets/post-content/javascript-operator.jpg"
                 }
-                width={200}
                 alt={itemName}
               />
             </div>
@@ -62,7 +62,7 @@ function PreviewModal({ open, onClose, data, loading, onSubmit }) {
               onClick={onSubmit}
               disabled={loading}
             >
-              <Loading />
+              <Loading loading={loading} />
               Confirm
             </button>
             <button

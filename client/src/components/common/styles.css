@@ -20,7 +20,7 @@
 
 .layout_title {
   margin: 0px;
-  color: theme('colors.logoBlue');
+  color: theme("colors.logoBlue");
   font-weight: 700;
   line-height: 1.2;
 }
@@ -43,7 +43,7 @@
 
 .loader::before,
 .loader::after {
-  content: '';
+  content: "";
   display: block;
   width: 15px;
   height: 15px;
