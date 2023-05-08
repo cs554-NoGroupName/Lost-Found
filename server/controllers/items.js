@@ -9,6 +9,8 @@ import {
   resolveClaimById,
   updateDispute,
   rejectClaimById,
+  addComment,
+  deleteCommentById,
 } from '../data/items.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -162,6 +164,52 @@ export async function disputeRequest(req, res) {
   }
 }
 
+export async function comment(req, res) {
+  let { id } = req.params;
+  let { uid } = req.user;
+  let { comment } = req.body;
+  try {
+    id = validation.checkObjectId(id);
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+  try {
+    const updatedItem = await addComment(id, uid, comment);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
+export async function commentDelete(req, res) {
+  let { id, commentId } = req.params;
+  let { uid } = req.user;
+  try {
+    id = validation.checkObjectId(id);
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+  // check if the user is the owner of the comment
+
+  try {
+    const item = await getItemById(id);
+    const comment = item.comments.find((comment) => comment._id == commentId);
+    if (comment.userId !== uid) throw 'You cannot delete this comment';
+    const updatedItem = await deleteCommentById(id, commentId);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
 export async function getReportedItems(req, res) {
   try {
     const getItem = await getAllItems();
@@ -296,11 +344,9 @@ export async function deleteReportedIemById(req, res) {
     const item = await getItemById(id);
     if (item.uid !== uid) throw 'You cannot delete this item';
     const deleteItem = await deleteItemById(id);
-    const exists = await client.exists(id);
-    if (exists) await client.del(id);
-    // await client.set('getItem', JSON.stringify(await getAllItems()));
+    const exists = await client.exists(`Item_${updatedItem._id.toString()}`);
+    if (exists) await client.del(`Item_${updatedItem._id.toString()}`);
     return res.status(200).json({ message: 'Item deleted successfully' });
-    // return res.status(200).json({ data:'deleted'});
   } catch (e) {
     if (Object.keys(e).includes('status'))
       return res.status(e.status).json({ error: e.message });
