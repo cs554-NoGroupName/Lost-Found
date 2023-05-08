@@ -15,6 +15,15 @@ export const deleteItemById = async (id) => {
 export const sendClaimRequest = async (id) => {
   return await makeApiCall("/items/claim/" + id, "GET");
 };
+export const addComment = async (id, data) => {
+  return await makeApiCall("/items/comment/" + id, "POST", data);
+};
+export const deleteComment = async (id, commentId) => {
+  return await makeApiCall(
+    "/items/comment/delete/" + id + "/" + commentId,
+    "GET"
+  );
+};
 
 export const comfirmClaimRequest = async (id, userId) => {
   return await makeApiCall("/items/resolveClaim/" + id + "/" + userId, "GET");

@@ -3,7 +3,7 @@ import {
   Grid,
   Box,
   Divider,
-//   TextField,
+  //   TextField,
   Dialog,
   IconButton,
   Typography,
@@ -101,7 +101,7 @@ function ItemDetails() {
   const [itemData, setItemData] = useState({});
   const [loading, setLoading] = useState(false);
   //   const [error, setError] = useState(null);
-//   const [editView, setEditView] = useState(false);
+  //   const [editView, setEditView] = useState(false);
   const [openClaim, setOpenClaim] = useState(false);
   const [openDispute, setOpenDispute] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -307,7 +307,7 @@ function ItemDetails() {
                   <Tooltip title="Edit this item" placement="bottom" arrow>
                     <IconButton
                       aria-label="edit"
-                    //   onClick={() => setEditView(true)}
+                      //   onClick={() => setEditView(true)}
                       onClick={() => {}}
                       sx={{ ...buttonStyle, marginRight: "8px" }}
                     >
@@ -614,7 +614,13 @@ function ItemDetails() {
         {/* Claims and disputed Tabs */}
         <Divider sx={{ backgroundColor: "#ff9717", marginTop: "20px" }} />
         {/* Comments Section */}
-        <Comments comments={itemData.comments} />
+        <Comments
+          comments={itemData?.comments}
+          setItemData={setItemData}
+          postId={itemData?._id}
+          userId={userData?.user_firebase_id}
+
+        />
       </LayoutProvider>
     );
   }
