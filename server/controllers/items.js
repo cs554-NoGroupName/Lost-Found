@@ -2,12 +2,23 @@ import {
   createItem,
   getItemById,
   getAllItems,
+  updateItem,
+  deleteItemById,
   getItemsByUserId,
+  updateClaims,
 } from '../data/items.js';
-import validation from '../utils/validation.js';
-import { BlobServiceClient } from '@azure/storage-blob';
+import redis from 'redis';
 import dotenv from 'dotenv';
 dotenv.config();
+const client = redis.createClient({
+  socket: {
+    port: 6379,
+    host: 'redis',
+  },
+});
+client.connect().then(() => {});
+import validation from '../utils/validation.js';
+import { BlobServiceClient } from '@azure/storage-blob';
 const blobServiceClient = BlobServiceClient.fromConnectionString(
   process.env.AZURE_STORAGE_CONNECTION_STRING
 );
@@ -62,8 +73,182 @@ export async function report(req, res) {
       imageUrl,
       uid
     );
+    await client.set(`Item_${newItem.id.toString()}`, JSON.stringify(getItem));
     res.status(201).json(newItem);
   } catch (e) {
     res.status(400).json({ message: e });
+  }
+}
+
+export async function claimRequest(req, res) {
+  let { id } = req.params;
+  let { uid } = req.user;
+  try {
+    id = validation.checkObjectId(id);
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+  try {
+    const item = await getItemById(id);
+    if (item.uid === uid) throw 'You cannot claim your own item';
+    if (item.itemStatus === 'claimed') throw 'Item already claimed';
+    if (item.itemStatus === 'resolved') throw 'Item already resolved';
+    // check if user has already requested for the item
+    const found = item.claims.find((claim) => claim.userId === uid);
+    if (found) throw 'You have already requested for this item';
+
+    const updatedItem = await updateClaims(id, uid);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
+export async function getReportedItems(req, res) {
+  try {
+    const getItem = await getAllItems();
+    // await client.set('getItem', JSON.stringify(getItem));
+    console.log('Loading items from db');
+    return res
+      .status(200)
+      .json({ message: 'Listing all reported items', data: getItem });
+  } catch (e) {
+    return res.status(500).json({ error: 'Server Error' });
+  }
+}
+
+export async function getReportedItemById(req, res) {
+  let id = req.params.id;
+  let error = {};
+  try {
+    id = validation.checkObjectId(id);
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+
+  try {
+    const getItemId = await getItemById(id);
+    console.log('Getting data from db');
+    await client.set(
+      `Item_${getItemId._id.toString()}`,
+      JSON.stringify(getItemId)
+    );
+    return res.status(200).json(getItemId);
+  } catch (e) {
+    if (Object.keys(e).includes('status'))
+      return res.status(e.status).json({ error: e.message });
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+export async function updateReportedItem(req, res) {
+  try {
+    let id = req.params.id;
+    let {
+      itemName,
+      description,
+      // reportedBy,
+      lastSeenLocation,
+      itemStatus,
+      type,
+      category,
+    } = req.body;
+
+    if (
+      !itemName &&
+      !description &&
+      // !reportedBy &&
+      !lastSeenLocation &&
+      !itemStatus &&
+      !type &&
+      !category
+    )
+      throw 'Should have atleast one parameter';
+    id = validation.checkObjectId(id);
+    if (itemName) {
+      itemName = validation.checkNames(itemName, 'itemName');
+    }
+    if (description) {
+      description = validation.checkInputString(description, 'description');
+    }
+    if (lastSeenLocation) {
+      lastSeenLocation = validation.checkInputString(
+        lastSeenLocation,
+        'lastSeenLocation'
+      );
+    }
+    if (itemStatus) {
+      itemStatus = validation.checkInputString(itemStatus, 'status');
+    }
+    if (type) {
+      type = validation.checkInputString(type, 'type');
+    }
+    if (category) {
+      category = validation.checkInputString(category, 'category');
+    }
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+  try {
+    let id = req.params.id;
+    let {
+      itemName,
+      description,
+      lastSeenLocation,
+      itemStatus,
+      type,
+      category,
+    } = req.body;
+    const updatedItem = await updateItem(
+      id,
+      itemName,
+      description,
+      lastSeenLocation,
+      itemStatus,
+      type,
+      category
+    );
+
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    // await client.set('getItem', JSON.stringify(await getAllItems()));
+    return res
+      .status(200)
+      .json({ message: 'Item updated successfully', data: updatedItem });
+  } catch (e) {
+    if (Object.keys(e).includes('status'))
+      return res.status(e.status).json({ error: e.message });
+    return res.status(500).json({ error: e });
+  }
+}
+
+export async function deleteReportedIemById(req, res) {
+  try {
+    let id = req.params.id;
+    id = validation.checkObjectId(id);
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+
+  try {
+    let id = req.params.id;
+    const deleteItem = await deleteItemById(id);
+    const exists = await client.exists(id);
+    if (exists) await client.del(id);
+    // await client.set('getItem', JSON.stringify(await getAllItems()));
+    return res
+      .status(200)
+      .json({ message: 'Item deleted successfully', data: deleteItem });
+    // return res.status(200).json({ data:'deleted'});
+  } catch (e) {
+    if (Object.keys(e).includes('status'))
+      return res.status(e.status).json({ error: e.message });
+    return res.status(500).json({ error: e });
   }
 }
