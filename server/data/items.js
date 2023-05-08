@@ -21,7 +21,7 @@ export const createItem = async (
   tags = validation.checkTags(tags);
   lastSeenLocation = validation.checkLastSeenLocation(lastSeenLocation);
   lastSeenDate = validation.checkLastSeenDate(lastSeenDate);
-
+  const userCollection = await mongoCollections.users();
   const itemCollection = await items();
   const newItem = {
     type,
@@ -51,6 +51,8 @@ export const createItem = async (
   if (!insertInfo.acknowledged) throw 'Could not add item';
   const newId = insertInfo.insertedId;
   // add item to user's reported array
+
+  const item = await getItemById(newId);
   const reportedBy = await userCollection.findOne({
     user_firebase_id: item.uid,
   });
@@ -59,11 +61,10 @@ export const createItem = async (
     // only update claims array with the new uid
     {
       $addToSet: {
-        reported: id,
+        reported: newId,
       },
     }
   );
-  const item = await getItemById(newId);
   return item;
 };
 
