@@ -37,7 +37,14 @@ export const createItem = async (
     claimedBy: '',
     claims: [],
     disputes: [],
-    timelineDetails: [],
+    timelineDetails: [
+      {
+        status: 'reported',
+        date: new Date().toISOString(),
+        uid,
+        userDetails: await userMinDetails(uid),
+      },
+    ],
     comments: [],
   };
   const insertInfo = await itemCollection.insertOne(newItem);
@@ -156,6 +163,22 @@ export const updateClaims = async (id, uid) => {
     }
   );
 
+  // update timelineDetails
+  const timelineObj = {
+    status: 'claim request',
+    date: new Date().toISOString(),
+    uid,
+    userDetails: await userMinDetails(uid),
+  };
+  const updatedTimeline = await itemCollection.updateOne(
+    { _id: new ObjectId(id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        timelineDetails: timelineObj,
+      },
+    }
+  );
   // for each userId in claims array append user details
   const claims = await itemCollection.findOne({ _id: new ObjectId(id) });
   for (let i = 0; i < claims.claims.length; i++) {
@@ -215,6 +238,23 @@ export const resolveClaimById = async (id, claimId, uid) => {
     }
   );
 
+  // update timelineDetails
+  const timelineObj = {
+    status: 'claim approved',
+    date: new Date().toISOString(),
+    uid,
+    userDetails: await userMinDetails(uid),
+  };
+  const updatedTimeline = await itemCollection.updateOne(
+    { _id: new ObjectId(id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        timelineDetails: timelineObj,
+      },
+    }
+  );
+
   // remove item from user's received_claims array
   const itemOwner = await userCollection.findOne({
     user_firebase_id: item.uid,
@@ -254,6 +294,23 @@ export const rejectClaimById = async (id, claimId, uid) => {
     {
       $set: {
         'claims.$.claimStatus': 'rejected',
+      },
+    }
+  );
+
+  // update timelineDetails
+  const timelineObj = {
+    status: 'claim rejected',
+    date: new Date().toISOString(),
+    uid,
+    userDetails: await userMinDetails(uid),
+  };
+  const updatedTimeline = await itemCollection.updateOne(
+    { _id: new ObjectId(id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        timelineDetails: timelineObj,
       },
     }
   );
