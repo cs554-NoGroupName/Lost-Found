@@ -8,6 +8,7 @@ import {
   deleteReportedIemById,
   claimRequest,
   resolveClaim,
+  getReportedItemBySearch,
 } from '../controllers/items.js';
 
 import { getItemsById } from '../middleware/items.js';
@@ -19,6 +20,7 @@ import upload from '../utils/uploadImage.js';
 router.post('/report', VerifyToken, upload.single('imageUrl'), report);
 router.get('/claim/:id', VerifyToken, claimRequest);
 router.get('/resolveClaim/:itemId/:claimId', VerifyToken, resolveClaim);
+router.get('/report/search', VerifyToken, getReportedItemBySearch);
 router.get('/', VerifyToken, getReportedItems);
 router.get('/:id', VerifyToken, getItemsById, getReportedItemById);
 router.patch('/:id', VerifyToken, updateReportedItem);

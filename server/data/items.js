@@ -354,4 +354,62 @@ export const deleteItemById = async (id) => {
   return getItem;
 };
 
+export const getItemBySearch = async (args) => {
+  const itemCollection = await items();
+  let itemList = await itemCollection.find({}).toArray();
+  if (!itemList) {
+    throw new Error({ status: 404, message: 'Not found' });
+  }
 
+  if (args.itemName) {
+    itemList = itemList.filter((item) => {
+      return item?.itemName
+        ?.toLowerCase()
+        .includes(args.itemName.toLowerCase());
+    });
+  }
+  // console.log(itemList[0]);
+  if (args.category) {
+    itemList = itemList.filter((item) => {
+      return item?.category
+        ?.toLowerCase()
+        .includes(args.category.toLowerCase());
+    });
+  }
+
+  if (args.tags) {
+    itemList = itemList.filter((item) => {
+      let itemTags = item?.tags?.split(',');
+      let argTags = args?.tags?.split(',');
+      for (let i = 0; i < argTags.length; i++) {
+        for (let j = 0; j < itemTags.length; j++) {
+          if (argTags[i].toLowerCase() === itemTags[j].toLowerCase()) {
+            return true;
+          }
+        }
+      }
+    });
+  }
+
+  if (args.lastSeenDate) {
+    const date = new Date(args.lastSeenDate);
+    itemList = itemList.filter((item) => {
+      const itemDate = new Date(item?.lastSeenDate);
+      return (
+        itemDate.getFullYear() === date.getFullYear() &&
+        itemDate.getMonth() === date.getMonth() &&
+        itemDate.getDate() === date.getDate()
+      );
+    });
+  }
+
+  if (args.itemStatus) {
+    itemList = itemList.filter((item) => {
+      return item?.itemStatus
+        ?.toLowerCase()
+        .includes(args.itemStatus.toLowerCase());
+    });
+  }
+
+  return itemList;
+};

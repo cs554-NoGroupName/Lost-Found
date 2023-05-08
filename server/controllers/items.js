@@ -7,6 +7,7 @@ import {
   getItemsByUserId,
   updateClaims,
   resolveClaimById,
+  getItemBySearch,
 } from '../data/items.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -268,42 +269,16 @@ export async function deleteReportedIemById(req, res) {
   }
 }
 
-// export async function createClaimById(req, res) {
-//   try {
-//     let id = req.params.id;
-//     let { description, lastSeenLocation } = req.body;
-//     id = validation.checkObjectId(id);
-//     description = validation.checkDescription(description);
-//     lastSeenLocation = validation.checkLastSeenLocation(lastSeenLocation);
-//   } catch (e) {
-//     return res.status(400).json({ error: e });
-//   }
-
-//   try {
-//     let id = req.params.id;
-//     const getClaim = await createClaim(id, lastSeenLocation, description);
-//     const exists = await client.exists(id);
-//     // if (exists) await client.del(id);
-//     // await client.set('getItem', JSON.stringify(await getAllItems()));
-//     return res
-//       .status(200)
-//       .json({ message: 'claim added successfully', data: getClaim });
-//     // return res.status(200).json({ data:'deleted'});
-//   } catch (e) {
-//     if (Object.keys(e).includes('status'))
-//       return res.status(e.status).json({ error: e.message });
-//     return res.status(500).json({ error: e });
-//   }
-// }
-
+// http://localhost:4000/items/report/search?itemStatus=claimed&itemName=phone&tags=phone&category=electronics&lastSeenDate=2023-04-12T04:05:49.000Z
 export async function getReportedItemBySearch(req, res) {
   try {
-    let itemRange = req.query.itemDateRange;
-    const getItems = await getItemBySearch(itemRange);
+    const getItems = await getItemBySearch(req.query);
     return res
       .status(200)
       .json({ message: 'Item fetched successfully', data: getItems });
   } catch (e) {
+    if (Object.keys(e).includes('status'))
+      return res.status(e.status).json({ error: e.message });
     return res.status(500).json({ error: e });
   }
 }
