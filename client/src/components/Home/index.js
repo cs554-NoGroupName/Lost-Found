@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import lodash from "lodash";
 import testData from "./testData.json";
-// import axios from "axios";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import LayoutProvider from "components/common/Layout";
 import useDocumentTitle from "components/common/useDocumentTitle";
 import LoadingText from "components/common/loadingText";
+import { styled } from '@mui/material/styles';
+
 import "./styles.css";
 
 import {
@@ -23,12 +25,14 @@ import {
   MenuItem,
   Modal,
   Select,
+  SwipeableDrawer,
   Typography,
   useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
+import { Global } from "@emotion/react";
 
-// import { GET_ITEMS_LIST } from "routes";
+import { GET_ITEMS_LIST } from "routes";
 
 const modalStyle = {
   position: "absolute",
@@ -43,6 +47,26 @@ const modalStyle = {
 };
 
 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+const container = window !== undefined ? () => window.document.body : undefined;
+
+const drawerBleeding = 56;
+
+const drawerBleedingDiff = 44;
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'light' ? '#fff' : theme.palette.primary.main,
+}));
+
+const Puller = styled(Box)(({ theme }) => ({
+  width: 30,
+  height: 6,
+  backgroundColor: theme.palette.primary.main,
+  borderRadius: 3,
+  position: 'absolute',
+  top: 8,
+  left: 'calc(50% - 15px)',
+}));
 
 const Home = () => {
   const currentUser = localStorage.getItem("token");
@@ -175,6 +199,10 @@ const Home = () => {
   // };
 
   const clearFilter = () => {
+    setFilterCategory(null);
+    setFilterTags([]);
+    setFilterStatus(null);
+    setFilterType(null);
     setFilteredData(null);
   };
 
@@ -267,27 +295,27 @@ const Home = () => {
     });
   };
 
-  // const refetchWithFilters = async () => {
-  //   const filters = {};
-  //   if (filterStatus) {
-  //     filters.status = filterStatus;
-  //   }
-  //   if (filterTags && filterTags.length > 0) {
-  //     filters.tags = tags;
-  //   }
-  //   if (filterCategory) {
-  //     filters.category = filterCategory;
-  //   }
-  //   if (filterType) {
-  //     filters.type = filterType;
-  //   }
-  //   const data = await axios.get(`${GET_ITEMS_LIST}?`, {
-  //     params: filters
-  //   });
-  //   setItemsData(data);
-  //   updateTodayItems(data);
-  //   updateLastSevenDaysItems(data);
-  // };
+  const refetchWithFilters = async () => {
+    const filters = {};
+    if (filterStatus) {
+      filters.status = filterStatus;
+    }
+    if (filterTags && filterTags.length > 0) {
+      filters.tags = tags;
+    }
+    if (filterCategory) {
+      filters.category = filterCategory;
+    }
+    if (filterType) {
+      filters.type = filterType;
+    }
+    const data = await axios.get(`${GET_ITEMS_LIST}?`, {
+      params: filters
+    });
+    setItemsData(data);
+    updateTodayItems(data);
+    updateLastSevenDaysItems(data);
+  };
 
   // Modal operations
   const openModal = () => setShowModal(true);
@@ -368,8 +396,7 @@ const Home = () => {
       <div>
         {/* Items displayed in cards using Material UI Grid */}
         {/* Filter options */}
-        {showFilters ? 
-        // <div className="flexer">
+        {/* {showFilters ? 
         <Grid container spacing={0}>
           <Grid item md={3} sm={6} xs={12}>
           <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
@@ -434,9 +461,8 @@ const Home = () => {
             </Select>
           </FormControl>
           </Grid>
-        {/* </div> */}
         </Grid>
-         : <></>}
+         : <></>} */}
         <div className="flexer">
           <Button onClick={toggleFilter}>{showFilters ? "Hide Filters" : "Show Filters"}</Button>
           {/* TODO: Replace function refetchTestData with commented out function refetchWithFilters once Backend is ready */}
@@ -496,6 +522,117 @@ const Home = () => {
             </Box>
           </Fade>
         </Modal>
+        <Global
+          styles={{
+            '.MuiDrawer-root > .MuiPaper-root': {
+              height: `calc(50% - ${drawerBleeding}px)`,
+              overflow: 'visible',
+            },
+          }}
+        />
+        <SwipeableDrawer
+          container={container}
+          anchor="bottom"
+          open={showFilters}
+          onClose={() => setShowFilters(false)}
+          onOpen={() => setShowFilters(true)}
+          swipeAreaWidth={drawerBleeding}
+          disableSwipeToOpen={false}
+          ModalProps={{
+            keepMounted: true,
+          }}
+      >
+        <StyledBox
+          sx={{
+            position: 'absolute',
+            top: -drawerBleedingDiff,
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8,
+            visibility: 'visible',
+            right: 0,
+            left: 0,
+          }}
+        >
+          <Puller />
+          <Typography sx={{ p: 2, color: 'text.secondary', padding: "10px" }}>Filters</Typography>
+        </StyledBox>
+        {/* <StyledBox
+          sx={{
+            px: 2,
+            pb: 2,
+            height: '100%',
+            overflow: 'auto',
+          }}
+        >
+          <Skeleton variant="rectangular" height="100%" />
+        </StyledBox> */}
+        <Grid container spacing={0}>
+          <Grid item md={3} sm={6} xs={12}>
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
+            <InputLabel id="category-filter-label">Category</InputLabel>
+            <Select
+              value={filterCategory}
+              labelId="category-filter-label"
+              id="category-filter"
+              onChange={(e) => setCategoryOnFilter(e.target.value)}
+              label="Status"
+            >
+              {categories.map((category) => {
+                return <MenuItem value={category}>{category}</MenuItem>
+              })}
+            </Select>
+          </FormControl>
+          </Grid>
+          <Grid item md={3} sm={6} xs={12}>
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
+            <InputLabel id="status-filter-label">Status</InputLabel>
+            <Select
+              value={filterStatus}
+              labelId="status-filter-label"
+              id="status-filter"
+              onChange={(e) => setStatusOnFilter(e.target.value)}
+              label="Status"
+            >
+              <MenuItem value="open">Open</MenuItem>
+              <MenuItem value="closed">Closed</MenuItem>
+            </Select>
+          </FormControl>
+          </Grid>
+          <Grid item md={3} sm={6} xs={12}>
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
+            <InputLabel id="type-filter-label">Type</InputLabel>
+            <Select
+              value={filterType}
+              labelId="type-filter-label"
+              id="type-filter"
+              onChange={(e) => setTypeOnFilter(e.target.value)}
+              label="Type"
+            >
+              <MenuItem value="lost">Lost</MenuItem>
+              <MenuItem value="found">Found</MenuItem>
+            </Select>
+          </FormControl>
+          </Grid>
+          <Grid item md={3} sm={6} xs={12}>
+          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
+            <InputLabel id="tags-filter-label">Tag</InputLabel>
+            <Select
+              value={filterTags}
+              multiple
+              labelId="tags-filter-label"
+              id="tags-filter"
+              onChange={(e) => setTagsOnFilter(e.target.value)}
+              label="Tag"
+            >
+              {tags.map((tag) => {
+                return <MenuItem value={tag}>{tag}</MenuItem>
+              })}
+            </Select>
+          </FormControl>
+          </Grid>
+        </Grid>
+        <Button onClick={refetchWithFilters}>Apply Filters</Button>
+      </SwipeableDrawer>
       </div>
     </LayoutProvider>
   );
