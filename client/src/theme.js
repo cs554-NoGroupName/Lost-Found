@@ -29,6 +29,7 @@ const theme = createTheme({
       darker: "#070F1D",
       contrastText: "#faf6eb"
     },
+    yellowButton: "#ff9717",
     contrastThreshold: 5,
     tonalOffset: 0.2,
   },
