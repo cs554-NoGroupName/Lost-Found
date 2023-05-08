@@ -6,17 +6,16 @@ import {
   deleteItemById,
   getItemsByUserId,
   updateClaims,
+  resolveClaimById,
+  updateDispute,
+  rejectClaimById,
 } from '../data/items.js';
-import redis from 'redis';
 import dotenv from 'dotenv';
 dotenv.config();
-const client = redis.createClient({
-  socket: {
-    port: 6379,
-    host: 'redis',
-  },
-});
-client.connect().then(() => {});
+
+import getClient from '../utils/redisClient.js';
+const client = await getClient();
+
 import validation from '../utils/validation.js';
 import { BlobServiceClient } from '@azure/storage-blob';
 const blobServiceClient = BlobServiceClient.fromConnectionString(
@@ -73,7 +72,7 @@ export async function report(req, res) {
       imageUrl,
       uid
     );
-    await client.set(`Item_${newItem.id.toString()}`, JSON.stringify(getItem));
+    await client.set(`Item_${newItem._id.toString()}`, JSON.stringify(newItem));
     res.status(201).json(newItem);
   } catch (e) {
     res.status(400).json({ message: e });
@@ -98,6 +97,61 @@ export async function claimRequest(req, res) {
     if (found) throw 'You have already requested for this item';
 
     const updatedItem = await updateClaims(id, uid);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
+export async function resolveClaim(req, res) {
+  let { itemId, claimId } = req.params;
+  let { uid } = req.user;
+
+  try {
+    const item = await getItemById(itemId);
+    if (item.uid !== uid) throw 'You cannot resolve claim for this item';
+    const updatedItem = await resolveClaimById(itemId, claimId, uid);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
+export async function rejectClaim(req, res) {
+  let { itemId, claimId } = req.params;
+  let { uid } = req.user;
+
+  try {
+    const item = await getItemById(itemId);
+    if (item.uid !== uid) throw 'You cannot reject claim for this item';
+    const updatedItem = await rejectClaimById(itemId, claimId, uid);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
+export async function disputeRequest(req, res) {
+  let { itemId } = req.params;
+  let { uid } = req.user;
+  let { reason } = req.body;
+  try {
+    const item = await getItemById(itemId);
+    if (item.uid !== uid) throw 'You cannot dispute claim for this item';
+    if (item.itemStatus !== 'claimed') throw 'Item not claimed, cannot dispute';
+    const updatedItem = await updateDispute(itemId, uid, reason);
     await client.set(
       `Item_${updatedItem._id.toString()}`,
       JSON.stringify(updatedItem)
@@ -238,13 +292,14 @@ export async function deleteReportedIemById(req, res) {
 
   try {
     let id = req.params.id;
+    let uid = req.user.uid;
+    const item = await getItemById(id);
+    if (item.uid !== uid) throw 'You cannot delete this item';
     const deleteItem = await deleteItemById(id);
     const exists = await client.exists(id);
     if (exists) await client.del(id);
     // await client.set('getItem', JSON.stringify(await getAllItems()));
-    return res
-      .status(200)
-      .json({ message: 'Item deleted successfully', data: deleteItem });
+    return res.status(200).json({ message: 'Item deleted successfully' });
     // return res.status(200).json({ data:'deleted'});
   } catch (e) {
     if (Object.keys(e).includes('status'))

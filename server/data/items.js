@@ -47,23 +47,46 @@ export const createItem = async (
   return item;
 };
 
+export const userMinDetails = async (uid) => {
+  const userCollection = await mongoCollections.users();
+  let user = await userCollection.findOne({
+    user_firebase_id: uid,
+  });
+  user = {
+    uid: user.user_firebase_id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    image_url: user.image_url,
+  };
+  return user;
+};
+
 export const getItemById = async (id) => {
   const itemCollection = await items();
   const item = await itemCollection.findOne({ _id: new ObjectId(id) });
   if (!item) throw 'Item not found';
   // append user details
   const userCollection = await mongoCollections.users();
-  const user = await userCollection.findOne({
-    user_firebase_id: item.uid,
-  });
+  const user = await userMinDetails(item.uid);
   item.reportedBy = user;
   // for each userId in claims array append user details
   for (let i = 0; i < item.claims.length; i++) {
-    const user = await userCollection.findOne({
-      user_firebase_id: item.claims[i].userId,
-    });
+    const user = await userMinDetails(item.claims[i].userId);
     item.claims[i].userDetails = user;
   }
+  // add item to user's reported array
+  const reportedBy = await userCollection.findOne({
+    user_firebase_id: item.uid,
+  });
+  const updatedReportedBy = await userCollection.updateOne(
+    { _id: new ObjectId(reportedBy._id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        reported: id,
+      },
+    }
+  );
 
   return item;
 };
@@ -102,18 +125,184 @@ export const updateClaims = async (id, uid) => {
       },
     }
   );
+
   if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
-  // for each userId in claims array append user details
+  // add item to user's requested_claims array
   const userCollection = await mongoCollections.users();
+  const user = await userCollection.findOne({
+    user_firebase_id: uid,
+  });
+  const updatedUser = await userCollection.updateOne(
+    { _id: new ObjectId(user._id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        requested_claims: id,
+      },
+    }
+  );
+
+  // added item to user's recived_claims array
+  const itemOwner = await userCollection.findOne({
+    user_firebase_id: item.uid,
+  });
+  const updatedItemOwner = await userCollection.updateOne(
+    { _id: new ObjectId(itemOwner._id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        received_claims: id,
+      },
+    }
+  );
+
+  // for each userId in claims array append user details
   const claims = await itemCollection.findOne({ _id: new ObjectId(id) });
   for (let i = 0; i < claims.claims.length; i++) {
-    const user = await userCollection.findOne({
-      user_firebase_id: claims.claims[i].userId,
-    });
+    const user = await userMinDetails(claims.claims[i].userId);
     claims.claims[i].userDetails = user;
   }
-
+  const reportedBy = await userMinDetails(item.uid);
+  claims.reportedBy = reportedBy;
   return claims;
+};
+
+export const resolveClaimById = async (id, claimId, uid) => {
+  const itemCollection = await items();
+  const item = await itemCollection.findOne({ _id: new ObjectId(id) });
+  if (!item) throw 'Item not found';
+  if (item.uid !== uid) throw 'You cannot resolve this item';
+  if (item.itemStatus === 'claimed') throw 'Item already resolved';
+
+  const updatedInfo = await itemCollection.updateOne(
+    { _id: new ObjectId(id) },
+    // only update claims array with the new uid
+    {
+      $set: {
+        itemStatus: 'claimed',
+        claimedBy: claimId,
+      },
+    }
+  );
+
+  if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
+  // remove item from user's requested_claims array and add to claims array
+  const userCollection = await mongoCollections.users();
+  const user = await userCollection.findOne({
+    user_firebase_id: claimId,
+  });
+  const updatedUser = await userCollection.updateOne(
+    { _id: new ObjectId(user._id) },
+    // only update claims array with the new uid
+    {
+      $pull: {
+        requested_claims: id,
+      },
+      $addToSet: {
+        claims: id,
+      },
+    }
+  );
+
+  // also update claim status in item's claims array
+  const updatedItem = await itemCollection.updateOne(
+    { _id: new ObjectId(id), 'claims.userId': claimId },
+    // only update claims array with the new uid
+    {
+      $set: {
+        'claims.$.claimStatus': 'approved',
+      },
+    }
+  );
+
+  // remove item from user's received_claims array
+  const itemOwner = await userCollection.findOne({
+    user_firebase_id: item.uid,
+  });
+  const updatedItemOwner = await userCollection.updateOne(
+    { _id: new ObjectId(itemOwner._id) },
+    // only update claims array with the new uid
+    {
+      $pull: {
+        received_claims: id,
+      },
+    }
+  );
+
+  // for each userId in claims array append user details
+  const claims = await itemCollection.findOne({ _id: new ObjectId(id) });
+  for (let i = 0; i < claims.claims.length; i++) {
+    const user = await userMinDetails(claims.claims[i].userId);
+    claims.claims[i].userDetails = user;
+  }
+  const reportedBy = await userMinDetails(claims.uid);
+  claims.reportedBy = reportedBy;
+  return claims;
+};
+
+export const rejectClaimById = async (id, claimId, uid) => {
+  const itemCollection = await items();
+  const item = await itemCollection.findOne({ _id: new ObjectId(id) });
+  if (!item) throw 'Item not found';
+  if (item.uid !== uid) throw 'You cannot reject this item';
+  if (item.itemStatus === 'claimed') throw 'Item already resolved';
+
+  // also update claim status in item's claims array
+  const updatedItem = await itemCollection.updateOne(
+    { _id: new ObjectId(id), 'claims.userId': claimId },
+    // only update claims array with the new uid
+    {
+      $set: {
+        'claims.$.claimStatus': 'rejected',
+      },
+    }
+  );
+
+  // for each userId in claims array append user details
+  const claims = await itemCollection.findOne({ _id: new ObjectId(id) });
+  for (let i = 0; i < claims.claims.length; i++) {
+    const user = await userMinDetails(claims.claims[i].userId);
+    claims.claims[i].userDetails = user;
+  }
+  const reportedBy = await userMinDetails(claims.uid);
+  claims.reportedBy = reportedBy;
+  return claims;
+};
+
+export const updateDispute = async (id, uid, dispute) => {
+  const itemCollection = await items();
+  const item = await itemCollection.findOne({ _id: new ObjectId(id) });
+  if (!item) throw 'Item not found';
+  if (item.uid !== uid) throw 'You cannot update this item';
+  if (item.itemStatus !== 'claimed') throw 'Item not claimed';
+
+  const disputeObj = {
+    dispute,
+    disputeDate: new Date().toISOString(),
+    userId: uid,
+    status: 'pending',
+  };
+
+  const updatedInfo = await itemCollection.updateOne(
+    { _id: new ObjectId(id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        disputes: disputeObj,
+      },
+    }
+  );
+
+  if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
+  // for each userId in claims array append user details
+  const disputes = await itemCollection.findOne({ _id: new ObjectId(id) });
+  for (let i = 0; i < disputes.disputes.length; i++) {
+    const user = await userMinDetails(disputes.disputes[i].userId);
+    disputes.disputes[i].userDetails = user;
+  }
+  const reportedBy = await userMinDetails(disputes.uid);
+  disputes.reportedBy = reportedBy;
+  return disputes;
 };
 
 export const updateItem = async (...args) => {
@@ -183,10 +372,67 @@ export const deleteItemById = async (id) => {
   id = validation.checkObjectId(id);
   const getItem = await getItemById(id);
   const itemData = await items();
-  const deletionInfo = await itemData.deleteOne({ _id: new ObjectId(id) });
-  if (deletionInfo.deletedCount === 0) {
-    throw new Error(`Could not delete item with id of ${id}`);
+  // delete item from user's reported array
+  const userCollection = await mongoCollections.users();
+  const reportedBy = await userCollection.findOne({
+    user_firebase_id: getItem.uid,
+  });
+  const updatedReportedBy = await userCollection.updateOne(
+    { _id: new ObjectId(reportedBy._id) },
+    // only update claims array with the new uid
+    {
+      $pull: {
+        reported: id,
+      },
+    }
+  );
+  // delete item from user's requested_claims array
+  for (let i = 0; i < getItem.claims.length; i++) {
+    const user = await userCollection.findOne({
+      user_firebase_id: getItem.claims[i].userId,
+    });
+    const updatedUser = await userCollection.updateOne(
+      { _id: new ObjectId(user._id) },
+      // only update claims array with the new uid
+      {
+        $pull: {
+          requested_claims: id,
+        },
+      }
+    );
   }
+  // delete item from user's received_claims array
+  const itemOwner = await userCollection.findOne({
+    user_firebase_id: getItem.uid,
+  });
+  const updatedItemOwner = await userCollection.updateOne(
+    { _id: new ObjectId(itemOwner._id) },
+    // only update claims array with the new uid
+    {
+      $pull: {
+        received_claims: id,
+      },
+    }
+  );
+  // delete item from user's claims array
+  for (let i = 0; i < getItem.claims.length; i++) {
+    const user = await userCollection.findOne({
+      user_firebase_id: getItem.claims[i].userId,
+    });
+    const updatedUser = await userCollection.updateOne(
+      { _id: new ObjectId(user._id) },
+      // only update claims array with the new uid
+      {
+        $pull: {
+          claims: id,
+        },
+      }
+    );
+  }
+
+  const deletionInfo = await itemData.deleteOne({ _id: new ObjectId(id) });
+  if (deletionInfo.deletedCount === 0) throw 'Could not delete item';
+
   console.log(deletionInfo);
-  return getItem;
+  return { deleted: true, message: 'Item deleted successfully' };
 };
