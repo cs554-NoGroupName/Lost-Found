@@ -33,6 +33,7 @@ import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import { Global } from "@emotion/react";
 
 import { GET_ITEMS_LIST } from "routes";
+import Search from "./Search";
 
 const modalStyle = {
   position: "absolute",
@@ -71,10 +72,11 @@ const Puller = styled(Box)(({ theme }) => ({
 const Home = () => {
   const currentUser = localStorage.getItem("token");
   const [loading, setLoading] = useState(true);
+  const [resultData, setResultData] = useState([]);
   const [itemsData, setItemsData] = useState([]);
   const [tags, setTags] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [filteredData, setFilteredData] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState(null);
@@ -94,7 +96,7 @@ const Home = () => {
         // const { data } = await axios.get(
         //   "https://tempapi.proj.me/api/_iq6G8cWO" // TODO: Replace with items data backend call using REACT env variables
         // );
-        // setItemsData(data?.data);
+        // setResultData(data?.data);
         setItemsData(testData);
         updateTodayItems(testData);
         updateLastSevenDaysItems(testData);
@@ -109,10 +111,32 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    console.log("search useEffect fired");
+    async function fetchData() {
+      try {
+        console.log(`in fetch searchTerm: ${searchTerm}`);
+        const { data } = await axios.get(
+          `${GET_ITEMS_LIST}?searchTerm=${searchTerm}`
+        );
+        setResultData(data?._embedded?.events);
+        console.log("Search data:", data, data?._embedded?.events);
+        setLoading(false);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    if (searchTerm) {
+      console.log("searchTerm is set");
+      fetchData();
+    }
+  }, [searchTerm]);
+
+  useEffect(() => {
     console.log("Current user:", currentUser)
   }, [currentUser]);
 
   useEffect(() => {
+    // TODO: Replace all instances of itemsData within this useEffect with resultData and perform the necessary handling;
     const getUniqueTags = () => {
       let temp = [];
   
@@ -137,6 +161,10 @@ const Home = () => {
       setCategories(getUniqueCategories());
     }
   }, [itemsData]);
+
+  const searchValue = async (value) => {
+    setSearchTerm(value);
+  };
 
   const toggleFilter = () => {
     setShowFilters(!showFilters);
@@ -191,11 +219,11 @@ const Home = () => {
   };
 
   // const filterByField = (field, value) => {
-  //   setFilteredData(itemsData.filter(item => item[field] === value));
+  //   setSearchTerm(itemsData.filter(item => item[field] === value));
   // };
 
   // const filterByTag = (tag) => {
-  //   setFilteredData(itemsData.filter(item => item.tags.includes(tag)));
+  //   setSearchTerm(itemsData.filter(item => item.tags.includes(tag)));
   // };
 
   const clearFilter = () => {
@@ -203,7 +231,6 @@ const Home = () => {
     setFilterTags([]);
     setFilterStatus(null);
     setFilterType(null);
-    setFilteredData(null);
   };
 
   console.log("TAGS:", tags);
@@ -219,7 +246,9 @@ const Home = () => {
           height="200px"
           width="100%"
           sx={{
-            objectFit: "contain"
+            objectFit: "contain",
+            width: "300px",
+            height: "300px"
           }}
           image={item?.images?.[0]}
           alt={item?.name}
@@ -259,41 +288,41 @@ const Home = () => {
     });
   };
 
-  const refetchTestData = () => {
-    const filters = {};
-    if (filterStatus) {
-      filters.status = filterStatus;
-    }
-    if (filterTags && filterTags.length > 0) {
-      filters.tags = tags;
-    }
-    if (filterCategory) {
-      filters.category = filterCategory;
-    }
-    if (filterType) {
-      filters.type = filterType;
-    }
-    let filteredTestData = testData;
-    const filterKeys = Object.keys(filters) ?? [];
-    if (filterKeys && filterKeys?.length > 0) {
-      for (const key of filterKeys) {
-        if (key !== "tags") {
-          filteredTestData = filteredTestData?.filter((item) => item[key] === filters[key])
-        } else {
-          filteredTestData = filteredTestData?.filter((item) => checkExactSubset(item?.keys, filters?.keys))
-        }
-      }
-    }
-    setItemsData(filteredTestData);
-    updateTodayItems(filteredTestData);
-    updateLastSevenDaysItems(filteredTestData);
-  };
+  // const refetchTestData = () => {
+  //   const filters = {};
+  //   if (filterStatus) {
+  //     filters.status = filterStatus;
+  //   }
+  //   if (filterTags && filterTags.length > 0) {
+  //     filters.tags = tags;
+  //   }
+  //   if (filterCategory) {
+  //     filters.category = filterCategory;
+  //   }
+  //   if (filterType) {
+  //     filters.type = filterType;
+  //   }
+  //   let filteredTestData = testData;
+  //   const filterKeys = Object.keys(filters) ?? [];
+  //   if (filterKeys && filterKeys?.length > 0) {
+  //     for (const key of filterKeys) {
+  //       if (key !== "tags") {
+  //         filteredTestData = filteredTestData?.filter((item) => item[key] === filters[key])
+  //       } else {
+  //         filteredTestData = filteredTestData?.filter((item) => checkExactSubset(item?.keys, filters?.keys))
+  //       }
+  //     }
+  //   }
+  //   setItemsData(filteredTestData);
+  //   updateTodayItems(filteredTestData);
+  //   updateLastSevenDaysItems(filteredTestData);
+  // };
 
-  const checkExactSubset = (parentArray, childArray) => {
-    return childArray?.every((el) => {
-        return parentArray?.includes(el)
-    });
-  };
+  // const checkExactSubset = (parentArray, childArray) => {
+  //   return childArray?.every((el) => {
+  //       return parentArray?.includes(el)
+  //   });
+  // };
 
   const refetchWithFilters = async () => {
     const filters = {};
@@ -309,8 +338,8 @@ const Home = () => {
     if (filterType) {
       filters.type = filterType;
     }
-    const data = await axios.get(`${GET_ITEMS_LIST}?`, {
-      params: filters
+    const data = await axios.get(`${GET_ITEMS_LIST}`, {
+      params: { filters: filters }
     });
     setItemsData(data);
     updateTodayItems(data);
@@ -327,13 +356,13 @@ const Home = () => {
       <div className="items-card">
         {data.map((item) => {
           return (
-            <>
+            <div>
               {currentUser ? (
                 <Link to={`/item/${item.id}`}>{cardBuilder(item)}</Link>
               ) : (
                 <span onClick={openModal}>{cardBuilder(item)}</span>
               )}
-            </>
+            </div>
           );
         })}
       </div>
@@ -464,17 +493,18 @@ const Home = () => {
         </Grid>
          : <></>} */}
         <div className="flexer">
+          <Search searchValue={searchValue} searchType="Events" />
           <Button onClick={toggleFilter}>{showFilters ? "Hide Filters" : "Show Filters"}</Button>
           {/* TODO: Replace function refetchTestData with commented out function refetchWithFilters once Backend is ready */}
-          {showFilters ? <Button onClick={refetchTestData}>Apply Filters</Button> : <></>} 
-          <Button onClick={clearFilter}>Clear Filters</Button>
+          {/* {showFilters ? <Button onClick={refetchTestData}>Apply Filters</Button> : <></>} 
+          <Button onClick={clearFilter}>Clear Filters</Button> */}
         </div>
         <Box sx={{ flexGrow: 1 }}>
-          {itemsData ? (
+          {todayItems ? (
             <div>
-              Today
-              <div className="slider-cards">
-                {itemsCard(filteredData ? filteredData : todayItems ? todayItems : itemsData)}
+              <div style={{ margin: "10px" }}>Today</div>
+              <div className="slider-cards" style={{ display: "flex", gap: "10px" }}>
+                {itemsCard(todayItems)}
               </div>
             </div>
           ) : (
@@ -484,9 +514,19 @@ const Home = () => {
         <Grid container>
           {lastSevenDays ? (
             <div>
-              Last 7 days
+              <div style={{ margin: "10px" }}>Last 7 days</div>
               <div className="items-rows">
                 {getLastSevenDaysCard(lastSevenDays)}
+              </div>
+            </div>
+          ) : <></>}
+        </Grid>
+        <Grid container>
+          {itemsData ? (
+            <div>
+              <div style={{ margin: "10px" }}>More than 7 days ago</div>
+              <div className="items-rows">
+                {getLastSevenDaysCard(itemsData)}
               </div>
             </div>
           ) : <></>}
@@ -525,7 +565,7 @@ const Home = () => {
         <Global
           styles={{
             '.MuiDrawer-root > .MuiPaper-root': {
-              height: `calc(50% - ${drawerBleeding}px)`,
+              // height: `calc(50% - ${drawerBleeding}px)`,
               overflow: 'visible',
             },
           }}
@@ -631,7 +671,10 @@ const Home = () => {
           </FormControl>
           </Grid>
         </Grid>
-        <Button onClick={refetchWithFilters}>Apply Filters</Button>
+        <div className="flexer">
+          <Button sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }} onClick={refetchWithFilters}>Apply Filters</Button>
+          <Button sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }} onClick={clearFilter}>Clear Filters</Button>
+        </div>
       </SwipeableDrawer>
       </div>
     </LayoutProvider>
