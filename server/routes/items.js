@@ -9,6 +9,7 @@ import {
   claimRequest,
   resolveClaim,
   disputeRequest,
+  rejectClaim,
 } from '../controllers/items.js';
 
 import { getAllItems, getItemsById } from '../middleware/items.js';
@@ -20,6 +21,7 @@ import upload from '../utils/uploadImage.js';
 router.post('/report', VerifyToken, upload.single('imageUrl'), report);
 router.get('/claim/:id', VerifyToken, claimRequest);
 router.get('/resolveClaim/:itemId/:claimId', VerifyToken, resolveClaim);
+router.get('/rejectClaim/:itemId/:claimId', VerifyToken, rejectClaim);
 
 router.post('/dispute/:id', VerifyToken, disputeRequest);
 // router.get('/resolveDispute/:itemId/:disputeId', VerifyToken, resolveDispute);

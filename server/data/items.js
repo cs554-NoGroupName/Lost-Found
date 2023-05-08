@@ -163,7 +163,7 @@ export const updateClaims = async (id, uid) => {
     claims.claims[i].userDetails = user;
   }
   const reportedBy = await userMinDetails(item.uid);
-  item.reportedBy = reportedBy;
+  claims.reportedBy = reportedBy;
   return claims;
 };
 
