@@ -7,16 +7,19 @@ import {
   getItemsByUserId,
   updateClaims,
 } from '../data/items.js';
-import redis from 'redis';
 import dotenv from 'dotenv';
 dotenv.config();
+import redis from 'redis';
+
 const client = redis.createClient({
-  socket: {
-    port: 6379,
-    host: 'redis',
-  },
+  password: process.env.REDIS_PASSWORD,
+  url: `rediss://${process.env.REDIS_HOST}:6380`,
 });
-client.connect().then(() => {});
+
+client.connect().then(() => {
+  console.log('Redis connected');
+});
+
 import validation from '../utils/validation.js';
 import { BlobServiceClient } from '@azure/storage-blob';
 const blobServiceClient = BlobServiceClient.fromConnectionString(
@@ -73,7 +76,7 @@ export async function report(req, res) {
       imageUrl,
       uid
     );
-    await client.set(`Item_${newItem.id.toString()}`, JSON.stringify(getItem));
+    await client.set(`Item_${newItem._id.toString()}`, JSON.stringify(newItem));
     res.status(201).json(newItem);
   } catch (e) {
     res.status(400).json({ message: e });

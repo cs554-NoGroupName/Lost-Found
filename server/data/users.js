@@ -51,6 +51,21 @@ export const getUserById = async (id) => {
 export const getUserByFirebaseId = async (user_firebase_id) => {
   const userCollection = await users();
   const user = await userCollection.findOne({ user_firebase_id });
+  // fetch reported items
+  const itemCollection = await mongoCollections.items();
+  const reportedItems = await itemCollection
+    .find({ uid: user_firebase_id })
+    .toArray();
+  user.reported = reportedItems;
+  //  fetch requested_claimed items
+  if (!user.requested_claims) user.requested_claims = [];
+  for (let i = 0; i < user.requested_claims.length; i++) {
+    const item = await itemCollection.findOne({
+      _id: new ObjectId(user.requested_claims[i]),
+    });
+    user.requested_claims[i] = item;
+  }
+
   if (!user) throw 'User not found';
   return user;
 };

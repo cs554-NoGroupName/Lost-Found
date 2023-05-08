@@ -64,6 +64,19 @@ export const getItemById = async (id) => {
     });
     item.claims[i].userDetails = user;
   }
+  // add item to user's reported array
+  const reportedBy = await userCollection.findOne({
+    user_firebase_id: item.uid,
+  });
+  const updatedReportedBy = await userCollection.updateOne(
+    { _id: new ObjectId(reportedBy._id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        reported: id,
+      },
+    }
+  );
 
   return item;
 };
@@ -102,9 +115,38 @@ export const updateClaims = async (id, uid) => {
       },
     }
   );
+
   if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
-  // for each userId in claims array append user details
+  // add item to user's requested_claims array
   const userCollection = await mongoCollections.users();
+  const user = await userCollection.findOne({
+    user_firebase_id: uid,
+  });
+  const updatedUser = await userCollection.updateOne(
+    { _id: new ObjectId(user._id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        requested_claims: id,
+      },
+    }
+  );
+
+  // added item to user's recived_claims array
+  const itemOwner = await userCollection.findOne({
+    user_firebase_id: item.uid,
+  });
+  const updatedItemOwner = await userCollection.updateOne(
+    { _id: new ObjectId(itemOwner._id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        received_claims: id,
+      },
+    }
+  );
+
+  // for each userId in claims array append user details
   const claims = await itemCollection.findOne({ _id: new ObjectId(id) });
   for (let i = 0; i < claims.claims.length; i++) {
     const user = await userCollection.findOne({
