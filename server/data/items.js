@@ -64,6 +64,19 @@ export const getItemById = async (id) => {
     });
     item.claims[i].userDetails = user;
   }
+  // add item to user's reported array
+  const reportedBy = await userCollection.findOne({
+    user_firebase_id: item.uid,
+  });
+  const updatedReportedBy = await userCollection.updateOne(
+    { _id: new ObjectId(reportedBy._id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        reported: id,
+      },
+    }
+  );
 
   return item;
 };
