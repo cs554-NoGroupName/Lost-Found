@@ -56,7 +56,7 @@ body::-webkit-scrollbar-thumb {
   /* scroll-behavior: smooth; */
   /* resize: horizontal; */
   position: relative;
-  padding: 24px 10px 32px 16px;
+  padding: 24px 10px;
   /* overflow-y: hidden; */
   /* resize: none; */
   /* max-width: 100vw; */
