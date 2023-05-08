@@ -8,6 +8,7 @@ import {
   updateClaims,
   resolveClaimById,
   updateDispute,
+  rejectClaimById,
 } from '../data/items.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -114,6 +115,24 @@ export async function resolveClaim(req, res) {
     const item = await getItemById(itemId);
     if (item.uid !== uid) throw 'You cannot resolve claim for this item';
     const updatedItem = await resolveClaimById(itemId, claimId, uid);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
+export async function rejectClaim(req, res) {
+  let { itemId, claimId } = req.params;
+  let { uid } = req.user;
+
+  try {
+    const item = await getItemById(itemId);
+    if (item.uid !== uid) throw 'You cannot reject claim for this item';
+    const updatedItem = await rejectClaimById(itemId, claimId, uid);
     await client.set(
       `Item_${updatedItem._id.toString()}`,
       JSON.stringify(updatedItem)
