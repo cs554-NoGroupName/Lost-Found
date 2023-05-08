@@ -16,6 +16,7 @@ import PrivacyPolicyPage from "components/common/privacyPolicyPage";
 
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
+import MyActivites from "components/myActivities";
 
 function App() {
   const state = useSelector((state) => state?.userData?.userData);
@@ -33,7 +34,7 @@ function App() {
   });
 
   const isAuthenticated = () => {
-    return JSON.stringify(state) !== "{}" ? true : false;
+    return Object.keys(state).length !== 0 ? true : false;
   };
 
   return (
@@ -44,18 +45,41 @@ function App() {
             <Route
               path="/"
               exact
-              element={<Home />}
+              element={
+                isAuthenticated() ? <Home /> : <Navigate to="/login" replace />
+              }
+            />
+            <Route
+              path="/my-activities"
+              exact
+              element={
+                isAuthenticated() ? (
+                  <MyActivites />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
             />
             <Route
               path="/report-item"
               exact
-              element={<ReportItem />}
+              element={
+                isAuthenticated() ? (
+                  <ReportItem />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
             />
-             <Route
+            <Route
               path="/item/:id"
               exact
               element={
-                isAuthenticated() ? <ItemDetails /> : <Navigate to="/item/:id" replace />
+                isAuthenticated() ? (
+                  <ItemDetails />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
               }
             />
             <Route
