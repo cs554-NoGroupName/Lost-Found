@@ -81,14 +81,18 @@ body::-webkit-scrollbar-thumb {
 }
 
 .css-1e7cuzv-MuiFormControl-root {
+  @media only screen and (max-width: 860px and min-width: 360px) {
+    min-width: 150px !important;
+    width: -webkit-fill-available;
+  }
   @media only screen and (max-width: 360px) {
     min-width: 100px !important;
     width: -webkit-fill-available;
   }
-  @media only screen and (min-width: 360px) {
+  /* @media only screen and (min-width: 360px) {
     min-width: 150px !important;
     width: -webkit-fill-available;
-  }
+  } */
 }
 
 .row-wrapper {
