@@ -10,6 +10,8 @@ import {
   resolveClaim,
   disputeRequest,
   rejectClaim,
+  comment,
+  commentDelete,
 } from '../controllers/items.js';
 
 import { getAllItems, getItemsById } from '../middleware/items.js';
@@ -26,6 +28,10 @@ router.get('/rejectClaim/:itemId/:claimId', VerifyToken, rejectClaim);
 router.post('/dispute/:id', VerifyToken, disputeRequest);
 // router.get('/resolveDispute/:itemId/:disputeId', VerifyToken, resolveDispute);
 router.get('/delete/:id', VerifyToken, deleteReportedIemById);
+
+router.post('/comment/:id', VerifyToken, comment);
+
+router.get('/comment/delete/:id/:commentId', VerifyToken, commentDelete);
 
 router.get('/', VerifyToken, getAllItems, getReportedItems);
 router.get('/:id', VerifyToken, getItemsById, getReportedItemById);

@@ -43,6 +43,19 @@ export const createItem = async (
   const insertInfo = await itemCollection.insertOne(newItem);
   if (!insertInfo.acknowledged) throw 'Could not add item';
   const newId = insertInfo.insertedId;
+  // add item to user's reported array
+  const reportedBy = await userCollection.findOne({
+    user_firebase_id: item.uid,
+  });
+  const updatedReportedBy = await userCollection.updateOne(
+    { _id: new ObjectId(reportedBy._id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        reported: id,
+      },
+    }
+  );
   const item = await getItemById(newId);
   return item;
 };
@@ -74,19 +87,6 @@ export const getItemById = async (id) => {
     const user = await userMinDetails(item.claims[i].userId);
     item.claims[i].userDetails = user;
   }
-  // add item to user's reported array
-  const reportedBy = await userCollection.findOne({
-    user_firebase_id: item.uid,
-  });
-  const updatedReportedBy = await userCollection.updateOne(
-    { _id: new ObjectId(reportedBy._id) },
-    // only update claims array with the new uid
-    {
-      $addToSet: {
-        reported: id,
-      },
-    }
-  );
 
   return item;
 };
@@ -435,4 +435,55 @@ export const deleteItemById = async (id) => {
 
   console.log(deletionInfo);
   return { deleted: true, message: 'Item deleted successfully' };
+};
+
+export const addComment = async (id, uid, comment) => {
+  id = validation.checkObjectId(id);
+  const item = await getItemById(id);
+  const userCollection = await mongoCollections.users();
+  const user = await userCollection.findOne({
+    user_firebase_id: uid,
+  });
+  const commentObj = {
+    _id: new ObjectId(),
+    comment,
+    commentDate: new Date().toISOString(),
+    userId: uid,
+    userDetails: {
+      uid: user.user_firebase_id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      image_url: user.image_url,
+    },
+  };
+  const itemData = await items();
+  const updatedInfo = await itemData.updateOne(
+    { _id: new ObjectId(id) },
+    // only update claims array with the new uid
+    {
+      $addToSet: {
+        comments: commentObj,
+      },
+    }
+  );
+  if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
+  const updatedItem = await getItemById(id);
+  return updatedItem;
+};
+
+export const deleteCommentById = async (id, commentId) => {
+  id = validation.checkObjectId(id);
+  const itemData = await items();
+  const updatedInfo = await itemData.updateOne(
+    { _id: new ObjectId(id) },
+    // only update claims array with the new uid
+    {
+      $pull: {
+        comments: { _id: new ObjectId(commentId) },
+      },
+    }
+  );
+  if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
+  const updatedItem = await getItemById(id);
+  return updatedItem;
 };
