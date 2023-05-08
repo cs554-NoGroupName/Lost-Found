@@ -25,10 +25,10 @@ router.get('/rejectClaim/:itemId/:claimId', VerifyToken, rejectClaim);
 
 router.post('/dispute/:id', VerifyToken, disputeRequest);
 // router.get('/resolveDispute/:itemId/:disputeId', VerifyToken, resolveDispute);
+router.get('/delete/:id', VerifyToken, deleteReportedIemById);
 
 router.get('/', VerifyToken, getAllItems, getReportedItems);
 router.get('/:id', VerifyToken, getItemsById, getReportedItemById);
 router.patch('/:id', VerifyToken, updateReportedItem);
-router.delete('/:id', VerifyToken, deleteReportedIemById);
 
 export default router;

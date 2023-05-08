@@ -372,10 +372,67 @@ export const deleteItemById = async (id) => {
   id = validation.checkObjectId(id);
   const getItem = await getItemById(id);
   const itemData = await items();
-  const deletionInfo = await itemData.deleteOne({ _id: new ObjectId(id) });
-  if (deletionInfo.deletedCount === 0) {
-    throw new Error(`Could not delete item with id of ${id}`);
+  // delete item from user's reported array
+  const userCollection = await mongoCollections.users();
+  const reportedBy = await userCollection.findOne({
+    user_firebase_id: getItem.uid,
+  });
+  const updatedReportedBy = await userCollection.updateOne(
+    { _id: new ObjectId(reportedBy._id) },
+    // only update claims array with the new uid
+    {
+      $pull: {
+        reported: id,
+      },
+    }
+  );
+  // delete item from user's requested_claims array
+  for (let i = 0; i < getItem.claims.length; i++) {
+    const user = await userCollection.findOne({
+      user_firebase_id: getItem.claims[i].userId,
+    });
+    const updatedUser = await userCollection.updateOne(
+      { _id: new ObjectId(user._id) },
+      // only update claims array with the new uid
+      {
+        $pull: {
+          requested_claims: id,
+        },
+      }
+    );
   }
+  // delete item from user's received_claims array
+  const itemOwner = await userCollection.findOne({
+    user_firebase_id: getItem.uid,
+  });
+  const updatedItemOwner = await userCollection.updateOne(
+    { _id: new ObjectId(itemOwner._id) },
+    // only update claims array with the new uid
+    {
+      $pull: {
+        received_claims: id,
+      },
+    }
+  );
+  // delete item from user's claims array
+  for (let i = 0; i < getItem.claims.length; i++) {
+    const user = await userCollection.findOne({
+      user_firebase_id: getItem.claims[i].userId,
+    });
+    const updatedUser = await userCollection.updateOne(
+      { _id: new ObjectId(user._id) },
+      // only update claims array with the new uid
+      {
+        $pull: {
+          claims: id,
+        },
+      }
+    );
+  }
+
+  const deletionInfo = await itemData.deleteOne({ _id: new ObjectId(id) });
+  if (deletionInfo.deletedCount === 0) throw 'Could not delete item';
+
   console.log(deletionInfo);
-  return getItem;
+  return { deleted: true, message: 'Item deleted successfully' };
 };

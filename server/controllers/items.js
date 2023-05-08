@@ -292,13 +292,14 @@ export async function deleteReportedIemById(req, res) {
 
   try {
     let id = req.params.id;
+    let uid = req.user.uid;
+    const item = await getItemById(id);
+    if (item.uid !== uid) throw 'You cannot delete this item';
     const deleteItem = await deleteItemById(id);
     const exists = await client.exists(id);
     if (exists) await client.del(id);
     // await client.set('getItem', JSON.stringify(await getAllItems()));
-    return res
-      .status(200)
-      .json({ message: 'Item deleted successfully', data: deleteItem });
+    return res.status(200).json({ message: 'Item deleted successfully' });
     // return res.status(200).json({ data:'deleted'});
   } catch (e) {
     if (Object.keys(e).includes('status'))
