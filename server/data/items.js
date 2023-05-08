@@ -533,7 +533,7 @@ export const deleteItemById = async (id) => {
   if (deletionInfo.deletedCount === 0) throw 'Could not delete item';
 
   console.log(deletionInfo);
-  return { deleted: true, message: 'Item deleted successfully' };
+  return getItem;
 };
 
 export const addComment = async (id, uid, comment) => {

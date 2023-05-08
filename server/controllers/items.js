@@ -345,23 +345,9 @@ export async function deleteReportedIemById(req, res) {
     const item = await getItemById(id);
     if (item.uid !== uid) throw 'You cannot delete this item';
     const deleteItem = await deleteItemById(id);
-    const exists = await client.exists(`Item_${updatedItem._id.toString()}`);
-    if (exists) await client.del(`Item_${updatedItem._id.toString()}`);
+    const exists = await client.exists(`Item_${deleteItem._id.toString()}`);
+    if (exists) await client.del(`Item_${deleteItem._id.toString()}`);
     return res.status(200).json({ message: 'Item deleted successfully' });
-  } catch (e) {
-    if (Object.keys(e).includes('status'))
-      return res.status(e.status).json({ error: e.message });
-    return res.status(500).json({ error: e });
-  }
-}
-
-// http://localhost:4000/items/report/search?itemStatus=claimed&itemName=phone&tags=phone&category=electronics&lastSeenDate=2023-04-12T04:05:49.000Z
-export async function getReportedItemBySearch(req, res) {
-  try {
-    const getItems = await getItemBySearch(req.query);
-    return res
-      .status(200)
-      .json({ message: 'Item fetched successfully', data: getItems });
   } catch (e) {
     if (Object.keys(e).includes('status'))
       return res.status(e.status).json({ error: e.message });
