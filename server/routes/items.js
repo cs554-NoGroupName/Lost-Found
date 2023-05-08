@@ -6,8 +6,8 @@ import {
   getReportedItemById,
   updateReportedItem,
   deleteReportedIemById,
-  // createClaimById,
-  getReportedItemBySearch,
+  claimRequest,
+  resolveClaim,
 } from '../controllers/items.js';
 
 import { getItemsById } from '../middleware/items.js';
@@ -16,13 +16,12 @@ const router = express.Router();
 import upload from '../utils/uploadImage.js';
 
 // router.post('/report', VerifyToken, upload.single('image'), report);
-router.post('/', VerifyToken, upload.single('imageUrl'), report);
+router.post('/report', VerifyToken, upload.single('imageUrl'), report);
+router.get('/claim/:id', VerifyToken, claimRequest);
+router.get('/resolveClaim/:itemId/:claimId', VerifyToken, resolveClaim);
 router.get('/', VerifyToken, getReportedItems);
-// router.get('//search', VerifyToken, getReportedItemBySearch);
 router.get('/:id', VerifyToken, getItemsById, getReportedItemById);
 router.patch('/:id', VerifyToken, updateReportedItem);
 router.delete('/:id', VerifyToken, deleteReportedIemById);
-// router.post('/claim', VerifyToken, createClaimById);
-router.get('/search', VerifyToken, getReportedItemBySearch);
 
 export default router;
