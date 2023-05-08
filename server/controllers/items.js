@@ -6,6 +6,7 @@ import {
   deleteItemById,
   getItemsByUserId,
   updateClaims,
+  resolveClaimById,
 } from '../data/items.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -94,6 +95,24 @@ export async function claimRequest(req, res) {
     if (found) throw 'You have already requested for this item';
 
     const updatedItem = await updateClaims(id, uid);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
+export async function resolveClaim(req, res) {
+  let { itemId, claimId } = req.params;
+  let { uid } = req.user;
+
+  try {
+    const item = await getItemById(itemId);
+    if (item.uid !== uid) throw 'You cannot resolve claim for this item';
+    const updatedItem = await resolveClaimById(itemId, claimId, uid);
     await client.set(
       `Item_${updatedItem._id.toString()}`,
       JSON.stringify(updatedItem)
