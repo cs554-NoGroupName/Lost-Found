@@ -12,7 +12,7 @@ import redis from 'redis';
 
 const client = redis.createClient({
   password: process.env.REDIS_PASSWORD,
-  url: `rediss://${process.env.REDIS_HOST}:6380`,
+  url: `rediss://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
 });
 
 client.connect().then(() => {
