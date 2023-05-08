@@ -41,6 +41,35 @@ export const createUser = async (
   return user;
 };
 
+export const userMinDetails = async (uid) => {
+  const userCollection = await mongoCollections.users();
+  let user = await userCollection.findOne({
+    user_firebase_id: uid,
+  });
+  user = {
+    uid: user.user_firebase_id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    image_url: user.image_url,
+  };
+  return user;
+};
+
+export const itemMinDetails = async (id) => {
+  const itemCollection = await mongoCollections.items();
+  let item = await itemCollection.findOne({
+    _id: new ObjectId(id),
+  });
+  item = {
+    id: item._id,
+    itemName: item.itemName,
+    imageUrl: item.imageUrl,
+    uid: item.uid,
+    itemStatus: item.itemStatus,
+  };
+  return item;
+};
+
 export const getUserById = async (id) => {
   const userCollection = await users();
   const user = await userCollection.findOne({ _id: new ObjectId(id) });
@@ -60,10 +89,14 @@ export const getUserByFirebaseId = async (user_firebase_id) => {
   //  fetch requested_claimed items
   if (!user.requested_claims) user.requested_claims = [];
   for (let i = 0; i < user.requested_claims.length; i++) {
-    const item = await itemCollection.findOne({
-      _id: new ObjectId(user.requested_claims[i]),
-    });
+    const item = await itemMinDetails(user.requested_claims[i]);
     user.requested_claims[i] = item;
+  }
+  // received_claimed items
+  if (!user.received_claims) user.received_claims = [];
+  for (let i = 0; i < user.received_claims.length; i++) {
+    const item = await itemMinDetails(user.received_claims[i]);
+    user.received_claims[i] = item;
   }
 
   if (!user) throw 'User not found';

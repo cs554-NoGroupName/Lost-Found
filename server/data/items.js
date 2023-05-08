@@ -47,21 +47,31 @@ export const createItem = async (
   return item;
 };
 
+export const userMinDetails = async (uid) => {
+  const userCollection = await mongoCollections.users();
+  let user = await userCollection.findOne({
+    user_firebase_id: uid,
+  });
+  user = {
+    uid: user.user_firebase_id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    image_url: user.image_url,
+  };
+  return user;
+};
+
 export const getItemById = async (id) => {
   const itemCollection = await items();
   const item = await itemCollection.findOne({ _id: new ObjectId(id) });
   if (!item) throw 'Item not found';
   // append user details
   const userCollection = await mongoCollections.users();
-  const user = await userCollection.findOne({
-    user_firebase_id: item.uid,
-  });
+  const user = await userMinDetails(item.uid);
   item.reportedBy = user;
   // for each userId in claims array append user details
   for (let i = 0; i < item.claims.length; i++) {
-    const user = await userCollection.findOne({
-      user_firebase_id: item.claims[i].userId,
-    });
+    const user = await userMinDetails(item.claims[i].userId);
     item.claims[i].userDetails = user;
   }
   // add item to user's reported array
@@ -149,9 +159,7 @@ export const updateClaims = async (id, uid) => {
   // for each userId in claims array append user details
   const claims = await itemCollection.findOne({ _id: new ObjectId(id) });
   for (let i = 0; i < claims.claims.length; i++) {
-    const user = await userCollection.findOne({
-      user_firebase_id: claims.claims[i].userId,
-    });
+    const user = await userMinDetails(claims.claims[i].userId);
     claims.claims[i].userDetails = user;
   }
 
@@ -223,9 +231,7 @@ export const resolveClaimById = async (id, claimId, uid) => {
   // for each userId in claims array append user details
   const claims = await itemCollection.findOne({ _id: new ObjectId(id) });
   for (let i = 0; i < claims.claims.length; i++) {
-    const user = await userCollection.findOne({
-      user_firebase_id: claims.claims[i].userId,
-    });
+    const user = await userMinDetails(claims.claims[i].userId);
     claims.claims[i].userDetails = user;
   }
 
