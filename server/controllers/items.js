@@ -77,7 +77,7 @@ export async function report(req, res) {
     await client.set(`Item_${newItem._id.toString()}`, JSON.stringify(newItem));
     res.status(201).json(newItem);
   } catch (e) {
-    res.status(400).json({ message: e });
+    res.status(400).json({ error: e });
   }
 }
 
