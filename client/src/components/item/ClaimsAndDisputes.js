@@ -1,8 +1,8 @@
 import React from "react";
 import {
   Typography,
-  Tabs,
-  Tab,
+  // Tabs,
+  // Tab,
   Box,
   Grid,
   List,
@@ -14,8 +14,8 @@ import {
   Tooltip,
   Alert,
 } from "@mui/material";
-import AssignmentReturnedIcon from "@mui/icons-material/AssignmentReturned";
-import BackHandIcon from "@mui/icons-material/BackHand";
+// import AssignmentReturnedIcon from "@mui/icons-material/AssignmentReturned";
+// import BackHandIcon from "@mui/icons-material/BackHand";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import RecommendIcon from "@mui/icons-material/Recommend";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
@@ -35,11 +35,11 @@ const ClaimsAndDisputes = ({
   handleRequestModal,
   showModalBtn,
 }) => {
-  const [value, setValue] = React.useState("claims");
+  // const [value, setValue] = React.useState("claims");
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  // const handleChange = (event, newValue) => {
+  //   setValue(newValue);
+  // };
 
   return (
     <>
@@ -51,7 +51,7 @@ const ClaimsAndDisputes = ({
           padding: "10px",
         }}
       >
-        <Typography sx={titleStyle}>Claims & Disputes</Typography>
+        <Typography sx={titleStyle}>Claims</Typography>
         <Box
           sx={{
             width: "100%",
@@ -60,7 +60,7 @@ const ClaimsAndDisputes = ({
             backgroundColor: "#4A5569",
           }}
         >
-          <Tabs
+          {/* <Tabs
             value={value}
             onChange={handleChange}
             textColor="inherit"
@@ -82,136 +82,132 @@ const ClaimsAndDisputes = ({
               value="claims"
               label="Claims"
             />
-            <Tab
-              icon={<BackHandIcon />}
-              value="disputes"
-              label="Disputes"
-            />
-          </Tabs>
 
-          {value === "claims" ? (
-            claims?.length > 0 ? (
-              claims?.map((item) => (
-                <Grid container spacing={2} key={item?.claimDate}>
-                  <Grid item xs={12}>
-                    <List sx={{ width: "100%" }}>
-                      <ListItem
-                        alignItems="flex-start"
-                        sx={{
-                          backgroundColor: "#e6e6e6",
-                          borderRadius: "10px",
-                        }}
-                        secondaryAction={
-                          <IconButton
-                            onClick={() => {
-                              if (itemStatus !== "claimed" && showModalBtn)
-                                handleRequestModal("claim", item);
-                            }}
-                            edge="end"
-                            aria-label="status"
-                            sx={{
-                              "&:hover": {
-                                backgroundColor: "#1c2536",
-                                color: "#ff9717",
-                              },
-                            }}
-                          >
-                            {item?.claimStatus === "pending" && (
-                              <Tooltip title="Pending">
-                                <HourglassBottomIcon />
-                              </Tooltip>
-                            )}
-                            {item?.claimStatus === "approved" && (
-                              <Tooltip title="Claimed">
-                                <RecommendIcon />
-                              </Tooltip>
-                            )}
-                            {item?.claimStatus === "rejected" && (
-                              <Tooltip title="Rejected">
-                                <ThumbDownAltIcon />
-                              </Tooltip>
-                            )}
-                          </IconButton>
-                        }
-                      >
-                        <ListItemAvatar>
-                          <Avatar
-                            src={item?.userDetails?.image_url}
-                            alt={item?.userDetails?.email}
-                            sx={{
-                              width: "50px",
-                              height: "50px",
-                              marginRight: "8px",
-                            }}
-                          />
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={
-                            <React.Fragment>
-                              <Typography
-                                sx={{
-                                  display: "inline",
-                                  paddingRight: "15px",
-                                  color: "#4a5569",
-                                  fontWeight: 600,
-                                  fontSize: "1.1rem",
-                                }}
-                              >
-                                {item?.userDetails?.firstName}{" "}
-                                {item?.userDetails?.lastName}
-                              </Typography>
+          </Tabs> */}
 
-                              {/* <Typography
+          {/* {value === "claims" ? ( */}
+          {claims?.length > 0 ? (
+            claims?.map((item) => (
+              <Grid container spacing={2} key={item?.claimDate}>
+                <Grid item xs={12}>
+                  <List sx={{ width: "100%" }}>
+                    <ListItem
+                      alignItems="flex-start"
+                      sx={{
+                        backgroundColor: "#e6e6e6",
+                        borderRadius: "10px",
+                      }}
+                      secondaryAction={
+                        <IconButton
+                          onClick={() => {
+                            if (itemStatus !== "claimed" && showModalBtn)
+                              handleRequestModal("claim", item);
+                          }}
+                          edge="end"
+                          aria-label="status"
+                          sx={{
+                            "&:hover": {
+                              backgroundColor: "#1c2536",
+                              color: "#ff9717",
+                            },
+                          }}
+                        >
+                          {item?.claimStatus === "pending" && (
+                            <Tooltip title="Pending">
+                              <HourglassBottomIcon />
+                            </Tooltip>
+                          )}
+                          {item?.claimStatus === "approved" && (
+                            <Tooltip title="Claimed">
+                              <RecommendIcon />
+                            </Tooltip>
+                          )}
+                          {item?.claimStatus === "rejected" && (
+                            <Tooltip title="Rejected">
+                              <ThumbDownAltIcon />
+                            </Tooltip>
+                          )}
+                        </IconButton>
+                      }
+                    >
+                      <ListItemAvatar>
+                        <Avatar
+                          src={item?.userDetails?.image_url}
+                          alt={item?.userDetails?.email}
+                          sx={{
+                            width: "50px",
+                            height: "50px",
+                            marginRight: "8px",
+                          }}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={
+                          <React.Fragment>
+                            <Typography
+                              sx={{
+                                display: "inline",
+                                paddingRight: "15px",
+                                color: "#4a5569",
+                                fontWeight: 600,
+                                fontSize: "1.1rem",
+                              }}
+                            >
+                              {item?.userDetails?.firstName}{" "}
+                              {item?.userDetails?.lastName}
+                            </Typography>
+
+                            {/* <Typography
                               sx={{ display: "inline", paddingRight: "15px", color: '#4a5569',fontWeight: 600,
                               fontSize: '1.4rem' }}
                             >
                               |
                             </Typography> */}
 
-                              <Typography
-                                sx={{
-                                  display: "inline",
-                                  color: "#4a5569",
-                                  fontSize: "1.1rem",
-                                }}
-                              >
-                                {moment(item?.claimDate).format(
-                                  "MMMM Do YYYY, h:mm a"
-                                )}
-                              </Typography>
-                            </React.Fragment>
-                          }
-                          secondary={
-                            <React.Fragment>
-                              <Typography
-                                sx={{
-                                  display: "inline-block",
-                                  color: "#4a5569",
-                                  fontWeight: 800,
-                                  fontSize: "1.1rem",
-                                }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                              >
-                                Status: {item?.claimStatus.toUpperCase()}
-                              </Typography>
-                            </React.Fragment>
-                          }
-                        />
-                      </ListItem>
-                    </List>
-                  </Grid>
+                            <Typography
+                              sx={{
+                                display: "inline",
+                                color: "#4a5569",
+                                fontSize: "1.1rem",
+                              }}
+                            >
+                              {moment(item?.claimDate).format(
+                                "MMMM Do YYYY, h:mm a"
+                              )}
+                            </Typography>
+                          </React.Fragment>
+                        }
+                        secondary={
+                          <React.Fragment>
+                            <Typography
+                              sx={{
+                                display: "inline-block",
+                                color: "#4a5569",
+                                fontWeight: 800,
+                                fontSize: "1.1rem",
+                              }}
+                              component="span"
+                              variant="body2"
+                              color="text.primary"
+                            >
+                              Status: {item?.claimStatus.toUpperCase()}
+                            </Typography>
+                          </React.Fragment>
+                        }
+                      />
+                    </ListItem>
+                  </List>
                 </Grid>
-              ))
-            ) : (
-              <div className="m-[8px 0px]">
-                <Alert severity="info">No claims to show!</Alert>
-              </div>
-            )
-          ) : null}
+              </Grid>
+            ))
+          ) : (
+            <div className="m-[8px 0px]">
+              <Alert severity="info">No claims to show!</Alert>
+            </div>
+          )}
+          {/* // ) : null} */}
 
-          {value === "disputes" ? (
+          {/* {value === "disputes" ? (
             disputes?.length > 0 ? (
               disputes?.map((item) => (
                 <Grid container spacing={2}>
@@ -320,7 +316,7 @@ const ClaimsAndDisputes = ({
                 <Alert severity="info">No disputes to show!</Alert>
               </div>
             )
-          ) : null}
+          ) : null} */}
         </Box>
       </Box>
     </>
@@ -328,15 +324,3 @@ const ClaimsAndDisputes = ({
 };
 
 export default ClaimsAndDisputes;
-// secondary={
-//     <React.Fragment>
-//       <Typography
-//         sx={{ display: "inline-block" }}
-//         component="span"
-//         variant="body2"
-//         color="text.primary"
-//       >
-//         {dispute.description}
-//       </Typography>
-//     </React.Fragment>
-//   }

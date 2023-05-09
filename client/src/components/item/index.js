@@ -856,7 +856,7 @@ function ItemDetails() {
           <Grid xs={12}>
             <ClaimsAndDisputes
               claims={itemData?.claims}
-              disputes={itemData?.disputes}
+              // disputes={itemData?.disputes}
               itemStatus={itemData?.itemStatus}
               handleRequestModal={handleRequestModal}
               showModalBtn={itemData?.uid === userData?.user_firebase_id}
