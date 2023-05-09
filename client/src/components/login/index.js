@@ -51,8 +51,12 @@ function Login() {
     if (Object.keys(errorObj).length === 0) {
       const loginData = await login({ email, password });
       const { data, status } = loginData;
-      if (status !== 200) toast.error(data?.error);
-      else {
+      if (status !== 200) {
+        const { message } = data;
+        if (typeof message === "string") toast.error(data?.message);
+        else if (message?.code === "auth/user-not-found")
+          toast.error("User not found!");
+      } else {
         localStorage.setItem("token", data?.token);
         dispatch(setUserData({ data }));
       }
