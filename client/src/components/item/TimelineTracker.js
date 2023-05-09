@@ -12,7 +12,7 @@ import moment from "moment";
 const titleStyle = {
   fontWeight: "bold",
   fontSize: "1.5rem",
-  color: "#324b4b",
+  color: "#e6e6e6",
   marginBottom: "10px",
 };
 
@@ -34,7 +34,9 @@ const TimelineTracker = ({ timeline }) => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          margin: "10px",
+          padding: "10px 10px",
+          borderRadius: "10px",
+          backgroundColor: "#4a5569",
         }}
       >
         <Typography sx={titleStyle}>Item Timeline</Typography>
