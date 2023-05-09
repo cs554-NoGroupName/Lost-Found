@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import lodash from "lodash";
-import testData from "./testData.json";
-import axios from "axios";
+// import testData from "./testData.json";
 import { Link } from "react-router-dom";
 import LayoutProvider from "components/common/Layout";
 import useDocumentTitle from "components/common/useDocumentTitle";
@@ -32,9 +31,10 @@ import {
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import { Global } from "@emotion/react";
 
-import { GET_ITEMS_LIST } from "routes";
 import Search from "./Search";
 import { makeApiCall } from "utils/apis/api";
+
+import noImage from "../../utils/images/No-Image-Placeholder.png";
 
 const modalStyle = {
   position: "absolute",
@@ -73,7 +73,6 @@ const Puller = styled(Box)(({ theme }) => ({
 const Home = () => {
   const currentUser = localStorage.getItem("token");
   const [loading, setLoading] = useState(true);
-  const [resultData, setResultData] = useState([]);
   const [itemsData, setItemsData] = useState([]);
   const [tags, setTags] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -85,6 +84,7 @@ const Home = () => {
   const [filterCategory, setFilterCategory] = useState(null);
   const [filterTags, setFilterTags] = useState([]);
   const [lastSevenDays, setLastSevenDays] = useState([]);
+  const [appliedFilters, setAppliedFilters] = useState(null);
 
   const [todayItems, setTodayItems] = useState([]);
 
@@ -98,7 +98,6 @@ const Home = () => {
           `/items` // TODO: Replace with items data backend call using REACT env variables
         );
         console.log("data:", data);
-        setResultData(data?.data);
         const dataWithTags = arrayfyTags(data?.data);
         setItemsData(dataWithTags?.beyond);
         setTodayItems(dataWithTags?.today);
@@ -118,12 +117,14 @@ const Home = () => {
     async function fetchData() {
       try {
         console.log(`in fetch searchTerm: ${searchTerm}`);
-        const { data } = await axios.get(
-          `${GET_ITEMS_LIST}?searchTerm=${searchTerm}`
+        const { data } = await makeApiCall(
+          `/items?itemName=${searchTerm}`
         );
-        setResultData(data?._embedded?.events);
-        console.log("Search data:", data, data?._embedded?.events);
-        setLoading(false);
+        console.log("search data:", data);
+        const dataWithTags = arrayfyTags(data?.data);
+        setItemsData(dataWithTags?.beyond ?? []);
+        setTodayItems(dataWithTags?.today ?? []);
+        setLastSevenDays(dataWithTags?.week ?? []);
       } catch (e) {
         console.log(e);
       }
@@ -131,6 +132,7 @@ const Home = () => {
     if (searchTerm) {
       console.log("searchTerm is set");
       fetchData();
+      setAppliedFilters(null);
     }
   }, [searchTerm]);
 
@@ -174,7 +176,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    // TODO: Replace all instances of itemsData within this useEffect with resultData and perform the necessary handling;
     const getUniqueTags = () => {
       let temp = [];
 
@@ -198,11 +199,11 @@ const Home = () => {
 
       return temp;
     };
-    if (itemsData) {
+    if ((todayItems || lastSevenDays || itemsData) && (todayItems.length > 0 || lastSevenDays.length > 0 || itemsData.length > 0)) {
       setTags(getUniqueTags());
       setCategories(getUniqueCategories());
     }
-  }, [itemsData]);
+  }, [itemsData, todayItems, lastSevenDays]);
 
   const searchValue = async (value) => {
     setSearchTerm(value);
@@ -212,29 +213,29 @@ const Home = () => {
     setShowFilters(!showFilters);
   };
 
-  const updateTodayItems = (data) => {
-    const today = new Date();
-    const dayToday = today.getDate();
-    const monthToday = today.getMonth();
-    const yearToday = today.getFullYear();
-    const formattedToday = new Date(`${yearToday}-${monthToday}-${dayToday} 0:00:00`);
-    // const todayData = data?.data?.filter((item) => new Date(item.reportedDate) > formattedToday);
-    const todayData = data?.filter((item) => new Date(item?.lastSeenDate) > formattedToday);
-    console.log("todayData", todayData);
-    setTodayItems(todayData ?? []);
-  };
+  // const updateTodayItems = (data) => {
+  //   const today = new Date();
+  //   const dayToday = today.getDate();
+  //   const monthToday = today.getMonth();
+  //   const yearToday = today.getFullYear();
+  //   const formattedToday = new Date(`${yearToday}-${monthToday}-${dayToday} 0:00:00`);
+  //   // const todayData = data?.data?.filter((item) => new Date(item.reportedDate) > formattedToday);
+  //   const todayData = data?.filter((item) => new Date(item?.lastSeenDate) > formattedToday);
+  //   console.log("todayData", todayData);
+  //   setTodayItems(todayData ?? []);
+  // };
 
-  const updateLastSevenDaysItems = (data) => {
-    const sevenDaysAgo = new Date(Date.now() - 1000*60*60*24*7);
-    const day = sevenDaysAgo.getDate();
-    const month = sevenDaysAgo.getMonth();
-    const year = sevenDaysAgo.getFullYear();
-    const formattedToday = new Date(`${year}-${month}-${day} 0:00:00`);
-    // const todayData = data?.data?.filter((item) => new Date(item.reportedDate) > formattedToday);
-    const sevenDaysAgoData = data?.filter((item) => new Date(item?.lastSeenDate) > formattedToday);
-    console.log("sevenDaysAgoData", sevenDaysAgoData);
-    setLastSevenDays(sevenDaysAgoData ?? []);
-  };
+  // const updateLastSevenDaysItems = (data) => {
+  //   const sevenDaysAgo = new Date(Date.now() - 1000*60*60*24*7);
+  //   const day = sevenDaysAgo.getDate();
+  //   const month = sevenDaysAgo.getMonth();
+  //   const year = sevenDaysAgo.getFullYear();
+  //   const formattedToday = new Date(`${year}-${month}-${day} 0:00:00`);
+  //   // const todayData = data?.data?.filter((item) => new Date(item.reportedDate) > formattedToday);
+  //   const sevenDaysAgoData = data?.filter((item) => new Date(item?.lastSeenDate) > formattedToday);
+  //   console.log("sevenDaysAgoData", sevenDaysAgoData);
+  //   setLastSevenDays(sevenDaysAgoData ?? []);
+  // };
 
   const setStatusOnFilter = (status) => {
     if (status && typeof status == "string" && status.trim().length > 0) {
@@ -273,6 +274,8 @@ const Home = () => {
     setFilterTags([]);
     setFilterStatus(null);
     setFilterType(null);
+    setAppliedFilters(null);
+    refetchWithFilters(false);
   };
 
   console.log("TAGS:", tags);
@@ -292,10 +295,11 @@ const Home = () => {
             width: "300px",
             height: "300px"
           }}
-          image={item?.imageUrl}
+          image={item?.imageUrl ?? noImage}
           alt={item?.itemName}
         />
         <CardContent sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
+          {item?.lastSeenDate ? (<div className="item-reported-date">{new Date(item.lastSeenDate).toLocaleDateString(undefined, options)}</div>) : <></>}
           {item?.type ? <div>Type: {item?.type}</div> : <></>}
           {item?.itemStatus ? <div>Status: {item?.itemStatus}</div> : <></>}
           {item?.description ? (
@@ -366,26 +370,32 @@ const Home = () => {
   //   });
   // };
 
-  const refetchWithFilters = async () => {
-    const filters = {};
+  const refetchWithFilters = async (filterBool = true) => {
+    let filters = "";
+    let filterObj = {};
     if (filterStatus) {
-      filters.status = filterStatus;
+      filters = filters + `&itemStatus=${filterStatus}`;
+      filterObj.status = filterStatus;
     }
     if (filterTags && filterTags.length > 0) {
-      filters.tags = tags;
+      filters = filters + `&tags=${filterTags.toString()}`;
+      filterObj.tags = filterTags.toString();
     }
     if (filterCategory) {
-      filters.category = filterCategory;
+      filters = filters + `&category=${filterCategory}`;
+      filterObj.category = filterCategory;
     }
     if (filterType) {
-      filters.type = filterType;
+      filters = filters + `&type=${filterType}`;
+      filterObj.type = filterType;
     }
-    const data = await axios.get(`${GET_ITEMS_LIST}`, {
-      params: { filters: filters }
-    });
-    setItemsData(data);
-    updateTodayItems(data);
-    updateLastSevenDaysItems(data);
+    const { data } = await makeApiCall(`/items?${filterBool ? filters : ""}`);
+    console.log("filtered data:", data);
+    const dataWithTags = arrayfyTags(data?.data);
+    setItemsData(dataWithTags?.beyond ?? []);
+    setTodayItems(dataWithTags?.today ?? []);
+    setLastSevenDays(dataWithTags?.week ?? []);
+    setAppliedFilters(filterBool ? filterObj : null);
   };
 
   // Modal operations
@@ -396,7 +406,7 @@ const Home = () => {
   const itemsCard = (data) => {
     return (
       <div className="items-card">
-        {data.map((item) => {
+        {data?.map((item) => {
           return (
             <div>
               {currentUser ? (
@@ -411,60 +421,78 @@ const Home = () => {
     );
   };
 
-  const getLastSevenDaysCard = (data) => {
+  const itemsCardAlt = (data) => {
     return (
-      <div className="item-row">
+      <Grid container spacing={1}>
         {data?.map((item) => {
           return (
-            <>
+            <Grid item lg={4} md={6} sm={12} xs={12}>
               {currentUser ? (
-                <Link to={`/item/${item?._id}`}>{rowCardBuilder(item)}</Link>
+                <Link to={`/item/${item?._id}`}>{cardBuilder(item)}</Link>
               ) : (
-                <span onClick={openModal}>{rowCardBuilder(item)}</span>
+                <span onClick={openModal}>{cardBuilder(item)}</span>
               )}
-            </>
+            </Grid>
           );
         })}
-      </div>
+      </Grid>
     );
   };
 
-  const rowCardBuilder = (item) => {
-    return (
-      <div className="row-wrapper">
-        <div className="image-wrapper">
-          <img className="row-image" src={item?.imageUrl} alt={item?.itemName} />
-          {item?.type ? <div className="image-text">{item.type}</div> : <></>}
-        </div>
-        <div className="row-details">
-          <div className="item-name">{item?.itemName}</div>
-          <div className="item-data">
-          {item?.type ? <div className="item-type">Type: {item?.type}</div> : <></>}
-          {item?.itemStatus ? <div className="item-status">Status: {item?.itemStatus}</div> : <></>}
-          {item?.description ? (
-            <div className="item-description">
-              {item?.description}
-            </div>
-          ) : (
-            <></>
-          )}
-          {item?.tags && item?.tags?.length > 0 ? (
-            <div className="item-tags">{itemTags(item?.tags)}</div>
-          ) : (
-            <></>
-          )}
-          </div>
-        </div>
-        <div className="row-end">{item?.lastSeenDate ? (<div className="item-reported-date">{new Date(item.lastSeenDate).toLocaleDateString(undefined, options)}</div>) : <></>}</div>
-      </div>
-    );
-  };
+  // const getLastSevenDaysCard = (data) => {
+  //   return (
+  //     <div className="item-row">
+  //       {data?.map((item) => {
+  //         return (
+  //           <>
+  //             {currentUser ? (
+  //               <Link to={`/item/${item?._id}`}>{rowCardBuilder(item)}</Link>
+  //             ) : (
+  //               <span onClick={openModal}>{rowCardBuilder(item)}</span>
+  //             )}
+  //           </>
+  //         );
+  //       })}
+  //     </div>
+  //   );
+  // };
+
+  // const rowCardBuilder = (item) => {
+  //   return (
+  //     <div className="row-wrapper">
+  //       <div className="image-wrapper">
+  //         <img className="row-image" src={item?.imageUrl ?? noImage} alt={item?.itemName} />
+  //         {item?.type ? <div className="image-text">{item.type}</div> : <></>}
+  //       </div>
+  //       <div className="row-details">
+  //         <div className="item-name">{item?.itemName}</div>
+  //         <div className="item-data">
+  //         {item?.type ? <div className="item-type">Type: {item?.type}</div> : <></>}
+  //         {item?.itemStatus ? <div className="item-status">Status: {item?.itemStatus}</div> : <></>}
+  //         {item?.description ? (
+  //           <div className="item-description">
+  //             {item?.description}
+  //           </div>
+  //         ) : (
+  //           <></>
+  //         )}
+  //         {item?.tags && item?.tags?.length > 0 ? (
+  //           <div className="item-tags">{itemTags(item?.tags)}</div>
+  //         ) : (
+  //           <></>
+  //         )}
+  //         </div>
+  //       </div>
+  //       <div className="row-end">{item?.lastSeenDate ? (<div className="item-reported-date">{new Date(item.lastSeenDate).toLocaleDateString(undefined, options)}</div>) : <></>}</div>
+  //     </div>
+  //   );
+  // };
 
   return (
     <LayoutProvider>
       {useDocumentTitle("Home")}
-      <div>{loading ? <LoadingText /> : <></>}</div>
-      <div>
+      <div>{loading ? <LoadingText /> :(
+        <div>
         {/* Items displayed in cards using Material UI Grid */}
         {/* Filter options */}
         {/* {showFilters ? 
@@ -496,7 +524,7 @@ const Home = () => {
               label="Status"
             >
               <MenuItem value="open">Open</MenuItem>
-              <MenuItem value="closed">Closed</MenuItem>
+              <MenuItem value="closed">Claimed</MenuItem>
             </Select>
           </FormControl>
           </Grid>
@@ -536,43 +564,71 @@ const Home = () => {
          : <></>} */}
         <div className="flexer-even">
           <Search searchValue={searchValue} searchType="Events" />
-          <Button onClick={toggleFilter}>{showFilters ? "Hide Filters" : "Show Filters"}</Button>
+          <Button sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }} onClick={() => setSearchTerm(" ")}>Clear Search</Button>
+          <Button sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }} onClick={toggleFilter}>{showFilters ? "Hide Filters" : "Show Filters"}</Button>
           {/* TODO: Replace function refetchTestData with commented out function refetchWithFilters once Backend is ready */}
           {/* {showFilters ? <Button onClick={refetchTestData}>Apply Filters</Button> : <></>} 
           <Button onClick={clearFilter}>Clear Filters</Button> */}
         </div>
+        {appliedFilters ? <div>
+          {appliedFilters?.status ? <Chip
+            variant="outlined"
+            style={{ marginRight: "5px", marginBottom: "2px" }}
+            label={`Status: ${appliedFilters.status}`}
+            sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}
+          /> : <></>}
+          {appliedFilters?.type ? <Chip
+            variant="outlined"
+            style={{ marginRight: "5px", marginBottom: "2px" }}
+            label={`Type: ${appliedFilters.type}`}
+            sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}
+          /> : <></>}
+          {appliedFilters?.category ? <Chip
+            variant="outlined"
+            style={{ marginRight: "5px", marginBottom: "2px" }}
+            label={`Category: ${appliedFilters.category}`}
+            sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}
+          /> : <></>}
+          {appliedFilters?.tags ? <Chip
+            variant="outlined"
+            style={{ marginRight: "5px", marginBottom: "2px" }}
+            label={`Tags: ${appliedFilters.tags}`}
+            sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}
+        /> : <></>}
+        </div> : <></>}
         <Box sx={{ flexGrow: 1 }}>
-          {todayItems ? (
+          <div style={{ margin: "10px" }} className="label-text">Today</div>
+          {todayItems && todayItems?.length > 0 ? (
             <div>
-              <div style={{ margin: "10px" }} className="label-text">Today</div>
               <div className="slider-cards" style={{ display: "flex", gap: "10px" }}>
                 {itemsCard(todayItems)}
               </div>
             </div>
           ) : (
-            <></>
+            <div style={{ margin: "10px" }}>No data</div>
           )}
         </Box>
-        <Grid container>
-          {lastSevenDays ? (
+        <div style={{ margin: "10px" }} className="label-text">Last 7 days</div>
+        <div>
+          {lastSevenDays && lastSevenDays?.length > 0 ? (
+            // <div>
+            //   <div className="items-rows">
+            //     {getLastSevenDaysCard(lastSevenDays)}
+            //   </div>
+            // </div>
             <div>
-              <div style={{ margin: "10px" }} className="label-text">Last 7 days</div>
-              <div className="items-rows">
-                {getLastSevenDaysCard(lastSevenDays)}
-              </div>
+              {itemsCardAlt(lastSevenDays)}
             </div>
-          ) : <></>}
-        </Grid>
-        <Grid container>
-          {itemsData ? (
+          ) : <div style={{margin: "10px"}}>No data</div>}
+        </div>
+        <div style={{ margin: "10px" }} className="label-text">More than 7 days ago</div>
+        <div>
+          {itemsData && itemsData?.length > 0 ? (
             <div>
-              <div style={{ margin: "10px" }} className="label-text">More than 7 days ago</div>
-              <div className="items-rows">
-                {getLastSevenDaysCard(itemsData)}
-              </div>
+              {itemsCardAlt(itemsData)}
             </div>
-          ) : <></>}
-        </Grid>
+          ) : <div style={{ margin: "10px" }}>No data</div>}
+        </div>
 
         {/* Modal display to ask users to login for item details */}
         <Modal
@@ -675,8 +731,8 @@ const Home = () => {
               onChange={(e) => setStatusOnFilter(e.target.value)}
               label="Status"
             >
-              <MenuItem value="open">Open</MenuItem>
-              <MenuItem value="closed">Closed</MenuItem>
+              <MenuItem value="reported">Reported</MenuItem>
+              <MenuItem value="claimed">Claimed</MenuItem>
             </Select>
           </FormControl>
           </Grid>
@@ -719,6 +775,7 @@ const Home = () => {
         </div>
       </SwipeableDrawer>
       </div>
+      )}</div>
     </LayoutProvider>
   );
 };

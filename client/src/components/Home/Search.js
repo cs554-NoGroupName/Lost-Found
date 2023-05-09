@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import SearchIcon from '@mui/icons-material/Search';
 
 const Search = (props) => {
 
@@ -17,6 +18,7 @@ const Search = (props) => {
     >
       <label>
         <span className='label-text'>Search Items: </span>
+        <SearchIcon />
         <input
           className='styled-search'
           autoComplete='off'
