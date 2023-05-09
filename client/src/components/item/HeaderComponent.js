@@ -28,7 +28,9 @@ import {
 } from "@mui/icons-material";
 import {
 	deleteItemById,
-	sendClaimRequest
+	sendClaimRequest,
+	confirmClaimRequest,
+	declineClaimRequest,
 } from "utils/apis/item";
 import { toast } from "react-toastify";
 import moment from "moment";
@@ -151,7 +153,7 @@ const DialogComponent = ({ open, handleClose, handleAction, title, actionText, b
 }
 
 
-function Header({ itemData, editable, setEditable }) {
+function Header({ itemData, editable, setEditable, respondClaimRequestModal, setRespondClaimRequestModal, claimRequestModalData, setItemData }) {
 	const navigate = useNavigate();
 
 	const [openClaim, setOpenClaim] = useState(false);
@@ -441,6 +443,31 @@ function Header({ itemData, editable, setEditable }) {
 				handleAction={handleDisputeAction}
 				title="Raise Dispute"
 				actionText="Are you sure you want to raise a dispute for this item?"
+			/>
+
+			<DialogComponent
+				open={respondClaimRequestModal}
+				handleClose={() => setRespondClaimRequestModal(false)}
+				handleAction={async (e) => {
+					if (e === "accept") {
+						const { data } = await confirmClaimRequest(
+							itemData._id,
+							claimRequestModalData?.userId
+						);
+						setItemData(data?.updatedItem);
+						setRespondClaimRequestModal(false);
+					} else if (e === "decline") {
+						const { data } = await declineClaimRequest(
+							itemData._id,
+							claimRequestModalData?.userId
+						);
+						setItemData(data?.updatedItem);
+						setRespondClaimRequestModal(false);
+					}
+				}}
+				buttonCount={3}
+				title="Respond to claim request"
+				actionText="Respond to the claim request for this item?"
 			/>
 		</>
 	);

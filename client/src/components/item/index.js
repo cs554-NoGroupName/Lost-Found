@@ -21,8 +21,6 @@ import {
 } from "@mui/material";
 
 import {
-	confirmClaimRequest,
-	declineClaimRequest,
 	getItemDetailsById,
 	editItemById,
 	editItemImage
@@ -263,6 +261,10 @@ function ItemDetails() {
 					itemData={itemData}
 					editable={editable}
 					setEditable={setEditable}
+					respondClaimRequestModal={respondClaimRequestModal}
+					setRespondClaimRequestModal={setRespondClaimRequestModal}
+					claimRequestModalData={claimRequestModalData}
+					setItemData={setItemData}
 				/>
 
 				<Divider
@@ -597,29 +599,3 @@ function ItemDetails() {
 }
 
 export default ItemDetails;
-
-{/*
-<ActionDialog
-	open={respondClaimRequestModal}
-	handleClose={() => setRespondClaimRequestModal(false)}
-	handleAction={async (e) => {
-	if (e === "accept") {
-		const { data } = await comfirmClaimRequest(
-		itemData._id,
-		claimRequestModalData?.userId
-		);
-		setItemData(data?.updatedItem);
-		setRespondClaimRequestModal(false);
-	} else if (e === "decline") {
-		const { data } = await declineClaimRequest(
-		itemData._id,
-		claimRequestModalData?.userId
-		);
-		setItemData(data?.updatedItem);
-		setRespondClaimRequestModal(false);
-	}
-	}}
-	buttonCount={3}
-	title="Respond to claim request"
-	actionText="Respond to the claim request for this item?"
-/> */}
