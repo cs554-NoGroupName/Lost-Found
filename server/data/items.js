@@ -442,34 +442,34 @@ export const updateItem = async (...args) => {
 
   let updateItem = {};
 
-  if (itemName && getItemId.itemName != itemName) {
-    itemName = validation.checkNames(itemName, 'name');
+  if (itemName && getItemId.itemName !== itemName) {
+    itemName = validation.checkInputString(itemName, 'name');
     updateItem.itemName = itemName;
   }
-  if (description && getItemId.description != description) {
+  if (description && getItemId.description !== description) {
     description = validation.checkInputString(description, 'description');
     updateItem.description = description;
   }
-  if (lastSeenLocation && getItemId.lastSeenLocation != lastSeenLocation) {
+  if (lastSeenLocation && getItemId.lastSeenLocation !== lastSeenLocation) {
     lastSeenLocation = validation.checkInputString(
       lastSeenLocation,
       'lastSeenLocation'
     );
     updateItem.lastSeenLocation = lastSeenLocation;
   }
-  if (lastSeenDate && getItemId.lastSeenDate != lastSeenDate) {
+  if (lastSeenDate && getItemId.lastSeenDate !== lastSeenDate) {
     lastSeenDate = validation.checkInputString(lastSeenDate, 'lastSeenDate');
     updateItem.lastSeenDate = lastSeenDate;
   }
-  if (tags && getItemId.tags != tags) {
+  if (tags && getItemId.tags !== tags) {
     tags = validation.checkTags(tags);
     updateItem.tags = tags;
   }
-  if (type && getItemId.type != type) {
+  if (type && getItemId.type !== type) {
     type = validation.checkInputString(type, 'type');
     updateItem.type = type;
   }
-  if (category && getItemId.category != category) {
+  if (category && getItemId.category !== category) {
     category = validation.checkInputString(category, 'category');
     updateItem.category = category;
   }
@@ -478,7 +478,12 @@ export const updateItem = async (...args) => {
     { _id: new ObjectId(id) },
     { $set: updateItem }
   );
-  if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
+  // if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
+  if (updatedInfo.modifiedCount === 0 && updatedInfo.matchedCount === 0)
+    throw 'Could not update item';
+
+  if (updatedInfo.modifiedCount === 0 && updatedInfo.matchedCount === 1)
+    throw 'No changes made to item';
 
   return await getItemById(id);
 };
