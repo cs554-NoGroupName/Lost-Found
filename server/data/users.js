@@ -188,19 +188,25 @@ export const userActivity = async (user_firebase_id) => {
   //  fetch requested_claimed items
   if (!user.requested_claims) user.requested_claims = [];
   for (let i = 0; i < user.requested_claims.length; i++) {
-    const item = await itemMinDetails(user.requested_claims[i]);
+    const item = await itemCollection.findOne({
+      _id: new ObjectId(user.requested_claims[i]),
+    });
     user.requested_claims[i] = item;
   }
   // received_claimed items
   if (!user.received_claims) user.received_claims = [];
   for (let i = 0; i < user.received_claims.length; i++) {
-    const item = await itemMinDetails(user.received_claims[i]);
+    const item = await itemCollection.findOne({
+      _id: new ObjectId(user.received_claims[i]),
+    });
     user.received_claims[i] = item;
   }
   // fetch claims
   if (!user.claims) user.claims = [];
   for (let i = 0; i < user.claims.length; i++) {
-    const item = await itemMinDetails(user.claims[i]);
+    const item = await itemCollection.findOne({
+      _id: new ObjectId(user.claims[i]),
+    });
     user.claims[i] = item;
   }
 
