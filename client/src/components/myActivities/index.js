@@ -4,22 +4,27 @@ import { getUserActivites } from "utils/apis/user";
 import { Box, Grid } from "@mui/material";
 import LoadingText from "components/common/loadingText";
 import ItemCard from "./card";
+import { useDispatch } from "react-redux";
+import { setUserData } from "redux/reducer";
 
 function MyActivites() {
+  const dispatch = useDispatch();
   const [data, setData] = React.useState();
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     setLoading(true);
     getUserActivites()
-      .then((data) => {
-        setData(data?.data);
+      .then((res) => {
+        const { data } = res;
+        setData(data);
+        dispatch(setUserData({ data }));
         setLoading(false);
       })
       .catch((err) => {
         setLoading(false);
       });
-  }, []);
+  }, [dispatch]);
 
   const section = (title, data, noDataTitle = "Nothing to show!") => {
     return (
@@ -33,7 +38,7 @@ function MyActivites() {
               <Grid container spacing={4}>
                 {data?.map((item) => {
                   return (
-                    <Grid xs={12} sm={12} md={4} lg={3} key={item?._id} item>
+                    <Grid xs={12} sm={12} md={6} lg={4} key={item?._id} item>
                       <ItemCard item={item} />
                     </Grid>
                   );

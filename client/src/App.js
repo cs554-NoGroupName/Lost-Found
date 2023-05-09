@@ -34,7 +34,7 @@ function App() {
   });
 
   const isAuthenticated = () => {
-    return Object.keys(state).length !== 0 ? true : false;
+    return state && Object.keys(state).length !== 0 ? true : false;
   };
 
   return (
