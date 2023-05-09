@@ -37,7 +37,7 @@ const buttonStyle2 = {
   "&:hover": {
     backgroundColor: "#ff9717",
     color: "#1c2536",
-    fontWeight:'600'
+    fontWeight: "600",
   },
 };
 
@@ -58,7 +58,7 @@ const Comments = ({ postId, comments, setItemData, userId }) => {
         <Typography sx={titleStyle}>Comments</Typography>
         {comments?.length !== 0 ? (
           comments?.map((comment) => (
-            <Grid container spacing={1}>
+            <Grid container spacing={1} key={comment?._id}>
               <Grid item xs={12}>
                 <List sx={{ width: "100%" }}>
                   <ListItem
@@ -66,6 +66,7 @@ const Comments = ({ postId, comments, setItemData, userId }) => {
                       backgroundColor: "#e6e6e6",
                       borderRadius: "10px",
                     }}
+                    key={comment?._id}
                     alignItems="flex-start"
                     secondaryAction={
                       userId === comment?.userId ? (
@@ -122,7 +123,7 @@ const Comments = ({ postId, comments, setItemData, userId }) => {
                           </div>
                         </React.Fragment>
                       }
-                      disablePadding
+                      disablePadding={true}
                       secondary={
                         <React.Fragment>
                           <Typography

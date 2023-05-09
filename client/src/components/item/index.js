@@ -7,14 +7,9 @@ import {
   Grid,
   Box,
   Divider,
-  Input,
   Typography,
   CardMedia,
   Chip,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Button,
   IconButton,
   Modal,
@@ -25,11 +20,11 @@ import {
   DialogContent,
   DialogTitle,
   Dialog,
+  Alert,
 } from "@mui/material";
 
 import {
   getItemDetailsById,
-  editItemById,
   editItemImage,
   sendClaimRequest,
   deleteItemById,
@@ -58,9 +53,9 @@ import ClaimsAndDisputes from "./ClaimsAndDisputes";
 import Loading from "components/common/BtnLoading";
 import CloseIcon from "@mui/icons-material/Close";
 
-import { categoryOptions } from "utils/constants";
 import moment from "moment";
-
+import { capitalizeFirstLetter } from "utils/helper";
+import EditItemForm from "./editform";
 
 const titleStyleLight = {
   fontWeight: "bold",
@@ -68,7 +63,6 @@ const titleStyleLight = {
   color: "#e6e6e6",
   marginBottom: "10px",
 };
-
 
 const avatarStyle = {
   height: "55px",
@@ -91,7 +85,7 @@ const buttonStyle2 = {
   color: "#fff",
   "&:hover": {
     backgroundColor: "#ff9717",
-    color:"#1c2536"
+    color: "#1c2536",
   },
 };
 
@@ -109,7 +103,6 @@ function ItemDetails() {
   const userData = useSelector((state) => state?.userData?.userData);
   const params = useParams();
   const [itemData, setItemData] = useState({});
-  const [updatedItemData, setUpdatedItemData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [editable, setEditable] = useState(false);
@@ -128,8 +121,12 @@ function ItemDetails() {
   const [openClaim, setOpenClaim] = useState(false);
   const [openDispute, setOpenDispute] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [editImageModal, setEditImageModal] = useState(false);
 
-  const handleEdit = () => {
+  const handleEdit = (status = 0, data = null) => {
+    if (status === 200) {
+      setItemData(data);
+    }
     setEditable(!editable);
   };
 
@@ -212,33 +209,6 @@ function ItemDetails() {
     });
   }, [params.id]);
 
-  const handleCategoryChange = (e) => {
-    setItemData((prev) => ({
-      ...prev,
-      category: e.target.value,
-    }));
-
-    setUpdatedItemData((prev) => ({
-      ...prev,
-      category: e.target.value,
-    }));
-  };
-
-  const handleDataEdit = async () => {
-    if (editable) {
-      const { status, data } = await editItemById(
-        itemData._id,
-        updatedItemData
-      );
-      if (status === 200) {
-        setItemData(data?.updatedItem);
-        setEditable(false);
-      }
-    } else {
-      setEditable(true);
-    }
-  };
-
   const uploadImage = async () => {
     setImageUploadLoading(true);
     let formData = new FormData();
@@ -312,48 +282,6 @@ function ItemDetails() {
           </div>
         </div>
       </Modal>
-    );
-  };
-
-  const CustomSelect = ({ label, value, disabled }) => {
-    return (
-      <>
-        <FormControl
-          sx={{
-            display: "flex",
-            width: "100%",
-            marginBottom: "20px",
-          }}
-        >
-          <InputLabel
-            id={`${params.id}-label`}
-            sx={{
-              color: "white",
-              fontWeight: "bold",
-              fontSize: "1.3rem",
-            }}
-          >
-            {label}
-          </InputLabel>
-          <Select
-            labelId={`${params.id}-label`}
-            value={value?.toLowerCase()}
-            label={label}
-            disabled={disabled}
-            onChange={handleCategoryChange}
-            sx={{
-              fontWeight: "bold",
-              fontSize: "1.2rem",
-            }}
-          >
-            {categoryOptions.map((item) => (
-              <MenuItem key={item} value={item.toLowerCase()}>
-                {item}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </>
     );
   };
 
@@ -460,19 +388,17 @@ function ItemDetails() {
   } else if (error) {
     return <ErrorPage code={statusCode} message={error} />;
   } else {
+    const {
+      itemName,
+      description,
+      category,
+      type,
+      lastSeenLocation,
+      lastSeenDate,
+      itemStatus,
+    } = itemData;
     return (
       <LayoutProvider>
-        {/* <Header
-					itemData={itemData}
-					editable={editable}
-					setEditable={setEditable}
-					respondClaimRequestModal={respondClaimRequestModal}
-					setRespondClaimRequestModal={setRespondClaimRequestModal}
-					claimRequestModalData={claimRequestModalData}
-          setItemData={setItemData}
-          user_firebase_id={userData?.user_firebase_id}
-				/> */}
-
         <Box
           sx={{
             display: { sm: "block", md: "flex" },
@@ -507,17 +433,8 @@ function ItemDetails() {
                       onClick={handleEdit}
                       sx={buttonStyle2}
                     >
-                      {editable ? (
-                        <>
-                          <CloseIcon sx={{ fontSize: "1.2rem" }} />
-                          &nbsp;Cancel
-                        </>
-                      ) : (
-                        <>
-                          <Edit sx={{ fontSize: "1.2rem" }} />
-                          &nbsp;Edit
-                        </>
-                      )}
+                      <Edit sx={{ fontSize: "1.2rem" }} />
+                      &nbsp;Edit
                     </Button>
                   </Tooltip>
                   <Tooltip title="Delete this item" placement="bottom" arrow>
@@ -647,7 +564,7 @@ function ItemDetails() {
           container
           sx={{
             display: { xs: "block", sm: "block", md: "flex" },
-            backgroundColor: "#4a5569",
+            backgroundColor: "#95b1b061",
             width: "100%",
             borderRadius: "10px",
             justifyContent: "space-between",
@@ -675,6 +592,7 @@ function ItemDetails() {
               sx={{
                 display: "flex",
                 alignContent: "space-between",
+                position: "relative",
               }}
             >
               <Grid item xs={12}>
@@ -688,29 +606,28 @@ function ItemDetails() {
                     objectFit: "fill",
                     borderRadius: "10px",
                     boxShadow: "0 0px 10px #000",
+                    backgroundColor: "#f6f7f8cc",
                   }}
                 />
               </Grid>
 
               {/* Edit Image Button */}
-              <Grid item xs={12}>
-                {editable && (
-                  <Button
-                    startIcon={<PhotoCamera />}
-                    variant="contained"
-                    sx={{
-                      backgroundColor: "#ff9717",
-                      color: "#1c2536",
-                      fontSize: "1.2rem",
-                      width: "100%",
-                      marginTop: "10px",
-                    }}
-                    component="label"
-                    onChange={handleModalView}
-                  >
-                    Edit Image
-                  </Button>
-                )}
+              <Grid item sx={{ position: "absolute", bottom:'8px', right:'8px' }}>
+                <IconButton
+                  sx={{
+                    backgroundColor: "#ff9717",
+                    color: "#1c2536",
+                    fontSize: "1.2rem",
+                    width: "100%",
+                    marginTop: "10px",
+                  }}
+                  onClick={handleModalView}
+                  aria-label="upload picture"
+                  component="label"
+                  disableRipple={true}
+                >
+                  <PhotoCamera />
+                </IconButton>
               </Grid>
             </Grid>
             {UploadPictureModal()}
@@ -720,7 +637,7 @@ function ItemDetails() {
           <Grid item xs={12} sm={12} md={6} lg={6} xl={8.5}>
             <Box
               sx={{
-                padding: "5px",
+                padding: { xs: "10px 5px", sm: "10px 5px", md: "20px" },
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "left",
@@ -728,169 +645,39 @@ function ItemDetails() {
                 margin: "7px",
               }}
             >
-              {/* Item Name */}
-              <InputLabel
-                id={`${params.id}-label-itemName`}
-                sx={{
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: "1.3rem",
-                }}
-              >
-                Item Name
-              </InputLabel>
-              <Input
-                label="Item Name"
-                defaultValue={itemData?.itemName}
-                disabled={!editable}
-                onChange={(e) =>
-                  setUpdatedItemData((prev) => ({
-                    ...prev,
-                    itemName: e.target.value,
-                  }))
-                }
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: "1.2rem",
-                  marginBottom: "20px",
-                }}
-              />
+              <div className="text-3xl my-1 font-bold">
+                {capitalizeFirstLetter(itemName)}
+              </div>
 
-              {/* Item Description */}
-              <InputLabel
-                id={`${params.id}-label-itemDescription`}
-                sx={{
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: "1.3rem",
-                }}
-              >
-                Item Description
-              </InputLabel>
-              <Input
-                label="Item Description"
-                defaultValue={itemData?.description}
-                disabled={!editable}
-                onChange={(e) =>
-                  setUpdatedItemData((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }))
-                }
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: "1.2rem",
-                  marginBottom: "20px",
-                }}
-              />
-
-              {/* Item Location */}
-              <InputLabel
-                id={`${params.id}-label-itemLocation`}
-                sx={{
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: "1.3rem",
-                }}
-              >
-                {itemData?.type === "lost" ? "Lost Location" : "Found Location"}
-              </InputLabel>
-              <Input
-                label="Item Location"
-                defaultValue={itemData?.lastSeenLocation}
-                disabled={!editable}
-                onChange={(e) =>
-                  setUpdatedItemData((prev) => ({
-                    ...prev,
-                    lastSeenLocation: e.target.value,
-                  }))
-                }
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: "1.2rem",
-                  marginBottom: "20px",
-                }}
-              />
-
-              {/* Item Type */}
-              <InputLabel
-                id={`${params.id}-label-itemType`}
-                sx={{
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: "1.3rem",
-                }}
-              >
-                Type
-              </InputLabel>
-              <Input
-                label="Item Type"
-                defaultValue={itemData?.type}
-                disabled={!editable}
-                onChange={(e) =>
-                  setUpdatedItemData((prev) => ({
-                    ...prev,
-                    itemType: e.target.value,
-                  }))
-                }
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: "1.2rem",
-                  marginBottom: "20px",
-                }}
-              />
-
-              {/* Item Status */}
-              <InputLabel
-                id={`${params.id}-label-itemStatus`}
-                sx={{
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: "1.3rem",
-                }}
-              >
-                Status
-              </InputLabel>
-              <Input
-                label="Item Status"
-                defaultValue={itemData?.itemStatus}
-                disabled={!editable}
-                onChange={(e) =>
-                  setUpdatedItemData((prev) => ({
-                    ...prev,
-                    itemStatus: e.target.value,
-                  }))
-                }
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: "1.2rem",
-                  marginBottom: "20px",
-                }}
-              />
-
-              {/* Item Category */}
-              <CustomSelect
-                label="Category"
-                value={itemData?.category}
-                disabled={!editable}
-              />
-
-              {editable && (
-                <Button
-                  startIcon={<SaveAlt />}
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "#ff9717",
-                    color: "#1c2536",
-                    fontSize: "1.2rem",
-                    width: "100%",
-                    marginBottom: "10px",
-                  }}
-                  onClick={handleDataEdit}
-                >
-                  Update
-                </Button>
-              )}
+              <div className="text-2xl my-1">Last Seen Details</div>
+              <div className="text-2xl my-1 ml-4">
+                Location:{" "}
+                <span className="text-[600]">
+                  {capitalizeFirstLetter(lastSeenLocation)}
+                </span>
+              </div>
+              <div className="text-2xl my-1 ml-4">
+                Date & Time:{" "}
+                <span className="text-[600]">
+                  {moment(lastSeenDate).format("MMMM Do YYYY, h:mm a")}
+                </span>
+              </div>
+              <div className="text-2xl my-1">
+                Type: {capitalizeFirstLetter(type)}
+              </div>
+              <div className="text-2xl my-1">
+                Category: {capitalizeFirstLetter(category)}
+              </div>
+              <div className="text-2xl my-2">
+                Item Status:{" "}
+                <span className="status_tag my-1">
+                  {capitalizeFirstLetter(itemStatus)}
+                </span>
+              </div>
+              <div className="text-2xl my-1">
+                Description
+                <div className="my-1 mx-3">{description}</div>
+              </div>
             </Box>
           </Grid>
         </Grid>
@@ -1034,6 +821,13 @@ function ItemDetails() {
                 )}
               </>
             )}
+
+            {itemData?.uid !== userData?.user_firebase_id &&
+              itemStatus === "claimed" && (
+                <div className="m-[8px 0px]">
+                  <Alert severity="info">No actions to perfom!</Alert>
+                </div>
+              )}
           </div>
         </div>
         <Divider sx={{ backgroundColor: "#ff9717", margin: "10px 0px" }} />
@@ -1075,6 +869,8 @@ function ItemDetails() {
           postId={itemData?._id}
           userId={userData?.user_firebase_id}
         />
+
+        <EditItemForm data={itemData} open={editable} onClose={handleEdit} />
       </LayoutProvider>
     );
   }

@@ -138,17 +138,8 @@ function App() {
                 )
               }
             />
-            <Route
-              path="*"
-              element={
-                isAuthenticated() ? (
-                  <Navigate to="/" replace />
-                ) : (
-                  <Navigate to="/login" replace />
-                )
-              }
-            />
             <Route path="/404-page" element={<Page404 />} />
+            <Route path="*" element={<Navigate to="/404-page" replace />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
