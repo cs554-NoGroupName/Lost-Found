@@ -104,5 +104,11 @@
   padding: 8px;
 }
 
-.color_palette {
+
+.status_tag{
+  border: 2px solid #1c2536;
+  padding: 0px 8px;
+  border-radius: 12px;
+  color: #1c2536;
+  box-shadow: 0px 0px 7px 2px #1c2536;
 }

@@ -15,7 +15,7 @@ import {
   Tooltip,
   Grid,
   Divider,
-  Typography
+  Typography,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -25,7 +25,7 @@ import {
   PhoneAndroid,
   Cake,
   Close,
-  Wc
+  Wc,
 } from "@mui/icons-material";
 import LayoutProvider from "components/common/Layout";
 import Loading from "components/common/BtnLoading";
@@ -163,7 +163,12 @@ function Profile() {
     return (
       <Card
         sx={{
-          minWidth: { xs: "fit-content", sm: "fit-content", md: "48%", lg: "49%" },
+          // minWidth: {
+          //   // xs: "fit-content",
+          //   // sm: "fit-content",
+          //   // md: "48%",
+          //   // lg: "49%",
+          // },
           padding: "20px",
         }}
       >
@@ -175,7 +180,7 @@ function Profile() {
             alt="profile picture"
             sx={{
               height: "300px",
-              width: '300px',
+              width: "300px",
               borderRadius: "50%",
               objectFit: "cover",
               maxHeight: "300px",
@@ -183,14 +188,13 @@ function Profile() {
               position: "relative",
               left: "50%",
               transform: "translateX(-50%)",
-              boxShadow: "0px 0px 20px 5px #ff9717",
             }}
           />
           <div
             style={{
               position: "absolute",
-              bottom: 20,
-              right: 20
+              bottom: "20px",
+              right: "20px",
             }}
           >
             <Tooltip
@@ -205,11 +209,11 @@ function Profile() {
                 onClick={handlemodalView}
                 sx={{
                   backgroundColor: "rgba(0,0,0,0.7)",
-                  boxShadow: "0px 0px 10px 5px rgba(0,0,0,0.5)",
-                  "&:hover": {
-                    backgroundColor: "rgba(0,0,0,0.9)",
-                    boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.9)"
-                  }
+                  // boxShadow: "0px 0px 10px 5px rgba(0,0,0,0.5)",
+                  // "&:hover": {
+                  //   backgroundColor: "rgba(0,0,0,0.9)",
+                  //   boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.9)",
+                  // },
                 }}
               >
                 <PhotoCamera sx={{ color: "#fff", fontSize: "2.5rem" }} />
@@ -226,7 +230,7 @@ function Profile() {
             flexDirection: "column",
             flexWrap: "wrap",
             alignContent: "stretch",
-            alignItems: "center"
+            alignItems: "center",
           }}
         />
 
@@ -242,10 +246,14 @@ function Profile() {
             alignItems: "center",
           }}
         >
-          <Grid container
-            direction="column"
-            spacing={1}>
-            <Grid item xs={12} sm={12} md={6} sx={{ display: "flex", alignItems: "center" }}>
+          <Grid container direction="column" spacing={1}>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
               <Email
                 sx={{
                   height: "50px",
@@ -253,10 +261,12 @@ function Profile() {
                   padding: "5px",
                   fontSize: "2rem",
                   backgroundColor: "#ff9717",
-                  borderRadius: "50%"
+                  borderRadius: "50%",
                 }}
               />
-              <Typography variant="body2" color="text.secondary"
+              <Typography
+                variant="body2"
+                color="text.secondary"
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -266,13 +276,19 @@ function Profile() {
                   paddingLeft: "10px",
                   borderRadius: "20px",
                   height: "50px",
-                  width: "100%"
+                  width: "100%",
                 }}
               >
                 {email}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={12} md={6} sx={{ display: "flex", alignItems: "center" }}>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
               <PhoneAndroid
                 sx={{
                   height: "50px",
@@ -280,10 +296,12 @@ function Profile() {
                   padding: "5px",
                   fontSize: "2rem",
                   backgroundColor: "#ff9717",
-                  borderRadius: "50%"
+                  borderRadius: "50%",
                 }}
               />
-              <Typography variant="body2" color="text.secondary"
+              <Typography
+                variant="body2"
+                color="text.secondary"
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -293,13 +311,19 @@ function Profile() {
                   paddingLeft: "10px",
                   borderRadius: "20px",
                   height: "50px",
-                  width: "100%"
+                  width: "100%",
                 }}
               >
                 {phoneNumberFormatter(phone)}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={12} md={6} sx={{ display: "flex", alignItems: "center" }}>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
               <Cake
                 sx={{
                   height: "50px",
@@ -307,10 +331,12 @@ function Profile() {
                   padding: "5px",
                   fontSize: "2rem",
                   backgroundColor: "#ff9717",
-                  borderRadius: "50%"
+                  borderRadius: "50%",
                 }}
               />
-              <Typography variant="body2" color="text.secondary"
+              <Typography
+                variant="body2"
+                color="text.secondary"
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -320,13 +346,19 @@ function Profile() {
                   paddingLeft: "10px",
                   borderRadius: "20px",
                   height: "50px",
-                  width: "100%"
+                  width: "100%",
                 }}
               >
                 {dayjs(dob).format("DD MMM YYYY")}
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={12} md={6} sx={{ display: "flex", alignItems: "center" }}>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
               <Wc
                 sx={{
                   height: "50px",
@@ -334,10 +366,12 @@ function Profile() {
                   padding: "5px",
                   fontSize: "2rem",
                   backgroundColor: "#ff9717",
-                  borderRadius: "50%"
+                  borderRadius: "50%",
                 }}
               />
-              <Typography variant="body2" color="text.secondary"
+              <Typography
+                variant="body2"
+                color="text.secondary"
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -347,7 +381,7 @@ function Profile() {
                   paddingLeft: "10px",
                   borderRadius: "20px",
                   height: "50px",
-                  width: "100%"
+                  width: "100%",
                 }}
               >
                 {capitalizeFirstLetter(gender)}
@@ -430,8 +464,9 @@ function Profile() {
     <>
       {useDocumentTitle("Profile")}
       <LayoutProvider>
-
-        <Typography variant="h5" component="div"
+        <Typography
+          variant="h5"
+          component="div"
           sx={{
             display: "flex",
             alignItems: "center",
@@ -441,7 +476,12 @@ function Profile() {
             borderRadius: "5px",
             width: "100%",
             padding: "10px",
-            margin: { xs: "0px 0px 10px 0px", sm: "0px 0px 10px 0px", md: "0px 0px 10px 0px", lg: "0px 0px 10px 0px" },
+            margin: {
+              xs: "0px 0px 10px 0px",
+              sm: "0px 0px 10px 0px",
+              md: "0px 0px 10px 0px",
+              lg: "0px 0px 10px 0px",
+            },
             boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.3)",
           }}
         >
@@ -449,7 +489,6 @@ function Profile() {
         </Typography>
 
         <div className="sm:block flex justify-around sm:mx-0 md:mx-[40px] mx-0">
-
           <ProfileView />
 
           <Card
@@ -465,9 +504,6 @@ function Profile() {
               justifyContent: "center",
             }}
           >
-            {/* {loading ? (
-          <Loading loading={loading} width={50} color="#1c2536" />
-        ) : ( */}
             <CardContent sx={{ padding: "0" }}>
               <div className="mr-3 w-full ">
                 <TextField
