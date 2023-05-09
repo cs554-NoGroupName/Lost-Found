@@ -31,8 +31,9 @@ export const createUser = async (
     user_firebase_id,
     image_url,
     reported: [],
-    bookmarked: [],
-    claimed: [],
+    requested_claims: [],
+    received_claims: [],
+    claims: [],
   };
   const insertInfo = await userCollection.insertOne(newUser);
   if (!insertInfo.acknowledged) throw 'Could not add user';
@@ -173,6 +174,38 @@ export const updateUserImage = async (user_firebase_id, image_url) => {
     throw 'Could not update user';
   }
   return await getUserByFirebaseId(user_firebase_id);
+};
+
+export const userActivity = async (user_firebase_id) => {
+  const userCollection = await users();
+  const user = await userCollection.findOne({ user_firebase_id });
+  // fetch reported items
+  const itemCollection = await mongoCollections.items();
+  const reportedItems = await itemCollection
+    .find({ uid: user_firebase_id })
+    .toArray();
+  user.reported = reportedItems;
+  //  fetch requested_claimed items
+  if (!user.requested_claims) user.requested_claims = [];
+  for (let i = 0; i < user.requested_claims.length; i++) {
+    const item = await itemMinDetails(user.requested_claims[i]);
+    user.requested_claims[i] = item;
+  }
+  // received_claimed items
+  if (!user.received_claims) user.received_claims = [];
+  for (let i = 0; i < user.received_claims.length; i++) {
+    const item = await itemMinDetails(user.received_claims[i]);
+    user.received_claims[i] = item;
+  }
+  // fetch claims
+  if (!user.claims) user.claims = [];
+  for (let i = 0; i < user.claims.length; i++) {
+    const item = await itemMinDetails(user.claims[i]);
+    user.claims[i] = item;
+  }
+
+  if (!user) throw 'User not found';
+  return user;
 };
 
 export default {

@@ -3,6 +3,7 @@ import {
   deleteUserByFirebaseId,
   getUserByFirebaseId,
   updateUserImage,
+  userActivity,
 } from '../data/users.js';
 import validation from '../utils/validation.js';
 import { BlobServiceClient } from '@azure/storage-blob';
@@ -69,6 +70,16 @@ export const updateImage = async (req, res) => {
     const imageUrl = blockBlobClient.url;
     const updatedUser = await updateUserImage(uid, imageUrl);
     return res.status(200).json(updatedUser);
+  } catch (e) {
+    return res.status(400).json({ message: e });
+  }
+};
+
+export const myActivity = async (req, res) => {
+  let { uid } = req.user;
+  try {
+    const myActivity = await userActivity(uid);
+    return res.status(200).json(myActivity);
   } catch (e) {
     return res.status(400).json({ message: e });
   }
