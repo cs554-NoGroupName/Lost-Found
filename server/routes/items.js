@@ -13,6 +13,7 @@ import {
   rejectClaim,
   comment,
   commentDelete,
+  updateImage,
 } from '../controllers/items.js';
 
 import { getItemsById } from '../middleware/items.js';
@@ -22,6 +23,8 @@ import upload from '../utils/uploadImage.js';
 
 // router.post('/report', VerifyToken, upload.single('image'), report);
 router.post('/report', VerifyToken, upload.single('imageUrl'), report);
+router.post('/image/:id', VerifyToken, upload.single('imageUrl'), updateImage);
+
 router.get('/claim/:id', VerifyToken, claimRequest);
 router.get('/resolveClaim/:itemId/:claimId', VerifyToken, resolveClaim);
 router.get('/report/search', VerifyToken, getReportedItemBySearch);
