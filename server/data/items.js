@@ -68,6 +68,16 @@ export const createItem = async (
   return item;
 };
 
+export const uploadImage = async (id, imageUrl) => {
+  const itemCollection = await items();
+  const updatedInfo = await itemCollection.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: { imageUrl } }
+  );
+  if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
+  return await getItemById(id);
+};
+
 export const userMinDetails = async (uid) => {
   const userCollection = await mongoCollections.users();
   let user = await userCollection.findOne({
