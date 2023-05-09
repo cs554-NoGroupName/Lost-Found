@@ -109,9 +109,12 @@ export const getItemById = async (id) => {
   return item;
 };
 
-export const getAllItems = async () => {
-  const itemCollection = await items();
-  let itemList = await itemCollection.find({}).toArray();
+export const getAllItems = async (args) => {
+  // const itemCollection = await items();
+  // let itemList = await itemCollection.find({}).toArray();
+
+  let itemList = await getItemBySearch(args);
+
   let todayDate = new Date();
   let seven = new Date(
     todayDate.getFullYear(),
@@ -610,6 +613,8 @@ export const getItemBySearch = async (args) => {
     throw new Error({ status: 404, message: 'Not found' });
   }
 
+  console.log(args);
+
   if (args.itemName) {
     itemList = itemList.filter((item) => {
       return item?.itemName
@@ -632,7 +637,9 @@ export const getItemBySearch = async (args) => {
       let argTags = args?.tags?.split(',');
       for (let i = 0; i < argTags.length; i++) {
         for (let j = 0; j < itemTags.length; j++) {
-          if (argTags[i].toLowerCase() === itemTags[j].toLowerCase()) {
+          if (
+            argTags[i].toLowerCase().trim() === itemTags[j].toLowerCase().trim()
+          ) {
             return true;
           }
         }
@@ -657,6 +664,12 @@ export const getItemBySearch = async (args) => {
       return item?.itemStatus
         ?.toLowerCase()
         .includes(args.itemStatus.toLowerCase());
+    });
+  }
+
+  if (args.type) {
+    itemList = itemList.filter((item) => {
+      return item?.type?.toLowerCase().includes(args.type.toLowerCase());
     });
   }
 

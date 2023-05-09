@@ -250,7 +250,7 @@ export async function commentDelete(req, res) {
 
 export async function getReportedItems(req, res) {
   try {
-    const getItem = await getAllItems();
+    const getItem = await getAllItems(req.query);
     // await client.set('getItem', JSON.stringify(getItem));
     console.log('Loading items from db');
     return res
