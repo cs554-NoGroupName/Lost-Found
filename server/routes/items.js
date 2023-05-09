@@ -8,6 +8,7 @@ import {
   deleteReportedIemById,
   claimRequest,
   resolveClaim,
+  getReportedItemBySearch,
   disputeRequest,
   rejectClaim,
   comment,
@@ -15,7 +16,7 @@ import {
   updateImage,
 } from '../controllers/items.js';
 
-import { getAllItems, getItemsById } from '../middleware/items.js';
+import { getItemsById } from '../middleware/items.js';
 
 const router = express.Router();
 import upload from '../utils/uploadImage.js';
@@ -26,6 +27,8 @@ router.post('/image/:id', VerifyToken, upload.single('imageUrl'), updateImage);
 
 router.get('/claim/:id', VerifyToken, claimRequest);
 router.get('/resolveClaim/:itemId/:claimId', VerifyToken, resolveClaim);
+router.get('/report/search', VerifyToken, getReportedItemBySearch);
+router.get('/', VerifyToken, getReportedItems);
 router.get('/rejectClaim/:itemId/:claimId', VerifyToken, rejectClaim);
 
 router.post('/dispute/:id', VerifyToken, disputeRequest);
@@ -35,8 +38,6 @@ router.get('/delete/:id', VerifyToken, deleteReportedIemById);
 router.post('/comment/:id', VerifyToken, comment);
 
 router.get('/comment/delete/:id/:commentId', VerifyToken, commentDelete);
-
-router.get('/', VerifyToken, getAllItems, getReportedItems);
 router.get('/:id', VerifyToken, getItemsById, getReportedItemById);
 router.patch('/:id', VerifyToken, updateReportedItem);
 
