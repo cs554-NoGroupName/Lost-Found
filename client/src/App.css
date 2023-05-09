@@ -2,18 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-/* .sample_class {
+.sample_class {
   logoblue: #1c2536;
   lightwhite: #e6e6e6;
   logolightblue: #6aa6a6;
   logolighterblue: #95b1b0;
   logoBlue: #324b4b;
-   test colors
- first: #4A5569;
+  first: #4A5569;
   second: #2E3643;
   third: #111A2B;
   four: #070F1D;
- yellow: #ff9717 }*/
+  yellow: #ff9717;
+}
 
 .scroller::-webkit-scrollbar {
   width: 5px;

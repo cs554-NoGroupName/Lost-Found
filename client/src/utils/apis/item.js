@@ -25,9 +25,18 @@ export const deleteComment = async (id, commentId) => {
   );
 };
 
-export const comfirmClaimRequest = async (id, userId) => {
+export const confirmClaimRequest = async (id, userId) => {
   return await makeApiCall("/items/resolveClaim/" + id + "/" + userId, "GET");
 };
+
 export const declineClaimRequest = async (id, userId) => {
   return await makeApiCall("/items/rejectClaim/" + id + "/" + userId, "GET");
 };
+
+export const editItemById = async (id, data) => {
+  return await makeApiCall("/items/" + id, "PATCH", data);
+};
+
+export const editItemImage = async (id, data) => {
+  return await makeApiCall("/items/image/" + id, "POST", data);
+}

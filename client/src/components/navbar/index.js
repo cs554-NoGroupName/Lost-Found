@@ -340,7 +340,7 @@ function Nav() {
                   </div>
                 </div>
                 <div>
-                  {state?.received_claims?.length !== 0 ? (
+                  {state?.received_claims?.length > 0 ? (
                     state?.received_claims.map((claim) => {
                       const { id, itemName, imageUrl } = claim;
                       return (

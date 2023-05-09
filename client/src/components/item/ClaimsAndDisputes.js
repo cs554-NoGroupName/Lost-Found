@@ -48,7 +48,7 @@ const ClaimsAndDisputes = ({
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          margin: "10px",
+          padding: "10px",
         }}
       >
         <Typography sx={titleStyle}>Claims & Disputes</Typography>
@@ -86,7 +86,6 @@ const ClaimsAndDisputes = ({
               icon={<BackHandIcon />}
               value="disputes"
               label="Disputes"
-              disabled={itemStatus !== "claimed"}
             />
           </Tabs>
 
