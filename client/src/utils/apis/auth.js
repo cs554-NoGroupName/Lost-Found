@@ -11,4 +11,3 @@ export const signup = async (data) => {
 export const forgotPassword = async (data) => {
   return await makeApiCall("/auth/forgot", "POST", data);
 };
-

@@ -4,6 +4,7 @@ import {
   updateImage,
   getUser,
   deleteUser,
+  myActivity,
 } from '../controllers/user.js';
 import { VerifyToken } from '../middleware/VerifyToken.js';
 import upload from '../utils/uploadImage.js';
@@ -18,4 +19,5 @@ router.post('/image', VerifyToken, upload.single('imageUrl'), updateImage);
 
 router.get('/delete', VerifyToken, deleteUser);
 
+router.get('/myActivity', VerifyToken, myActivity);
 export default router;

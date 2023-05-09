@@ -6,19 +6,19 @@ import {
   deleteItemById,
   getItemsByUserId,
   updateClaims,
+  resolveClaimById,
+  updateDispute,
+  rejectClaimById,
+  addComment,
+  deleteCommentById,
+  getItemBySearch,
+  uploadImage,
 } from '../data/items.js';
 import dotenv from 'dotenv';
 dotenv.config();
-import redis from 'redis';
 
-const client = redis.createClient({
-  password: process.env.REDIS_PASSWORD,
-  url: `rediss://${process.env.REDIS_HOST}:6380`,
-});
-
-client.connect().then(() => {
-  console.log('Redis connected');
-});
+import getClient from '../utils/redisClient.js';
+const client = await getClient();
 
 import validation from '../utils/validation.js';
 import { BlobServiceClient } from '@azure/storage-blob';
@@ -79,7 +79,43 @@ export async function report(req, res) {
     await client.set(`Item_${newItem._id.toString()}`, JSON.stringify(newItem));
     res.status(201).json(newItem);
   } catch (e) {
-    res.status(400).json({ message: e });
+    res.status(400).json({ error: e });
+  }
+}
+
+export async function updateImage(req, res) {
+  let { id } = req.params;
+  let { uid } = req.user;
+  try {
+    id = validation.checkObjectId(id);
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+  // check if the user is the owner of the item
+  const item = await getItemById(id);
+  if (item.uid !== uid) throw 'You cannot update image for this item';
+
+  try {
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ message: 'Please upload a image!' });
+    }
+    const imageData = req.file.buffer;
+    const blobName = `${Date.now()}-${file.originalname}`;
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    const file_type = file.mimetype;
+    const uploadBlobResponse = await blockBlobClient.uploadData(imageData, {
+      blobHTTPHeaders: { blobContentType: file_type },
+    });
+    const imageUrl = blockBlobClient.url;
+    const updatedItem = await uploadImage(id, imageUrl);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
   }
 }
 
@@ -101,6 +137,107 @@ export async function claimRequest(req, res) {
     if (found) throw 'You have already requested for this item';
 
     const updatedItem = await updateClaims(id, uid);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
+export async function resolveClaim(req, res) {
+  let { itemId, claimId } = req.params;
+  let { uid } = req.user;
+
+  try {
+    const item = await getItemById(itemId);
+    if (item.uid !== uid) throw 'You cannot resolve claim for this item';
+    const updatedItem = await resolveClaimById(itemId, claimId, uid);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
+export async function rejectClaim(req, res) {
+  let { itemId, claimId } = req.params;
+  let { uid } = req.user;
+
+  try {
+    const item = await getItemById(itemId);
+    if (item.uid !== uid) throw 'You cannot reject claim for this item';
+    const updatedItem = await rejectClaimById(itemId, claimId, uid);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
+export async function disputeRequest(req, res) {
+  let { itemId } = req.params;
+  let { uid } = req.user;
+  let { reason } = req.body;
+  try {
+    const item = await getItemById(itemId);
+    if (item.uid !== uid) throw 'You cannot dispute claim for this item';
+    if (item.itemStatus !== 'claimed') throw 'Item not claimed, cannot dispute';
+    const updatedItem = await updateDispute(itemId, uid, reason);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
+export async function comment(req, res) {
+  let { id } = req.params;
+  let { uid } = req.user;
+  let { comment } = req.body;
+  try {
+    id = validation.checkObjectId(id);
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+  try {
+    const updatedItem = await addComment(id, uid, comment);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+}
+
+export async function commentDelete(req, res) {
+  let { id, commentId } = req.params;
+  let { uid } = req.user;
+  try {
+    id = validation.checkObjectId(id);
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+  // check if the user is the owner of the comment
+
+  try {
+    const item = await getItemById(id);
+    const comment = item.comments.find((comment) => comment._id == commentId);
+    if (comment.userId !== uid) throw 'You cannot delete this comment';
+    const updatedItem = await deleteCommentById(id, commentId);
     await client.set(
       `Item_${updatedItem._id.toString()}`,
       JSON.stringify(updatedItem)
@@ -241,14 +378,27 @@ export async function deleteReportedIemById(req, res) {
 
   try {
     let id = req.params.id;
+    let uid = req.user.uid;
+    const item = await getItemById(id);
+    if (item.uid !== uid) throw 'You cannot delete this item';
     const deleteItem = await deleteItemById(id);
-    const exists = await client.exists(id);
-    if (exists) await client.del(id);
-    // await client.set('getItem', JSON.stringify(await getAllItems()));
+    const exists = await client.exists(`Item_${deleteItem._id.toString()}`);
+    if (exists) await client.del(`Item_${deleteItem._id.toString()}`);
+    return res.status(200).json({ message: 'Item deleted successfully' });
+  } catch (e) {
+    if (Object.keys(e).includes('status'))
+      return res.status(e.status).json({ error: e.message });
+    return res.status(500).json({ error: e });
+  }
+}
+
+// http://localhost:4000/items/report/search?itemStatus=claimed&itemName=phone&tags=phone&category=electronics&lastSeenDate=2023-04-12T04:05:49.000Z
+export async function getReportedItemBySearch(req, res) {
+  try {
+    const getItems = await getItemBySearch(req.query);
     return res
       .status(200)
-      .json({ message: 'Item deleted successfully', data: deleteItem });
-    // return res.status(200).json({ data:'deleted'});
+      .json({ message: 'Item fetched successfully', data: getItems });
   } catch (e) {
     if (Object.keys(e).includes('status'))
       return res.status(e.status).json({ error: e.message });

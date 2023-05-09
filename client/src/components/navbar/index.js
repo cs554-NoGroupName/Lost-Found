@@ -14,16 +14,24 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import SVGComponent from "components/common/Logo";
 import "./styles.css";
-import { Divider } from "@mui/material";
+import {
+  Badge,
+  Divider,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+} from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "redux/reducer";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 const pages = [
   { name: "Home", route: "/" },
   { name: "Report Item", route: "/report-item" },
+  { name: "My Activites", route: "/my-activities" },
 ];
 const settings = [
   { name: "My Profile", route: "/profile", Icon: AccountCircleIcon },
@@ -42,14 +50,23 @@ function Nav() {
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElUserNotifs, setAnchorElUserNotifs] = React.useState(null);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
+  const handleOpenUserNotifs = (event) => {
+    setAnchorElUserNotifs(event.currentTarget);
+  };
+
+  const handleCloseUserNotifs = () => {
+    setAnchorElUserNotifs(null);
+  };
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
@@ -182,6 +199,27 @@ function Nav() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Claim Requests">
+              <IconButton
+                onClick={handleOpenUserNotifs}
+                sx={{ p: 0, marginRight: "20px" }}
+              >
+                <Badge
+                  badgeContent={state?.received_claims?.length}
+                  sx={{
+                    ".MuiBadge-badge": {
+                      color: "#1c2536",
+                      backgroundColor: "#fff",
+                      fontWeight: 600,
+                    },
+                  }}
+                >
+                  <NotificationsIcon
+                    sx={{ fontSize: "32px", color: "#ffffff" }}
+                  />
+                </Badge>
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Open settings">
               <IconButton
                 onClick={handleOpenUserMenu}
@@ -253,6 +291,96 @@ function Nav() {
                     &nbsp;Sign Out
                   </Typography>
                 </MenuItem>
+              </div>
+            </Menu>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorElUserNotifs}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUserNotifs)}
+              onClose={handleCloseUserNotifs}
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  overflow: "visible",
+                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                  mt: 1.5,
+                  "& .MuiAvatar-root": {
+                    width: 45,
+                    height: 45,
+                  },
+                  "&:before": {
+                    content: '""',
+                    display: { xs: "none", sm: "none", md: "block" },
+                    position: "absolute",
+                    top: 0,
+                    right: 14,
+                    width: 10,
+                    height: 10,
+                    bgcolor: "background.paper",
+                    transform: "translateY(-50%) rotate(45deg)",
+                    zIndex: 0,
+                  },
+                },
+              }}
+            >
+              <div className="py-1 px-2">
+                <div className="border-b border-[#6aa6a647]">
+                  <div className="text-logoBlue text-lg font-bold">
+                    Notifications
+                  </div>
+                </div>
+                <div>
+                  {state?.received_claims?.length > 0 ? (
+                    state?.received_claims.map((claim) => {
+                      const { id, itemName, imageUrl } = claim;
+                      return (
+                        <div onClick={() => handleCloseUserNotifs()}>
+                          <Link to={"/item/" + id}>
+                            <ListItem alignItems="flex-start" disablePadding>
+                              <ListItemAvatar>
+                                <Avatar alt={itemName} src={imageUrl} />
+                              </ListItemAvatar>
+                              <ListItemText
+                                primary={
+                                  <Typography
+                                    sx={{ display: "inline", fontSize: "18px" }}
+                                  >
+                                    Claim Request
+                                  </Typography>
+                                }
+                                secondary={
+                                  <React.Fragment>
+                                    <Typography
+                                      sx={{
+                                        display: "inline",
+                                        fontSize: "16px",
+                                      }}
+                                    >
+                                      Someone sent you a request for {itemName}
+                                    </Typography>
+                                  </React.Fragment>
+                                }
+                              />
+                            </ListItem>
+                            <Divider variant="inset" component="li" />
+                          </Link>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div>Nothing for now!</div>
+                  )}
+                </div>
               </div>
             </Menu>
           </Box>

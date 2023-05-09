@@ -22,7 +22,7 @@ function PreviewModal({ open, onClose, data, loading, onSubmit }) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <div className="modal w-[650px] sm:w-[350px] sm:max-h-[80%]">
+        <div className="modal">
           <div className="modal_header">Review information</div>
           <div className="modal_body">
             <div className="modal_body__key">Type:</div>
@@ -42,12 +42,12 @@ function PreviewModal({ open, onClose, data, loading, onSubmit }) {
             <div className="modal_body__key">Image:</div>
             <div>
               <img
+                className="upload_image_preview"
                 src={
                   imageUrl
                     ? URL.createObjectURL(imageUrl)
                     : "https://plainenglish.io/assets/post-content/javascript-operator.jpg"
                 }
-                width={200}
                 alt={itemName}
               />
             </div>
@@ -62,7 +62,7 @@ function PreviewModal({ open, onClose, data, loading, onSubmit }) {
               onClick={onSubmit}
               disabled={loading}
             >
-              <Loading />
+              <Loading loading={loading} />
               Confirm
             </button>
             <button
