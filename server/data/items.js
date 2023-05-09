@@ -420,7 +420,8 @@ export const updateItem = async (...args) => {
     itemName,
     description,
     lastSeenLocation,
-    itemStatus,
+    lastSeenDate,
+    tags,
     type,
     category,
   ] = args;
@@ -429,7 +430,8 @@ export const updateItem = async (...args) => {
     !itemName &&
     !description &&
     !lastSeenLocation &&
-    !itemStatus &&
+    !lastSeenDate &&
+    !tags &&
     !type &&
     !category
   )
@@ -455,9 +457,13 @@ export const updateItem = async (...args) => {
     );
     updateItem.lastSeenLocation = lastSeenLocation;
   }
-  if (itemStatus && getItemId.itemStatus != itemStatus) {
-    itemStatus = validation.checkInputString(itemStatus, 'status');
-    updateItem.itemStatus = itemStatus;
+  if (lastSeenDate && getItemId.lastSeenDate != lastSeenDate) {
+    lastSeenDate = validation.checkInputString(lastSeenDate, 'lastSeenDate');
+    updateItem.lastSeenDate = lastSeenDate;
+  }
+  if (tags && getItemId.tags != tags) {
+    tags = validation.checkTags(tags);
+    updateItem.tags = tags;
   }
   if (type && getItemId.type != type) {
     type = validation.checkInputString(type, 'type');
