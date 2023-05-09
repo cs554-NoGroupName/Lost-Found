@@ -34,6 +34,7 @@ import { Global } from "@emotion/react";
 
 import { GET_ITEMS_LIST } from "routes";
 import Search from "./Search";
+import { makeApiCall } from "utils/apis/api";
 
 const modalStyle = {
   position: "absolute",
@@ -85,7 +86,7 @@ const Home = () => {
   const [filterTags, setFilterTags] = useState([]);
   const [lastSevenDays, setLastSevenDays] = useState([]);
 
-  const [todayItems, setTodayItems] = useState(false);
+  const [todayItems, setTodayItems] = useState([]);
 
   const theme = useTheme();
 
@@ -93,13 +94,15 @@ const Home = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        // const { data } = await axios.get(
-        //   "https://tempapi.proj.me/api/_iq6G8cWO" // TODO: Replace with items data backend call using REACT env variables
-        // );
-        // setResultData(data?.data);
-        setItemsData(testData);
-        updateTodayItems(testData);
-        updateLastSevenDaysItems(testData);
+        const { data } = await makeApiCall(
+          `/items` // TODO: Replace with items data backend call using REACT env variables
+        );
+        console.log("data:", data);
+        setResultData(data?.data);
+        const dataWithTags = arrayfyTags(data?.data);
+        setItemsData(dataWithTags?.beyond);
+        setTodayItems(dataWithTags?.today);
+        setLastSevenDays(dataWithTags?.week);
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -135,22 +138,61 @@ const Home = () => {
     console.log("Current user:", currentUser)
   }, [currentUser]);
 
+  const arrayfyTags = (data) => {
+    const today = data?.today ?? [];
+    const week = data?.week ?? [];
+    const beyond = data?.beyond ?? [];
+    today.forEach((item) => {
+      let itemTag = item.tags.split(",");
+      let empty = [];
+      itemTag.forEach((tag) => {
+        empty.push(tag.trim());
+      })
+      item.tags = empty;
+    });
+    week.forEach((item) => {
+      let itemTag = item.tags.split(",");
+      let empty = [];
+      itemTag.forEach((tag) => {
+        empty.push(tag.trim());
+      })
+      item.tags = empty;
+    });
+    beyond.forEach((item) => {
+      let itemTag = item.tags.split(",");
+      let empty = [];
+      itemTag.forEach((tag) => {
+        empty.push(tag.trim());
+      })
+      item.tags = empty;
+    });
+    return {
+      today: today,
+      week: week,
+      beyond: beyond
+    };
+  };
+
   useEffect(() => {
     // TODO: Replace all instances of itemsData within this useEffect with resultData and perform the necessary handling;
     const getUniqueTags = () => {
       let temp = [];
+
+      const totalData = [...itemsData, ...todayItems, ...lastSevenDays];
   
-      for (const item of itemsData) {
+      for (const item of totalData) {
         // console.log(item)
         const value = item?.tags?.map(tag => tag);
         temp = lodash.uniq([...temp, ...value]);
       }
+      console.log("tags array:", temp);
       return temp;
     };
     const getUniqueCategories = () => {
       let temp = [];
+      const totalData = [...itemsData, ...todayItems, ...lastSevenDays];
 
-      for (const item of itemsData) {
+      for (const item of totalData) {
         temp = lodash.uniq([...temp, item.category]);
       }
 
@@ -177,7 +219,7 @@ const Home = () => {
     const yearToday = today.getFullYear();
     const formattedToday = new Date(`${yearToday}-${monthToday}-${dayToday} 0:00:00`);
     // const todayData = data?.data?.filter((item) => new Date(item.reportedDate) > formattedToday);
-    const todayData = data?.filter((item) => new Date(item?.reportedDate) > formattedToday);
+    const todayData = data?.filter((item) => new Date(item?.lastSeenDate) > formattedToday);
     console.log("todayData", todayData);
     setTodayItems(todayData ?? []);
   };
@@ -189,7 +231,7 @@ const Home = () => {
     const year = sevenDaysAgo.getFullYear();
     const formattedToday = new Date(`${year}-${month}-${day} 0:00:00`);
     // const todayData = data?.data?.filter((item) => new Date(item.reportedDate) > formattedToday);
-    const sevenDaysAgoData = data?.filter((item) => new Date(item?.reportedDate) > formattedToday);
+    const sevenDaysAgoData = data?.filter((item) => new Date(item?.lastSeenDate) > formattedToday);
     console.log("sevenDaysAgoData", sevenDaysAgoData);
     setLastSevenDays(sevenDaysAgoData ?? []);
   };
@@ -237,8 +279,8 @@ const Home = () => {
 
   const cardBuilder = (item) => {
     return (
-      <Card key={item?.id} sx={{ maxWidth: 345 }}>
-        <CardHeader title={item?.name} subheader={item?.category} subheaderTypographyProps={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}} sx={{ color: theme.palette.primary.contrastText,
+      <Card key={item?._id} sx={{ maxWidth: 345, width: "max-content", margin: "10px" }}>
+        <CardHeader title={item?.itemName} subheader={item?.category} subheaderTypographyProps={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}} sx={{ color: theme.palette.primary.contrastText,
           backgroundColor: theme.palette.primary.main}} />
         <CardMedia
           // className="card-media"
@@ -250,12 +292,12 @@ const Home = () => {
             width: "300px",
             height: "300px"
           }}
-          image={item?.images?.[0]}
-          alt={item?.name}
+          image={item?.imageUrl}
+          alt={item?.itemName}
         />
         <CardContent sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
           {item?.type ? <div>Type: {item?.type}</div> : <></>}
-          {item?.status ? <div>Status: {item?.status}</div> : <></>}
+          {item?.itemStatus ? <div>Status: {item?.itemStatus}</div> : <></>}
           {item?.description ? (
             <Typography variant="body2" sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
               {item?.description}
@@ -276,7 +318,7 @@ const Home = () => {
   };
 
   const itemTags = (tags) => {
-    return tags.map((tag) => {
+    return tags?.map((tag) => {
       return (
         <Chip
           variant="outlined"
@@ -358,7 +400,7 @@ const Home = () => {
           return (
             <div>
               {currentUser ? (
-                <Link to={`/item/${item.id}`}>{cardBuilder(item)}</Link>
+                <Link to={`/item/${item?._id}`}>{cardBuilder(item)}</Link>
               ) : (
                 <span onClick={openModal}>{cardBuilder(item)}</span>
               )}
@@ -376,7 +418,7 @@ const Home = () => {
           return (
             <>
               {currentUser ? (
-                <Link to={`/item/${item?.id}`}>{rowCardBuilder(item)}</Link>
+                <Link to={`/item/${item?._id}`}>{rowCardBuilder(item)}</Link>
               ) : (
                 <span onClick={openModal}>{rowCardBuilder(item)}</span>
               )}
@@ -391,14 +433,14 @@ const Home = () => {
     return (
       <div className="row-wrapper">
         <div className="image-wrapper">
-          <img className="row-image" src={item?.images?.[0]} alt={item?.name} />
+          <img className="row-image" src={item?.imageUrl} alt={item?.itemName} />
           {item?.type ? <div className="image-text">{item.type}</div> : <></>}
         </div>
         <div className="row-details">
-          <div className="item-name">{item?.name}</div>
+          <div className="item-name">{item?.itemName}</div>
           <div className="item-data">
           {item?.type ? <div className="item-type">Type: {item?.type}</div> : <></>}
-          {item?.status ? <div className="item-status">Status: {item?.status}</div> : <></>}
+          {item?.itemStatus ? <div className="item-status">Status: {item?.itemStatus}</div> : <></>}
           {item?.description ? (
             <div className="item-description">
               {item?.description}
@@ -413,7 +455,7 @@ const Home = () => {
           )}
           </div>
         </div>
-        <div className="row-end">{item?.reportedDate ? (<div className="item-reported-date">{new Date(item.reportedDate).toLocaleDateString(undefined, options)}</div>) : <></>}</div>
+        <div className="row-end">{item?.lastSeenDate ? (<div className="item-reported-date">{new Date(item.lastSeenDate).toLocaleDateString(undefined, options)}</div>) : <></>}</div>
       </div>
     );
   };
@@ -421,7 +463,7 @@ const Home = () => {
   return (
     <LayoutProvider>
       {useDocumentTitle("Home")}
-      <div>{loading ? <LoadingText /> : "Home"}</div>
+      <div>{loading ? <LoadingText /> : <></>}</div>
       <div>
         {/* Items displayed in cards using Material UI Grid */}
         {/* Filter options */}
@@ -492,7 +534,7 @@ const Home = () => {
           </Grid>
         </Grid>
          : <></>} */}
-        <div className="flexer">
+        <div className="flexer-even">
           <Search searchValue={searchValue} searchType="Events" />
           <Button onClick={toggleFilter}>{showFilters ? "Hide Filters" : "Show Filters"}</Button>
           {/* TODO: Replace function refetchTestData with commented out function refetchWithFilters once Backend is ready */}
@@ -502,7 +544,7 @@ const Home = () => {
         <Box sx={{ flexGrow: 1 }}>
           {todayItems ? (
             <div>
-              <div style={{ margin: "10px" }}>Today</div>
+              <div style={{ margin: "10px" }} className="label-text">Today</div>
               <div className="slider-cards" style={{ display: "flex", gap: "10px" }}>
                 {itemsCard(todayItems)}
               </div>
@@ -514,7 +556,7 @@ const Home = () => {
         <Grid container>
           {lastSevenDays ? (
             <div>
-              <div style={{ margin: "10px" }}>Last 7 days</div>
+              <div style={{ margin: "10px" }} className="label-text">Last 7 days</div>
               <div className="items-rows">
                 {getLastSevenDaysCard(lastSevenDays)}
               </div>
@@ -524,7 +566,7 @@ const Home = () => {
         <Grid container>
           {itemsData ? (
             <div>
-              <div style={{ margin: "10px" }}>More than 7 days ago</div>
+              <div style={{ margin: "10px" }} className="label-text">More than 7 days ago</div>
               <div className="items-rows">
                 {getLastSevenDaysCard(itemsData)}
               </div>
@@ -654,7 +696,7 @@ const Home = () => {
           </FormControl>
           </Grid>
           <Grid item md={3} sm={6} xs={12}>
-          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
+          {tags ?<FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
             <InputLabel id="tags-filter-label">Tag</InputLabel>
             <Select
               value={filterTags}
@@ -664,11 +706,11 @@ const Home = () => {
               onChange={(e) => setTagsOnFilter(e.target.value)}
               label="Tag"
             >
-              {tags.map((tag) => {
+              {tags?.map((tag) => {
                 return <MenuItem value={tag}>{tag}</MenuItem>
               })}
             </Select>
-          </FormControl>
+          </FormControl> : <></>}
           </Grid>
         </Grid>
         <div className="flexer">

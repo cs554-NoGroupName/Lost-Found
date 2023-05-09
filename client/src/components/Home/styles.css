@@ -19,15 +19,15 @@ body::-webkit-scrollbar-thumb {
   object-fit: contain;
 }
 
-.css-o69gx8-MuiCardMedia-root {
+/* .css-o69gx8-MuiCardMedia-root {
   height: 200px;
-}
+} */
 
-.css-1ri6ub7-MuiPaper-root-MuiCard-root {
+/* .css-1ri6ub7-MuiPaper-root-MuiCard-root {
   margin: 10px;
   max-width: max-content;
   width: max-content;
-}
+} */
 
 /* .css-46bh2p-MuiCardContent-root,
 .css-46bh2p-MuiCardContent-root:last-child,
@@ -42,6 +42,30 @@ body::-webkit-scrollbar-thumb {
   justify-content: center;
   justify-items: center;
 }
+
+.flexer-even {
+  display: flex;
+  justify-content: space-evenly;
+  justify-items: center;
+}
+
+.label-text {
+  font-size: x-large;
+  font-weight: 600;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.styled-search {
+  border-radius: 5px;
+  min-height: 25px;
+}
+
+/* .center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+} */
 
 .css-1869usk-MuiFormControl-root {
   display: inline-flex;
