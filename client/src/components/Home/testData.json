@@ -1,10 +1,10 @@
 [
   {
-    "id": 123,
-    "name": "Mac Book Pro",
+    "_id": 123,
+    "itemName": "Mac Book Pro",
     "description": "This is a Mac Book Pro",
     "type": "Lost",
-    "status": "Open",
+    "itemStatus": "Open",
     "tags": ["Electronics", "Laptop", "Hardware"],
     "category": "Electronics",
     "reportedDate": "2023-05-01",
@@ -59,7 +59,7 @@
   },
   {
     "id": 123,
-    "name": "Mac Book Pro",
+    "itemName": "Mac Book Pro",
     "description": "This is a Mac Book Pro",
     "type": "Lost",
     "status": "Open",
@@ -117,7 +117,7 @@
   },
   {
     "id": 123,
-    "name": "Mac Book Pro",
+    "itemName": "Mac Book Pro",
     "description": "This is a Mac Book Pro",
     "type": "Lost",
     "status": "Open",
@@ -175,7 +175,7 @@
   },
   {
     "id": 123,
-    "name": "Mac Book Pro",
+    "itemName": "Mac Book Pro",
     "description": "This is a Mac Book Pro",
     "type": "Lost",
     "status": "Open",
@@ -233,7 +233,7 @@
   },
   {
     "id": 123,
-    "name": "Mac Book Pro",
+    "itemName": "Mac Book Pro",
     "description": "This is a Mac Book Pro",
     "type": "Lost",
     "status": "Open",
@@ -291,7 +291,7 @@
   },
   {
     "id": 123,
-    "name": "Mac Book Pro",
+    "itemName": "Mac Book Pro",
     "description": "This is a Mac Book Pro",
     "type": "Lost",
     "status": "Open",
