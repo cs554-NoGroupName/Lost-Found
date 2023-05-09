@@ -11,6 +11,7 @@ import {
   rejectClaimById,
   addComment,
   deleteCommentById,
+  uploadImage,
 } from '../data/items.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -78,6 +79,42 @@ export async function report(req, res) {
     res.status(201).json(newItem);
   } catch (e) {
     res.status(400).json({ error: e });
+  }
+}
+
+export async function updateImage(req, res) {
+  let { id } = req.params;
+  let { uid } = req.user;
+  try {
+    id = validation.checkObjectId(id);
+  } catch (e) {
+    return res.status(400).json({ error: e });
+  }
+  // check if the user is the owner of the item
+  const item = await getItemById(id);
+  if (item.uid !== uid) throw 'You cannot update image for this item';
+
+  try {
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ message: 'Please upload a image!' });
+    }
+    const imageData = req.file.buffer;
+    const blobName = `${Date.now()}-${file.originalname}`;
+    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    const file_type = file.mimetype;
+    const uploadBlobResponse = await blockBlobClient.uploadData(imageData, {
+      blobHTTPHeaders: { blobContentType: file_type },
+    });
+    const imageUrl = blockBlobClient.url;
+    const updatedItem = await uploadImage(id, imageUrl);
+    await client.set(
+      `Item_${updatedItem._id.toString()}`,
+      JSON.stringify(updatedItem)
+    );
+    return res.status(200).json({ updatedItem });
+  } catch (e) {
+    return res.status(400).json({ error: e });
   }
 }
 
