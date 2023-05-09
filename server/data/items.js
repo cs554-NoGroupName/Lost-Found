@@ -422,7 +422,6 @@ export const updateItem = async (...args) => {
     lastSeenLocation,
     lastSeenDate,
     tags,
-    type,
     category,
   ] = args;
 
@@ -432,7 +431,6 @@ export const updateItem = async (...args) => {
     !lastSeenLocation &&
     !lastSeenDate &&
     !tags &&
-    !type &&
     !category
   )
     throw 'Should have atleast one parameter';
@@ -465,10 +463,7 @@ export const updateItem = async (...args) => {
     tags = validation.checkTags(tags);
     updateItem.tags = tags;
   }
-  if (type && getItemId.type !== type) {
-    type = validation.checkInputString(type, 'type');
-    updateItem.type = type;
-  }
+
   if (category && getItemId.category !== category) {
     category = validation.checkInputString(category, 'category');
     updateItem.category = category;
