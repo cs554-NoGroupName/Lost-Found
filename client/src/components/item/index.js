@@ -53,7 +53,6 @@ import LayoutProvider from "components/common/Layout";
 import LoadingText from "components/common/loadingText";
 import Comments from "./Comments";
 import ErrorPage from "./ErrorPage";
-import Header from "./HeaderComponent";
 import TimelineTracker from "./TimelineTracker";
 import ClaimsAndDisputes from "./ClaimsAndDisputes";
 import Loading from "components/common/BtnLoading";
@@ -62,12 +61,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import { categoryOptions } from "utils/constants";
 import moment from "moment";
 
-const titleStyle = {
-  fontWeight: "bold",
-  fontSize: "1.5rem",
-  color: "#324b4b",
-  marginBottom: "10px",
-};
 
 const titleStyleLight = {
   fontWeight: "bold",
