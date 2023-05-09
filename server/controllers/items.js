@@ -291,26 +291,25 @@ export async function updateReportedItem(req, res) {
     let {
       itemName,
       description,
-      // reportedBy,
       lastSeenLocation,
-      itemStatus,
+      tags,
       type,
       category,
+      lastSeenDate,
     } = req.body;
 
     if (
       !itemName &&
       !description &&
-      // !reportedBy &&
       !lastSeenLocation &&
-      !itemStatus &&
+      !tags &&
       !type &&
       !category
     )
       throw 'Should have atleast one parameter';
     id = validation.checkObjectId(id);
     if (itemName) {
-      itemName = validation.checkNames(itemName, 'itemName');
+      itemName = validation.checkInputString(itemName, 'itemName');
     }
     if (description) {
       description = validation.checkInputString(description, 'description');
@@ -321,7 +320,7 @@ export async function updateReportedItem(req, res) {
         'lastSeenLocation'
       );
     }
-    if (itemStatus) {
+    if (tags) {
       itemStatus = validation.checkInputString(itemStatus, 'status');
     }
     if (type) {
@@ -329,6 +328,9 @@ export async function updateReportedItem(req, res) {
     }
     if (category) {
       category = validation.checkInputString(category, 'category');
+    }
+    if (lastSeenDate) {
+      lastSeenDate = validation.checkLastSeenDate(lastSeenDate, 'lastSeenDate');
     }
   } catch (e) {
     return res.status(400).json({ error: e });
@@ -339,16 +341,18 @@ export async function updateReportedItem(req, res) {
       itemName,
       description,
       lastSeenLocation,
-      itemStatus,
+      lastSeenDate,
       type,
       category,
+      tags,
     } = req.body;
     const updatedItem = await updateItem(
       id,
       itemName,
       description,
       lastSeenLocation,
-      itemStatus,
+      lastSeenDate,
+      tags,
       type,
       category
     );
