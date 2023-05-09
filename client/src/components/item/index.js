@@ -39,7 +39,6 @@ import {
   Edit,
   ErrorOutline,
   PhotoCamera,
-  SaveAlt,
   ThumbDownOffAlt,
   ThumbUpOffAlt,
 } from "@mui/icons-material";
@@ -103,7 +102,7 @@ function ItemDetails() {
   const userData = useSelector((state) => state?.userData?.userData);
   const params = useParams();
   const [itemData, setItemData] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editable, setEditable] = useState(false);
   const [statusCode, setStatusCode] = useState(200);
@@ -121,7 +120,6 @@ function ItemDetails() {
   const [openClaim, setOpenClaim] = useState(false);
   const [openDispute, setOpenDispute] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [editImageModal, setEditImageModal] = useState(false);
 
   const handleEdit = (status = 0, data = null) => {
     if (status === 200) {
@@ -163,11 +161,10 @@ function ItemDetails() {
   };
 
   const handleDeleteAction = async () => {
-    const { status, data } = await deleteItemById(itemData?._id);
-    console.log(status, data);
+    const { status } = await deleteItemById(itemData?._id);
     if (status === 200) {
       toast.success("Post deleted!");
-      navigate("/profile");
+      navigate("/my-activites");
     } else {
       toast.error("Failed to delete item!");
       setOpenDelete(false);
@@ -203,9 +200,13 @@ function ItemDetails() {
             "Something went wrong! Please try again later or contact support."
           );
         }
+
         setStatusCode(status);
-      } else setItemData(data?.data);
-      setLoading(false);
+        setLoading(false);
+      } else {
+        setItemData(data?.data);
+        setLoading(false);
+      }
     });
   }, [params.id]);
 
@@ -396,7 +397,7 @@ function ItemDetails() {
       lastSeenLocation,
       lastSeenDate,
       itemStatus,
-    } = itemData;
+    } = itemData ?? {};
     return (
       <LayoutProvider>
         <Box
@@ -612,7 +613,10 @@ function ItemDetails() {
               </Grid>
 
               {/* Edit Image Button */}
-              <Grid item sx={{ position: "absolute", bottom:'8px', right:'8px' }}>
+              <Grid
+                item
+                sx={{ position: "absolute", bottom: "8px", right: "8px" }}
+              >
                 <IconButton
                   sx={{
                     backgroundColor: "#ff9717",

@@ -8,6 +8,7 @@ import {
   Avatar,
 } from "@mui/material";
 import moment from "moment";
+import "./styles.css";
 
 const titleStyle = {
   fontWeight: "bold",
@@ -41,17 +42,21 @@ const TimelineTracker = ({ timeline }) => {
       >
         <Typography sx={titleStyle}>Item Timeline</Typography>
         <Stepper
+          classes={"blinking_effect"}
           activeStep={timeline?.length - 1}
           orientation="horizontal"
           alternativeLabel
           sx={{
             display: { xs: "block", sm: "block", md: "flex" },
-            "& .MuiStepLabel-label.Mui-completed": {
+            alignItems: "center",
+            width: "max-content",
+            "& .MuiStepLabel-label.Mui-completed ": {
               backgroundColor: "#e6e6e6",
               color: "black",
               borderRadius: "10px",
               padding: "10px",
               textAlign: "left",
+              width: "max-content",
             },
             "& .MuiStepLabel-label.Mui-active": {
               backgroundColor: "#e6e6e6",
@@ -60,6 +65,7 @@ const TimelineTracker = ({ timeline }) => {
               padding: "10px",
               textAlign: "left",
               border: "2px solid #ff9717",
+              width: "max-content",
             },
             "& .MuiStepConnector-horizontal": {
               backgroundColor: "#2E3643",
@@ -76,10 +82,10 @@ const TimelineTracker = ({ timeline }) => {
             <Step key={item?.id}>
               <StepLabel>
                 <Box>
-                  <Typography sx={{ fontSize: "1.2rem" }}>
+                  <Typography sx={{ fontSize: "1.2rem", fontWeight: "700" }}>
                     Date: {moment(item?.date).format("MMMM Do YYYY, h:mm a")}
                   </Typography>
-                  <Typography sx={{ fontSize: "1.2rem" }}>
+                  <Typography sx={{ fontSize: "1.2rem", fontWeight: "700" }}>
                     Status: {item?.status}
                   </Typography>
                   <Typography
@@ -87,6 +93,7 @@ const TimelineTracker = ({ timeline }) => {
                       display: "flex",
                       fontSize: "1rem",
                       marginTop: "0.5rem",
+                      alignItems: "center",
                     }}
                   >
                     <div>
