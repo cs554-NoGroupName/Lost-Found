@@ -111,8 +111,49 @@ export const getItemById = async (id) => {
 
 export const getAllItems = async () => {
   const itemCollection = await items();
-  const itemList = await itemCollection.find({}).toArray();
-  return itemList;
+  let itemList = await itemCollection.find({}).toArray();
+  let todayDate = new Date();
+  let seven = new Date(
+    todayDate.getFullYear(),
+    todayDate.getMonth(),
+    todayDate.getDate() - 7
+  );
+  let today = itemList.filter((item) => {
+    let date = new Date(item.lastSeenDate);
+    return (
+      date.getDate() === todayDate.getDate() &&
+      date.getMonth() === todayDate.getMonth() &&
+      date.getFullYear() === todayDate.getFullYear()
+    );
+  });
+  console.log('week');
+  let week = itemList.filter((item) => {
+    let date = new Date(item.lastSeenDate);
+
+    return (
+      date >= seven &&
+      !(
+        date.getDate() === todayDate.getDate() &&
+        date.getMonth() === todayDate.getMonth() &&
+        date.getFullYear() === todayDate.getFullYear()
+      )
+    );
+  });
+
+  console.log('beyond');
+  let beyond = itemList.filter((item) => {
+    let date = new Date(item.lastSeenDate);
+
+    return (
+      date < seven &&
+      !(
+        date.getDate() === todayDate.getDate() &&
+        date.getMonth() === todayDate.getMonth() &&
+        date.getFullYear() === todayDate.getFullYear()
+      )
+    );
+  });
+  return { today: today, week: week, beyond: beyond };
 };
 
 export const getItemsByUserId = async (uid) => {
@@ -379,8 +420,8 @@ export const updateItem = async (...args) => {
     itemName,
     description,
     lastSeenLocation,
-    itemStatus,
-    type,
+    lastSeenDate,
+    tags,
     category,
   ] = args;
 
@@ -388,8 +429,8 @@ export const updateItem = async (...args) => {
     !itemName &&
     !description &&
     !lastSeenLocation &&
-    !itemStatus &&
-    !type &&
+    !lastSeenDate &&
+    !tags &&
     !category
   )
     throw 'Should have atleast one parameter';
@@ -399,30 +440,31 @@ export const updateItem = async (...args) => {
 
   let updateItem = {};
 
-  if (itemName && getItemId.itemName != itemName) {
-    itemName = validation.checkNames(itemName, 'name');
+  if (itemName && getItemId.itemName !== itemName) {
+    itemName = validation.checkInputString(itemName, 'name');
     updateItem.itemName = itemName;
   }
-  if (description && getItemId.description != description) {
+  if (description && getItemId.description !== description) {
     description = validation.checkInputString(description, 'description');
     updateItem.description = description;
   }
-  if (lastSeenLocation && getItemId.lastSeenLocation != lastSeenLocation) {
+  if (lastSeenLocation && getItemId.lastSeenLocation !== lastSeenLocation) {
     lastSeenLocation = validation.checkInputString(
       lastSeenLocation,
       'lastSeenLocation'
     );
     updateItem.lastSeenLocation = lastSeenLocation;
   }
-  if (itemStatus && getItemId.itemStatus != itemStatus) {
-    itemStatus = validation.checkInputString(itemStatus, 'status');
-    updateItem.itemStatus = itemStatus;
+  if (lastSeenDate && getItemId.lastSeenDate !== lastSeenDate) {
+    lastSeenDate = validation.checkInputString(lastSeenDate, 'lastSeenDate');
+    updateItem.lastSeenDate = lastSeenDate;
   }
-  if (type && getItemId.type != type) {
-    type = validation.checkInputString(type, 'type');
-    updateItem.type = type;
+  if (tags && getItemId.tags !== tags) {
+    tags = validation.checkTags(tags);
+    updateItem.tags = tags;
   }
-  if (category && getItemId.category != category) {
+
+  if (category && getItemId.category !== category) {
     category = validation.checkInputString(category, 'category');
     updateItem.category = category;
   }
@@ -431,7 +473,12 @@ export const updateItem = async (...args) => {
     { _id: new ObjectId(id) },
     { $set: updateItem }
   );
-  if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
+  // if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
+  if (updatedInfo.modifiedCount === 0 && updatedInfo.matchedCount === 0)
+    throw 'Could not update item';
+
+  if (updatedInfo.modifiedCount === 0 && updatedInfo.matchedCount === 1)
+    throw 'No changes made to item';
 
   return await getItemById(id);
 };
@@ -502,7 +549,7 @@ export const deleteItemById = async (id) => {
   if (deletionInfo.deletedCount === 0) throw 'Could not delete item';
 
   console.log(deletionInfo);
-  return { deleted: true, message: 'Item deleted successfully' };
+  return getItem;
 };
 
 export const addComment = async (id, uid, comment) => {
@@ -554,4 +601,64 @@ export const deleteCommentById = async (id, commentId) => {
   if (updatedInfo.modifiedCount === 0) throw 'Could not update item';
   const updatedItem = await getItemById(id);
   return updatedItem;
+};
+
+export const getItemBySearch = async (args) => {
+  const itemCollection = await items();
+  let itemList = await itemCollection.find({}).toArray();
+  if (!itemList) {
+    throw new Error({ status: 404, message: 'Not found' });
+  }
+
+  if (args.itemName) {
+    itemList = itemList.filter((item) => {
+      return item?.itemName
+        ?.toLowerCase()
+        .includes(args.itemName.toLowerCase());
+    });
+  }
+  // console.log(itemList[0]);
+  if (args.category) {
+    itemList = itemList.filter((item) => {
+      return item?.category
+        ?.toLowerCase()
+        .includes(args.category.toLowerCase());
+    });
+  }
+
+  if (args.tags) {
+    itemList = itemList.filter((item) => {
+      let itemTags = item?.tags?.split(',');
+      let argTags = args?.tags?.split(',');
+      for (let i = 0; i < argTags.length; i++) {
+        for (let j = 0; j < itemTags.length; j++) {
+          if (argTags[i].toLowerCase() === itemTags[j].toLowerCase()) {
+            return true;
+          }
+        }
+      }
+    });
+  }
+
+  if (args.lastSeenDate) {
+    const date = new Date(args.lastSeenDate);
+    itemList = itemList.filter((item) => {
+      const itemDate = new Date(item?.lastSeenDate);
+      return (
+        itemDate.getFullYear() === date.getFullYear() &&
+        itemDate.getMonth() === date.getMonth() &&
+        itemDate.getDate() === date.getDate()
+      );
+    });
+  }
+
+  if (args.itemStatus) {
+    itemList = itemList.filter((item) => {
+      return item?.itemStatus
+        ?.toLowerCase()
+        .includes(args.itemStatus.toLowerCase());
+    });
+  }
+
+  return itemList;
 };
