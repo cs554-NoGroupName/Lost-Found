@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -26,7 +26,7 @@ const titleStyle = {
 };
 
 const Comments = ({ postId, comments, setItemData, userId }) => {
-  const [comment, setComment] = React.useState("");
+  const [comment, setComment] = useState("");
   return (
     <>
       <Box
@@ -137,7 +137,7 @@ const Comments = ({ postId, comments, setItemData, userId }) => {
           ))
         ) : (
           <div className="m-[8px 0px]">
-            <Alert severity="info">No comments!</Alert>
+            <Alert severity="info">No comments yet!</Alert>
           </div>
         )}
         <Grid container spacing={2}>
