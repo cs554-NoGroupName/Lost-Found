@@ -344,7 +344,7 @@ function Nav() {
                     state?.received_claims.map((claim) => {
                       const { id, itemName, imageUrl } = claim;
                       return (
-                        <div onClick={() => handleCloseUserNotifs()}>
+                        <div onClick={() => handleCloseUserNotifs()} key={id}>
                           <Link to={"/item/" + id}>
                             <ListItem alignItems="flex-start" disablePadding>
                               <ListItemAvatar>

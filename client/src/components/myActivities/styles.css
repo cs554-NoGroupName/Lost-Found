@@ -1,0 +1,12 @@
+.type_tag {
+  border: 2px solid #1c2536;
+  border-radius: 10px;
+  padding: 4px 8px;
+  font-size: 16px;
+  font-weight: 700;
+  width: fit-content;
+  background: var(--toastify-color-light);
+  color: #1c2536;
+  box-shadow: 0px 0px 3px 1px #1c2536;
+  text-transform: uppercase;
+}
