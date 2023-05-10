@@ -36,7 +36,8 @@
   transform: translate(-50%, -50%);
   width: auto;
   background-color: white;
-  /* width: 450px; */
+  max-width: 100%;
+  max-height: 75%;
   border-radius: 10px;
 }
 
@@ -52,10 +53,10 @@
 }
 
 .modal_body {
-  margin: 0px 10px 10px;
   font-size: 15px;
   overflow-y: auto;
-  padding-bottom: 10px;
+  padding: 8px 10px;
+  margin-bottom: 16px;
 }
 
 .modal_footer {
@@ -73,6 +74,8 @@
 
 .modal_body__value {
   font-size: 16px;
+  inline-size: auto;
+  overflow-wrap: break-word;
 }
 
 .profile_upload_modal {
@@ -90,4 +93,11 @@
   padding: 10px;
   justify-content: space-evenly;
   width: fit-content;
+}
+
+.upload_image_preview {
+  width: 300px;
+  max-width: 300px;
+  height: 300px;
+  max-height: 300px;
 }

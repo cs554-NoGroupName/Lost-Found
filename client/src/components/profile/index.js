@@ -1,4 +1,7 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import dayjs from "dayjs";
 import {
   Card,
   CardActions,
@@ -8,37 +11,40 @@ import {
   MenuItem,
   Modal,
   TextField,
+  CardMedia,
+  Tooltip,
+  Grid,
+  Divider,
+  Typography,
 } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import {
+  PhotoCamera,
+  Email,
+  PhoneAndroid,
+  Cake,
+  Close,
+  Wc,
+} from "@mui/icons-material";
 import LayoutProvider from "components/common/Layout";
-import { PhotoCamera } from "@mui/icons-material";
 import Loading from "components/common/BtnLoading";
+import useDocumentTitle from "components/common/useDocumentTitle";
 import {
   capitalizeFirstLetter,
   fullNameFormatter,
   nameValidation,
   phoneNumberFormatter,
 } from "utils/helper";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import PhoneAndroidOutlinedIcon from "@mui/icons-material/PhoneAndroidOutlined";
-import CakeOutlinedIcon from "@mui/icons-material/CakeOutlined";
-import CloseIcon from "@mui/icons-material/Close";
 import DefaultProfile from "../../utils/images/default_profile_pic.png";
-import Man4Icon from "@mui/icons-material/Man4";
-
-import "./styles.css";
 import { genderOptions } from "utils/constants";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import useDocumentTitle from "components/common/useDocumentTitle";
-import { useDispatch, useSelector } from "react-redux";
 import {
   getUserDetails,
   updateUserProfileData,
   uploadUserProfilePhoto,
 } from "utils/apis/user";
-import { toast } from "react-toastify";
 import { setUserData } from "redux/reducer";
+import "./styles.css";
 
 function Profile() {
   const editorRef = React.useRef(null);
@@ -157,14 +163,82 @@ function Profile() {
     return (
       <Card
         sx={{
-          maxWidth: "400px",
-          minWidth: "fit-content",
-          padding: "20px 20px 0 20px",
+          // minWidth: {
+          //   // xs: "fit-content",
+          //   // sm: "fit-content",
+          //   // md: "48%",
+          //   // lg: "49%",
+          // },
+          padding: "20px",
         }}
       >
+        <div style={{ position: "relative" }}>
+          <CardMedia
+            component="img"
+            height="280"
+            image={image_url ?? DefaultProfile}
+            alt="profile picture"
+            sx={{
+              height: "300px",
+              width: "300px",
+              borderRadius: "50%",
+              objectFit: "cover",
+              maxHeight: "300px",
+              maxWidth: "300px",
+              position: "relative",
+              left: "50%",
+              transform: "translateX(-50%)",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              bottom: "20px",
+              right: "20px",
+            }}
+          >
+            <Tooltip
+              title="Upload new profile picture"
+              placement="top"
+              arrow={true}
+            >
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="label"
+                onClick={handlemodalView}
+                sx={{
+                  backgroundColor: "rgba(0,0,0,0.7)",
+                  // boxShadow: "0px 0px 10px 5px rgba(0,0,0,0.5)",
+                  // "&:hover": {
+                  //   backgroundColor: "rgba(0,0,0,0.9)",
+                  //   boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.9)",
+                  // },
+                }}
+              >
+                <PhotoCamera sx={{ color: "#fff", fontSize: "2.5rem" }} />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+
+        <CardHeader
+          title={fullNameFormatter(firstName, lastName)}
+          sx={{
+            padding: "16px 10px 10px 10px",
+            display: { sx: "flex", sm: "flex", md: "block" },
+            flexDirection: "column",
+            flexWrap: "wrap",
+            alignContent: "stretch",
+            alignItems: "center",
+          }}
+        />
+
+        <Divider />
+
         <CardContent
           sx={{
-            padding: "0",
+            padding: "16px 10px 10px 10px",
             display: { sx: "flex", sm: "flex", md: "block" },
             flexDirection: "column",
             flexWrap: "wrap",
@@ -172,55 +246,148 @@ function Profile() {
             alignItems: "center",
           }}
         >
-          <div className="user_profile_picture">
-            <img
-              className="user_profile_picture"
-              src={image_url}
-              alt="your profile"
-              width={250}
-              height={280}
-            />
-          </div>
-
-          <div>
-            <div className="py-4 px-3 text-xl">
-              <span className="sm:text-2xl md:text-3xl text-4xl font-semibold">
-                {fullNameFormatter(firstName, lastName)}
-              </span>
-            </div>
-            <div className="block">
-              <div className="flex items-center">
-                <div className="w-[30px] h-[30px]">
-                  <CakeOutlinedIcon color="#1d1f23" />
-                </div>
-                <span>{dob}</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-[30px] h-[30px]">
-                  <Man4Icon color="#1d1f23" />
-                </div>
-                <span>{capitalizeFirstLetter(gender)}</span>
-              </div>
-            </div>
-            <div className="block">
-              <div className="flex items-center">
-                <div className="w-[30px] h-[30px]">
-                  <MailOutlineIcon color="#1d1f23" />
-                </div>
-                <span>{email}</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-[30px] h-[30px]">
-                  <PhoneAndroidOutlinedIcon color="#1d1f23" />
-                </div>
-                <span>{phoneNumberFormatter(phone)}</span>
-              </div>
-            </div>
-
-            <div onClick={handlemodalView} className="btn_edit_profile">
-              <PhotoCamera sx={{ color: "#393e46" }} /> Upload picture
-            </div>
-          </div>
+          <Grid container direction="column" spacing={1}>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
+              <Email
+                sx={{
+                  height: "50px",
+                  width: "50px",
+                  padding: "5px",
+                  fontSize: "2rem",
+                  backgroundColor: "#ff9717",
+                  borderRadius: "50%",
+                }}
+              />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "1rem",
+                  backgroundColor: "rgba(0,0,0,0.1)",
+                  marginLeft: "10px",
+                  paddingLeft: "10px",
+                  borderRadius: "20px",
+                  height: "50px",
+                  width: "100%",
+                }}
+              >
+                {email}
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
+              <PhoneAndroid
+                sx={{
+                  height: "50px",
+                  width: "50px",
+                  padding: "5px",
+                  fontSize: "2rem",
+                  backgroundColor: "#ff9717",
+                  borderRadius: "50%",
+                }}
+              />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "1rem",
+                  backgroundColor: "rgba(0,0,0,0.1)",
+                  marginLeft: "10px",
+                  paddingLeft: "10px",
+                  borderRadius: "20px",
+                  height: "50px",
+                  width: "100%",
+                }}
+              >
+                {phoneNumberFormatter(phone)}
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
+              <Cake
+                sx={{
+                  height: "50px",
+                  width: "50px",
+                  padding: "5px",
+                  fontSize: "2rem",
+                  backgroundColor: "#ff9717",
+                  borderRadius: "50%",
+                }}
+              />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "1rem",
+                  backgroundColor: "rgba(0,0,0,0.1)",
+                  marginLeft: "10px",
+                  paddingLeft: "10px",
+                  borderRadius: "20px",
+                  height: "50px",
+                  width: "100%",
+                }}
+              >
+                {dayjs(dob).format("DD MMM YYYY")}
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              sx={{ display: "flex", alignItems: "center" }}
+            >
+              <Wc
+                sx={{
+                  height: "50px",
+                  width: "50px",
+                  padding: "5px",
+                  fontSize: "2rem",
+                  backgroundColor: "#ff9717",
+                  borderRadius: "50%",
+                }}
+              />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "1rem",
+                  backgroundColor: "rgba(0,0,0,0.1)",
+                  marginLeft: "10px",
+                  paddingLeft: "10px",
+                  borderRadius: "20px",
+                  height: "50px",
+                  width: "100%",
+                }}
+              >
+                {capitalizeFirstLetter(gender)}
+              </Typography>
+            </Grid>
+          </Grid>
         </CardContent>
       </Card>
     );
@@ -297,29 +464,46 @@ function Profile() {
     <>
       {useDocumentTitle("Profile")}
       <LayoutProvider>
+        <Typography
+          variant="h5"
+          component="div"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexGrow: 1,
+            backgroundColor: "#fff",
+            borderRadius: "5px",
+            width: "100%",
+            padding: "10px",
+            margin: {
+              xs: "0px 0px 10px 0px",
+              sm: "0px 0px 10px 0px",
+              md: "0px 0px 10px 0px",
+              lg: "0px 0px 10px 0px",
+            },
+            boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.3)",
+          }}
+        >
+          Profile Page
+        </Typography>
+
         <div className="sm:block flex justify-around sm:mx-0 md:mx-[40px] mx-0">
           <ProfileView />
+
           <Card
             sx={{
-              minWidth: { xs: "fit-content", sm: "fit-content", md: "60%" },
+              minWidth: { xs: "fit-content", sm: "fit-content", md: "50%" },
               maxWidth: "100%",
-              padding: "20px 20px 0 20px",
+              padding: "20px",
               marginLeft: { xs: "0px", sm: "0px", md: "20px" },
-              marginTop: { xs: "20px", sm: "20px", md: "20px" },
+              marginTop: { xs: "20px", sm: "20px", md: "0px" },
               // display: loading ? "flex" : "block",
               display: "block",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            {/* {loading ? (
-          <Loading loading={loading} width={50} color="#1c2536" />
-        ) : ( */}
-            {/* <> */}
-            <CardHeader
-              title="Profile"
-              subheader="The information can be edited"
-            />
             <CardContent sx={{ padding: "0" }}>
               <div className="mr-3 w-full ">
                 <TextField
@@ -337,7 +521,7 @@ function Profile() {
                   helperText={
                     errors?.firstName ? (
                       <span className="text-base flex items-center">
-                        <CloseIcon fontSize="small" />
+                        <Close fontSize="small" />
                         Enter a valid First Name
                       </span>
                     ) : (
@@ -369,7 +553,7 @@ function Profile() {
                   helperText={
                     errors?.lastName ? (
                       <span className="text-base flex items-center">
-                        <CloseIcon fontSize="small" />
+                        <Close fontSize="small" />
                         Enter a valid Last Name
                       </span>
                     ) : (
@@ -447,7 +631,7 @@ function Profile() {
                 </TextField>
                 {errors?.gender && (
                   <span className="helperText__gender text-base flex items-center ">
-                    <CloseIcon fontSize="small" />
+                    <Close fontSize="small" />
                     Choose a gender
                   </span>
                 )}
@@ -469,7 +653,7 @@ function Profile() {
                   helperText={
                     errors?.phone ? (
                       <span className="text-base flex items-center">
-                        <CloseIcon fontSize="small" />
+                        <Close fontSize="small" />
                         Enter a valid phone number
                       </span>
                     ) : (
@@ -501,7 +685,7 @@ function Profile() {
                           helperText={
                             errors?.dob ? (
                               <span className="helperText__dob text-base flex items-center">
-                                <CloseIcon fontSize="small" />
+                                <Close fontSize="small" />
                                 Enter a valid date
                               </span>
                             ) : (

@@ -7,7 +7,9 @@ import ResetPassword from "components/resetPassword";
 import { ToastContainer } from "react-toastify";
 import Home from "components/Home";
 import ReportItem from "components/reportItem";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
+import theme from "theme";
+import ItemDetails from "components/item";
 import Page404 from "components/common/Page404";
 import "./App.css";
 import Profile from "components/profile";
@@ -15,24 +17,25 @@ import PrivacyPolicyPage from "components/common/privacyPolicyPage";
 
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
+import MyActivites from "components/myActivities";
 
 function App() {
   const state = useSelector((state) => state?.userData?.userData);
 
-  const theme = createTheme({
-    breakpoints: {
-      values: {
-        xs: 0,
-        sm: 300,
-        md: 639,
-        lg: 1023,
-        xl: 1279,
-      },
-    },
-  });
+  // const theme = createTheme({
+  //   breakpoints: {
+  //     values: {
+  //       xs: 0,
+  //       sm: 300,
+  //       md: 639,
+  //       lg: 1023,
+  //       xl: 1279,
+  //     },
+  //   },
+  // });
 
   const isAuthenticated = () => {
-    return JSON.stringify(state) !== "{}" ? true : false;
+    return state && Object.keys(state).length !== 0 ? true : false;
   };
 
   return (
@@ -44,7 +47,22 @@ function App() {
               path="/"
               exact
               element={
-                isAuthenticated() ? <Home /> : <Navigate to="/login" replace />
+                isAuthenticated() ? (
+                  <Home />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/my-activities"
+              exact
+              element={
+                isAuthenticated() ? (
+                  <MyActivites />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
               }
             />
             <Route
@@ -53,6 +71,17 @@ function App() {
               element={
                 isAuthenticated() ? (
                   <ReportItem />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/item/:id"
+              exact
+              element={
+                isAuthenticated() ? (
+                  <ItemDetails />
                 ) : (
                   <Navigate to="/login" replace />
                 )
@@ -114,17 +143,8 @@ function App() {
                 )
               }
             />
-            <Route
-              path="*"
-              element={
-                isAuthenticated() ? (
-                  <Navigate to="/" replace />
-                ) : (
-                  <Navigate to="/login" replace />
-                )
-              }
-            />
             <Route path="/404-page" element={<Page404 />} />
+            <Route path="*" element={<Navigate to="/404-page" replace />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
@@ -137,6 +157,7 @@ function App() {
         theme="colored"
       />
     </div>
+
   );
 }
 

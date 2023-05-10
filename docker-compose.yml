@@ -1,6 +1,7 @@
 version: '1.0'
 services:
   redis:
+    container_name: redis
     image: redis:alpine
     ports:
       - '6379:6379'
@@ -11,6 +12,8 @@ services:
     build: ./server
     ports:
       - '4000:4000'
+    environment:
+      - REDIS_URL=redis://redis:6379
     depends_on:
       - redis
     volumes:

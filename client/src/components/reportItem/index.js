@@ -138,9 +138,10 @@ function ReportItem() {
     const { status, data } = reportData;
     if (status !== 201) toast.error(data?.error);
     else {
-      toast.success("Item posted successfully.");
+      closePreviewModal(false);
+      toast.success("Posted successfully.");
       toast.success("Redirecting...");
-      setTimeout(() => navigate("/items/" + data._id), 4000);
+      setTimeout(() => navigate("/item/" + data._id), 1000);
     }
     setLoading(false);
   };
@@ -342,14 +343,13 @@ function ReportItem() {
                 {imageObj ? (
                   <>
                     <img
+                      className="upload_image_preview"
                       src={
                         imageObj
                           ? URL.createObjectURL(imageObj)
                           : DefaultProfile
                       }
                       alt="item"
-                      width={400}
-                      height={200}
                     />
                     <button
                       className="btn_default__cancel mt-2"

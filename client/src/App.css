@@ -2,18 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-/* .sample_class {
+.sample_class {
   logoblue: #1c2536;
   lightwhite: #e6e6e6;
   logolightblue: #6aa6a6;
   logolighterblue: #95b1b0;
-  logoBlue: #324b4b;
-   test colors
- first: #4A5569;
-  second: #2E3643;
-  third: #111A2B;
-  four: #070F1D;
- yellow: #ff9717 }*/
+  logoblue: #324b4b;
+  first: #4a5569;
+  second: #2e3643;
+  third: #111a2b;
+  four: #070f1d;
+  yellow: #ff9717;
+}
 
 .scroller::-webkit-scrollbar {
   width: 5px;
@@ -31,12 +31,23 @@
 .btn_default {
   width: auto;
   padding: 7px 20px;
-  color: theme("colors.logoBlue");;
+  color: theme("colors.logoBlue");
   /* color: white; */
   font-size: 18px;
   font-weight: 500;
   border-radius: 4px;
   background-color: #ff9717;
+  cursor: pointer;
+}
+
+.btn_default_moreinfo {
+  width: auto;
+  padding: 4px 12px;
+  color: theme("colors.logoBlue");
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 8px;
+  border: 2px solid theme("colors.logoBlue");
   cursor: pointer;
 }
 
@@ -88,6 +99,18 @@
   height: 30px;
 }
 
+.status_btn {
+  border: 2px solid #393e46;
+  border-radius: 6px;
+  padding: 4px;
+  font-size: 16px;
+  line-height: 12px;
+  margin-left: 10px;
+  margin-bottom: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
 .text_ellipsis {
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -104,5 +127,16 @@
   padding: 8px;
 }
 
-.color_palette {
+.status_tag {
+  border: 2px solid #1c2536;
+  padding: 0px 8px;
+  border-radius: 12px;
+  color: #1c2536;
+  box-shadow: 0px 0px 7px 2px #1c2536;
+}
+
+
+.textWrap{
+  inline-size: auto;
+  overflow-wrap: break-word;
 }

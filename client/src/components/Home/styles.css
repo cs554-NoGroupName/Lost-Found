@@ -1,0 +1,200 @@
+.items-card::-webkit-scrollbar {
+  border-radius: 5px;
+  height: 5px;
+}
+
+.items-card::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 4px rgba(0,0,0,0.3); 
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
+.items-card::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: grey; 
+  -webkit-box-shadow: inset 0 0 4px rgba(0,0,0,0.5); 
+}
+
+.card-media {
+  object-fit: contain;
+}
+
+/* .css-o69gx8-MuiCardMedia-root {
+  height: 200px;
+} */
+
+/* .css-1ri6ub7-MuiPaper-root-MuiCard-root {
+  margin: 10px;
+  max-width: max-content;
+  width: max-content;
+} */
+
+/* .css-46bh2p-MuiCardContent-root,
+.css-46bh2p-MuiCardContent-root:last-child,
+.css-1012bww-MuiChip-root,
+.css-r40f8v-MuiTypography-root {
+  color: white !important;
+  background-color: theme('colors.logoBlue') !important;
+} */
+
+.flexer {
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+}
+
+.flexer-even {
+  display: flex;
+  justify-content: space-evenly;
+  justify-items: center;
+  align-items: center;
+}
+
+.label-text {
+  font-size: x-large;
+  font-weight: 600;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.styled-search {
+  border-radius: 5px;
+  min-height: 25px;
+}
+
+/* .center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+} */
+
+.css-1869usk-MuiFormControl-root {
+  display: inline-flex;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+}
+
+.slider-cards {
+  display: flex;
+  gap: 12px;
+  /* overflow-x: auto; */
+  /* scroll-behavior: smooth; */
+  /* resize: horizontal; */
+  position: relative;
+  padding: 24px 10px;
+  /* overflow-y: hidden; */
+  /* resize: none; */
+  /* max-width: 100vw; */
+  /* min-width: 100vw; */
+  /* width: 500px; */
+}
+
+.items-card {
+  display: flex;
+  flex-direction: row;
+  box-shadow: 0 8px 16px rgba(44, 44, 44, 0.1019607843);
+  border-radius: 8px;
+  max-width: 100%;
+  width: auto !important;
+  min-width: 164px;
+  /* overflow: hidden; */
+  display: flex;
+  background-color: #fff;
+  justify-content: space-between;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.css-1e7cuzv-MuiFormControl-root {
+  @media only screen and (max-width: 860px and min-width: 360px) {
+    min-width: 150px !important;
+    width: -webkit-fill-available;
+  }
+  @media only screen and (max-width: 360px) {
+    min-width: 100px !important;
+    width: -webkit-fill-available;
+  }
+  /* @media only screen and (min-width: 360px) {
+    min-width: 150px !important;
+    width: -webkit-fill-available;
+  } */
+}
+
+.row-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  background-color: theme('colors.logoBlue');
+  color: white;
+  border: 1px solid theme('colors.logoBlue');
+  border-radius: 20px;
+  margin: 10px;
+
+  @media only screen and (max-width: 600px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: theme('colors.logoBlue');
+    color: white;
+    border: 1px solid theme('colors.logoBlue');
+    border-radius: 20px;
+    margin: 10px;
+  }
+  @media only screen and (min-width: 600px) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: theme('colors.logoBlue');
+    color: white;
+    border: 1px solid theme('colors.logoBlue');
+    border-radius: 20px;
+    margin: 10px;
+  }
+}
+
+.image-wrapper {
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  background-color: theme('colors.logoBlue');
+  position: relative;
+
+  @media only screen and (max-width: 600px) {
+    border-top-right-radius: 20px;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.row-image {
+  border-radius: 20px;
+  width: 30vw;
+  min-width: 200px;
+  @media only screen and (max-width: 600px) {
+    width: max-content;
+    min-width: 250px;
+  }
+}
+
+.image-text {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  border: 1px solid theme('colors.logoBlue');
+  border-radius: 20px;
+  padding: 5px 10px;
+  color: black;
+  font-weight: 600;
+  backdrop-filter: grayscale(100%) contrast(100%);
+}
+
+.row-details {
+  background-color: theme('colors.logoBlue');
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  padding: 10px;
+}
+
+.item-reported-date {
+  padding: 10px 0;
+}

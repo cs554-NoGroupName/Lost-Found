@@ -8,6 +8,8 @@ import { app_auth } from '../config/firebase-auth.js';
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
+  sendEmailVerification,
+  createUserWithEmailAndPassword,
 } from 'firebase/auth';
 export async function register(req, res) {
   let { email, password, firstName, lastName, gender, phone, dob } = req.body;
@@ -25,14 +27,14 @@ export async function register(req, res) {
       dataUri: true,
     });
     const image_uri = await random_image.toDataUri();
-
-    const user = await auth.createUser({
-      uid,
+    const { user } = await createUserWithEmailAndPassword(
+      app_auth,
       email,
       password,
-      displayName: firstName + ' ' + lastName,
-    });
+      firstName + ' ' + lastName
+    );
     const user_firebase_id = user.uid;
+    await sendEmailVerification(app_auth.currentUser);
     const newUser = await users.createUser(
       firstName,
       lastName,
@@ -53,9 +55,18 @@ export async function getUser(req, res) {
   try {
     const { email, password } = req.body;
     const user = await signInWithEmailAndPassword(app_auth, email, password);
+    // check if user is verified
+    if (!user.user.emailVerified) {
+      return res.status(400).json({ message: 'Email not verified' });
+    }
     const user_firebase_id = user.user.uid;
     const user_data = await users.getUserByFirebaseId(user_firebase_id);
     user_data.token = await user.user.getIdToken();
+
+    // create custom token
+    // const customToken = await auth.createCustomToken(user_firebase_id);
+    // user_data.customToken = customToken;
+
     res.status(200).json(user_data);
   } catch (e) {
     res.status(400).json({ message: e });

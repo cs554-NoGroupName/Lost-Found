@@ -1,7 +1,7 @@
 import { CircularProgress } from "@mui/material";
 import React from "react";
 
-function Loading({ loading, width = 16, thickness = 4, color="#ffffff" }) {
+function Loading({ loading, width = 16, thickness = 4, color = "#1c2536" }) {
   return (
     loading && (
       <CircularProgress
