@@ -2,6 +2,7 @@ import React from "react";
 import { IconButton, MenuItem, TextField } from "@mui/material";
 import LayoutProvider from "components/common/Layout";
 import {
+  itemNameValidation,
   nameValidation,
   validateDescription,
   validateTags,
@@ -225,7 +226,7 @@ function ReportItem() {
                 onChange={(e) => {
                   let { name, value } = e.target;
                   if (value === "") setError(name);
-                  if (!nameValidation(value)) setError(name);
+                  if (!itemNameValidation(value)) setError(name);
                   else removeError(name);
                   setValues(name, value);
                 }}

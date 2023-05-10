@@ -2,6 +2,7 @@ import React from "react";
 import { Dialog, MenuItem, TextField } from "@mui/material";
 import {
   capitalizeFirstLetter,
+  itemNameValidation,
   nameValidation,
   validateDescription,
   validateTags,
@@ -206,7 +207,7 @@ function EditItemForm({ open, onClose, data }) {
                   onChange={(e) => {
                     let { name, value } = e.target;
                     if (value === "") setError(name);
-                    if (!nameValidation(value)) setError(name);
+                    if (!itemNameValidation(value)) setError(name);
                     else removeError(name);
                     setValues(name, value);
                   }}

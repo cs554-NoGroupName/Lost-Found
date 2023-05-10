@@ -163,7 +163,7 @@ const Comments = ({ postId, comments, setItemData, userId }) => {
             fullWidth
             value={comment}
             onChange={(e) => {
-              setComment(e.target.value.trim());
+              setComment(e.target.value);
             }}
           />
         </Grid>
