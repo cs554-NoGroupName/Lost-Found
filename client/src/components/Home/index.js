@@ -13,10 +13,6 @@ import {
   Backdrop,
   Box,
   Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardMedia,
   Chip,
   Fade,
   FormControl,
@@ -34,7 +30,6 @@ import { Global } from "@emotion/react";
 import Search from "./Search";
 import { makeApiCall } from "utils/apis/api";
 
-import noImage from "../../utils/images/No-Image-Placeholder.png";
 import { Clear, FilterAlt, FilterAltOff, FilterList, FilterListOff } from "@mui/icons-material";
 import ItemCard from "components/myActivities/card";
 
@@ -49,8 +44,6 @@ const modalStyle = {
   boxShadow: 24,
   p: 4,
 };
-
-const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
 const container = window !== undefined ? () => window.document.body : undefined;
 
@@ -182,7 +175,7 @@ const Home = () => {
       let temp = [];
 
       const totalData = [...itemsData, ...todayItems, ...lastSevenDays];
-  
+
       for (const item of totalData) {
         // console.log(item)
         const value = item?.tags?.map(tag => tag);
@@ -282,7 +275,7 @@ const Home = () => {
 
   console.log("TAGS:", tags);
 
-  const cardBuilder = (item) => { 
+  const cardBuilder = (item) => {
     return <ItemCard item={item} />
     // return (
     //   <Card key={item?._id} sx={{ maxWidth: 325, margin: "10px" }}>
@@ -418,8 +411,8 @@ const Home = () => {
             //     <span onClick={openModal}>{cardBuilder(item)}</span>
             //   )}
             // </div>
-            
-          
+
+
         })}
       </div>
     );
@@ -500,7 +493,7 @@ const Home = () => {
         <div>
         {/* Items displayed in cards using Material UI Grid */}
         {/* Filter options */}
-        {/* {showFilters ? 
+        {/* {showFilters ?
         <Grid container spacing={0}>
           <Grid item md={3} sm={6} xs={12}>
           <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
@@ -571,7 +564,7 @@ const Home = () => {
           <Search searchValue={searchValue} searchType="Events" />
           <Button sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }} onClick={() => setSearchTerm(" ")}><Clear />Clear Search</Button>
           <button className="btn_default" onClick={toggleFilter}>{showFilters ? <div><FilterListOff />Hide</div> : <div><FilterList />Filters</div>}</button>
-          {/* {showFilters ? <Button onClick={refetchTestData}>Apply Filters</Button> : <></>} 
+          {/* {showFilters ? <Button onClick={refetchTestData}>Apply Filters</Button> : <></>}
           <Button onClick={clearFilter}>Clear Filters</Button> */}
         </div>
         {appliedFilters ? <div>
@@ -774,12 +767,12 @@ const Home = () => {
           </Grid>
         </Grid>
         <div className="flexer my-2">
-          <button 
+          <button
           className='btn_default mx-2'
           onClick={refetchWithFilters}><FilterAlt />Apply</button>
           <button
-          className="btn_default__light mx-2" 
-          // sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }} 
+          className="btn_default__light mx-2"
+          // sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }}
           onClick={clearFilter}><FilterAltOff />Clear</button>
         </div>
       </SwipeableDrawer>
