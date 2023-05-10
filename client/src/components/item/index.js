@@ -37,7 +37,6 @@ import {
   Check,
   Delete,
   Edit,
-  ErrorOutline,
   PhotoCamera,
   ThumbDownOffAlt,
   ThumbUpOffAlt,
@@ -118,7 +117,6 @@ function ItemDetails() {
   const handleClose = () => setModalView(false);
   const [imageUploadLoading, setImageUploadLoading] = React.useState(false);
   const [openClaim, setOpenClaim] = useState(false);
-  const [openDispute, setOpenDispute] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
 
   const handleEdit = (status = 0, data = null) => {
@@ -148,18 +146,6 @@ function ItemDetails() {
     setOpenClaim(false);
   };
 
-  const handleDisputeOpen = () => {
-    if (itemData?.type === "found" && itemData?.itemStatus === "claimed") {
-      setOpenDispute(true);
-    } else {
-      toast.info("Action not available");
-    }
-  };
-
-  const handleDisputeClose = () => {
-    setOpenDispute(false);
-  };
-
   const handleDeleteAction = async () => {
     const { status } = await deleteItemById(itemData?._id);
     if (status === 200) {
@@ -178,10 +164,6 @@ function ItemDetails() {
       // setItemData(data?.updatedItem);
       toast.success("Claim request sent.");
     } else toast.info(data.error);
-  };
-
-  const handleDisputeAction = () => {
-    setOpenDispute(false);
   };
 
   useEffect(() => {
@@ -452,54 +434,28 @@ function ItemDetails() {
               )}
               {itemData?.uid !== userData?.user_firebase_id && (
                 <>
-                  {itemData?.type === "found" && (
-                    <>
-                      {itemData?.itemStatus === "reported" && (
-                        <Tooltip
-                          title={
-                            itemData?.type === "found"
-                              ? "Claim this item"
-                              : "Action not available"
-                          }
-                          placement="bottom"
-                          arrow
-                          disableHoverListener={false}
+                  {itemData?.type === "found" &&
+                    itemData?.itemStatus === "reported" && (
+                      <Tooltip
+                        title={
+                          itemData?.type === "found"
+                            ? "Claim this item"
+                            : "Action not available"
+                        }
+                        placement="bottom"
+                        arrow
+                        disableHoverListener={false}
+                      >
+                        <Button
+                          startIcon={<Check sx={{ fontSize: "1.2rem" }} />}
+                          aria-label="claim"
+                          onClick={handleClaimOpen}
+                          sx={buttonStyle2}
                         >
-                          <Button
-                            startIcon={<Check sx={{ fontSize: "1.2rem" }} />}
-                            aria-label="claim"
-                            onClick={handleClaimOpen}
-                            sx={buttonStyle2}
-                          >
-                            Claim
-                          </Button>
-                        </Tooltip>
-                      )}
-                      {itemData?.itemStatus === "claimed" && (
-                        <Tooltip
-                          title={
-                            itemData?.type === "found"
-                              ? "Raise dispute for this item"
-                              : "Action not available"
-                          }
-                          placement="bottom"
-                          arrow
-                          disableHoverListener={false}
-                        >
-                          <Button
-                            startIcon={
-                              <ErrorOutline sx={{ fontSize: "1.2rem" }} />
-                            }
-                            aria-label="Dispute"
-                            onClick={handleDisputeOpen}
-                            sx={buttonStyle2}
-                          >
-                            Dispute
-                          </Button>
-                        </Tooltip>
-                      )}
-                    </>
-                  )}
+                          Claim
+                        </Button>
+                      </Tooltip>
+                    )}
                 </>
               )}
             </div>
@@ -518,14 +474,6 @@ function ItemDetails() {
             handleAction={handleClaimAction}
             title="Claim Item"
             actionText="Are you sure you want to claim this item?"
-          />
-
-          <DialogComponent
-            open={openDispute}
-            handleClose={handleDisputeClose}
-            handleAction={handleDisputeAction}
-            title="Raise Dispute"
-            actionText="Are you sure you want to raise a dispute for this item?"
           />
 
           <DialogComponent
@@ -777,52 +725,28 @@ function ItemDetails() {
             )}
             {itemData?.uid !== userData?.user_firebase_id && (
               <>
-                {itemData?.type === "found" && (
-                  <>
-                    {itemData?.itemStatus === "reported" && (
-                      <Tooltip
-                        title={
-                          itemData?.type === "found"
-                            ? "Claim this item"
-                            : "Action not available"
-                        }
-                        placement="bottom"
-                        arrow
-                        disableHoverListener={false}
+                {itemData?.type === "found" &&
+                  itemData?.itemStatus === "reported" && (
+                    <Tooltip
+                      title={
+                        itemData?.type === "found"
+                          ? "Claim this item"
+                          : "Action not available"
+                      }
+                      placement="bottom"
+                      arrow
+                      disableHoverListener={false}
+                    >
+                      <Button
+                        startIcon={<Check />}
+                        aria-label="claim"
+                        onClick={handleClaimOpen}
+                        sx={buttonStyle2}
                       >
-                        <Button
-                          startIcon={<Check />}
-                          aria-label="claim"
-                          onClick={handleClaimOpen}
-                          sx={buttonStyle2}
-                        >
-                          Claim
-                        </Button>
-                      </Tooltip>
-                    )}
-                    {itemData?.itemStatus === "claimed" && (
-                      <Tooltip
-                        title={
-                          itemData?.type === "found"
-                            ? "Raise dispute for this item"
-                            : "Action not available"
-                        }
-                        placement="bottom"
-                        arrow
-                        disableHoverListener={false}
-                      >
-                        <Button
-                          startIcon={<ErrorOutline />}
-                          aria-label="Dispute"
-                          onClick={handleDisputeOpen}
-                          sx={buttonStyle2}
-                        >
-                          Dispute
-                        </Button>
-                      </Tooltip>
-                    )}
-                  </>
-                )}
+                        Claim
+                      </Button>
+                    </Tooltip>
+                  )}
               </>
             )}
 
