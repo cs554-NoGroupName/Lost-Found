@@ -161,7 +161,7 @@ function ItemDetails() {
     const { status, data } = await sendClaimRequest(itemData?._id);
     setOpenClaim(false);
     if (status === 200) {
-      // setItemData(data?.updatedItem);
+      setItemData(data?.updatedItem);
       toast.success("Claim request sent.");
     } else toast.info(data.error);
   };
@@ -544,7 +544,13 @@ function ItemDetails() {
                 position: "relative",
               }}
             >
-              <Grid item xs={12}>
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  position: "relative",
+                }}
+              >
                 <CardMedia
                   component="img"
                   src={itemData?.imageUrl}
@@ -558,20 +564,16 @@ function ItemDetails() {
                     backgroundColor: "#f6f7f8cc",
                   }}
                 />
-              </Grid>
-
-              {/* Edit Image Button */}
-              <Grid
-                item
-                sx={{ position: "absolute", bottom: "8px", right: "8px" }}
-              >
                 <IconButton
                   sx={{
                     backgroundColor: "#ff9717",
                     color: "#1c2536",
                     fontSize: "1.2rem",
-                    width: "100%",
+                    width: "fit-content",
                     marginTop: "10px",
+                    position: "absolute",
+                    bottom: "10px",
+                    right: "10px",
                   }}
                   onClick={handleModalView}
                   aria-label="upload picture"

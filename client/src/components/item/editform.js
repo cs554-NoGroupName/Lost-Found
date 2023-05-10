@@ -2,7 +2,7 @@ import React from "react";
 import { Dialog, MenuItem, TextField } from "@mui/material";
 import {
   capitalizeFirstLetter,
-  nameValidation,
+  itemNameValidation,
   validateDescription,
   validateTags,
 } from "utils/helper";
@@ -73,7 +73,6 @@ function EditItemForm({ open, onClose, data }) {
     if (!itemData?.lastSeenLocation) errorObj.lastSeenLocation = true;
     if (!itemData?.lastSeenDate) errorObj.lastSeenDate = true;
 
-    console.log({ errorObj });
     if (Object.keys(errorObj).length !== 0) return setErrors(errorObj);
     else setErrors({});
     const {
@@ -95,7 +94,6 @@ function EditItemForm({ open, onClose, data }) {
       lastSeenDate: lastSeenDate?.$d ?? lastSeenDate,
     };
 
-    console.log({ apiBody });
     const { status, data } = await editItemById(itemData._id, apiBody);
     if (status !== 200) toast.error("Failed to update details!");
     else {
@@ -206,7 +204,7 @@ function EditItemForm({ open, onClose, data }) {
                   onChange={(e) => {
                     let { name, value } = e.target;
                     if (value === "") setError(name);
-                    if (!nameValidation(value)) setError(name);
+                    if (!itemNameValidation(value)) setError(name);
                     else removeError(name);
                     setValues(name, value);
                   }}

@@ -84,7 +84,7 @@ const Home = () => {
         setLastSevenDays(dataWithTags?.week);
         setLoading(false);
       } catch (err) {
-        console.log(err);
+        //console.log(err);
         setLoading(false);
       }
     }
@@ -118,11 +118,11 @@ const Home = () => {
         setTodayItems(dataWithTags?.today ?? []);
         setLastSevenDays(dataWithTags?.week ?? []);
       } catch (e) {
-        console.log(e);
+        //console.log(e);
       }
     }
     if (searchTerm) {
-      console.log("searchTerm is set");
+      //console.log("searchTerm is set");
       fetchData();
       setAppliedFilters(null);
       setFilterCategory(null);
@@ -185,7 +185,7 @@ const Home = () => {
         const value = item?.tags?.map((tag) => tag);
         temp = lodash.uniq([...temp, ...value]);
       }
-      console.log("tags array:", temp);
+      //console.log("tags array:", temp);
       return temp;
     };
     const getUniqueCategories = () => {
@@ -262,7 +262,7 @@ const Home = () => {
       filterObj.type = filterType;
     }
     const { data } = await makeApiCall(`/items?${filterBool ? filters : ""}`);
-    console.log("filtered data:", data);
+    //console.log("filtered data:", data);
     const dataWithTags = arrayfyTags(data?.data);
     setItemsData(dataWithTags?.beyond ?? []);
     setTodayItems(dataWithTags?.today ?? []);

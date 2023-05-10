@@ -9,7 +9,6 @@ import SVGComponent from "../common/Logo";
 // import { toast } from "react-toastify";
 import Loading from "../common/BtnLoading";
 import "./styles.css";
-import { useParams } from "react-router";
 // import { resetPassword } from "../../utils/apis/auth";
 
 function ResetPassword() {
@@ -19,7 +18,6 @@ function ResetPassword() {
   const [loading, setLoading] = React.useState(false);
   const [resetStatus, setResetStatus] = React.useState(false);
 
-  const params = useParams();
 
   const setValues = (name, value) => {
     setResetData({ ...resetData, [name]: value });
@@ -36,7 +34,7 @@ function ResetPassword() {
   };
 
   const validateData = async () => {
-    console.log(params);
+
     if (Object.keys(resetData).length === 0) {
       return setErrors({
         password: true,

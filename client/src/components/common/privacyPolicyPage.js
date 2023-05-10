@@ -104,7 +104,8 @@ function PrivacyPolicyPage() {
       ​
       <p>
         To exercise these rights, please contact us using the information
-        provided in the "Contact us" section below.
+        provided in the "Contact us" section below or mail us at
+        mysticashutosh.m3003@gmail.com
       </p>
       ​<h2>6. Changes to this Privacy Policy</h2>​
       <p>

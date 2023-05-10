@@ -30,6 +30,11 @@ export const nameValidation = (name) => {
   return regex.test(name);
 };
 
+export const itemNameValidation = (name) => {
+  const regex = /^[a-zA-Z0-9!-@+#$&". ]{4,50}$/;
+  return regex.test(name);
+};
+
 export const usernameValidation = (name) => {
   const regex = /^[a-zA-Z0-9]{6,20}$/;
   return regex.test(name);
@@ -111,7 +116,8 @@ export const validateUrl = (url) => {
 };
 
 export const validateTags = (value) => {
-  const regexTags = /^[A-Za-z0-9]+((,)[ A-Za-z0-9]+)*[A-Za-z0-9]+$/g;
+  const regexTags =
+    /^[A-Za-z0-9-@+#$& ]+((,)[ A-Za-z0-9-@+#$& ]+)*[A-Za-z0-9-@+#$& ]+$/g;
   return regexTags.test(value);
 };
 
