@@ -46,7 +46,7 @@
 
 .flexer-even {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   justify-items: center;
   align-items: center;
 }
@@ -77,12 +77,16 @@
 
 .slider-cards {
   display: flex;
-  gap: 12px;
+  background-color: #c1c1c1;
+  padding: 20px 10px;
+  margin: 0px -10px;
   /* overflow-x: auto; */
   /* scroll-behavior: smooth; */
   /* resize: horizontal; */
   position: relative;
-  padding: 24px 10px;
+  
+  box-shadow: 0 8px 16px rgba(44, 44, 44, 0.1019607843);
+  border-radius: 8px;
   /* overflow-y: hidden; */
   /* resize: none; */
   /* max-width: 100vw; */
@@ -96,11 +100,7 @@
   box-shadow: 0 8px 16px rgba(44, 44, 44, 0.1019607843);
   border-radius: 8px;
   max-width: 100%;
-  width: auto !important;
-  min-width: 164px;
-  /* overflow: hidden; */
   display: flex;
-  background-color: #fff;
   justify-content: space-between;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -197,4 +197,58 @@
 
 .item-reported-date {
   padding: 10px 0;
+}
+
+.searchBox {
+  align-self: center;
+}
+.searchBox input {
+  width: 100%;
+  height: 2.8rem;
+  border: none;
+  padding-left: 0rem;
+}
+
+.searchBox {
+  border-bottom: none;
+  padding-left: 1.2rem;
+}
+
+.searchBox input[type="text"] {
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid #e6ebee;
+  background-color: #ffffff;
+  /* background-image: url("../shared/images/dashboard/searchDark.png"); */
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  padding: 12px 20px 12px 40px;
+  outline: 0;
+  font-size: 13px;
+  font-weight: normal;
+  font-family: Proxima-Regular;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #707070;
+}
+.closeSearch{
+  position: absolute;
+    margin-left: -30px;
+    margin-top: 11px;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+}
+.search {
+  display: inline-block;
+  margin: 12px 15px;
+  padding: 6px 5px 4px;
+  vertical-align: top;
+}
+.search:hover {
+  cursor: pointer;
 }

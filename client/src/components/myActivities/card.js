@@ -9,7 +9,7 @@ import Collapse from "@mui/material/Collapse";
 import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import moment from "moment";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./styles.css";
 
 const ExpandMore = styled((props) => {
@@ -44,9 +44,8 @@ function ItemCard({ item }) {
     setExpanded(!expanded);
   };
   return (
-
     <Card sx={{ minWidth: 320 }}>
-      <CardMedia sx={{ height: 400 }} image={imageUrl} title={itemName} />
+      <Link to={`/item/${_id}`}><CardMedia sx={{ height: 400 }} image={imageUrl} title={itemName} /></Link>
 
       <CardContent>
         <div className="text-xl font-[700]">{itemName}</div>
