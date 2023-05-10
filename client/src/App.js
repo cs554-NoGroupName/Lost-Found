@@ -7,8 +7,9 @@ import ResetPassword from "components/resetPassword";
 import { ToastContainer } from "react-toastify";
 import Home from "components/Home";
 import ReportItem from "components/reportItem";
+import { ThemeProvider } from "@mui/material";
+import theme from "theme";
 import ItemDetails from "components/item";
-import { ThemeProvider, createTheme } from "@mui/material";
 import Page404 from "components/common/Page404";
 import "./App.css";
 import Profile from "components/profile";
@@ -21,17 +22,17 @@ import MyActivites from "components/myActivities";
 function App() {
   const state = useSelector((state) => state?.userData?.userData);
 
-  const theme = createTheme({
-    breakpoints: {
-      values: {
-        xs: 0,
-        sm: 300,
-        md: 639,
-        lg: 1023,
-        xl: 1279,
-      },
-    },
-  });
+  // const theme = createTheme({
+  //   breakpoints: {
+  //     values: {
+  //       xs: 0,
+  //       sm: 300,
+  //       md: 639,
+  //       lg: 1023,
+  //       xl: 1279,
+  //     },
+  //   },
+  // });
 
   const isAuthenticated = () => {
     return state && Object.keys(state).length !== 0 ? true : false;
@@ -46,7 +47,7 @@ function App() {
               path="/"
               exact
               element={
-                isAuthenticated() ? <Home /> : <Navigate to="/login" replace />
+               <Home />
               }
             />
             <Route
@@ -152,6 +153,7 @@ function App() {
         theme="colored"
       />
     </div>
+
   );
 }
 
