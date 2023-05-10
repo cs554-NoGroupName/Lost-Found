@@ -24,11 +24,15 @@ function ForgotPassword() {
 
     if (!error) {
       setLoading(true);
-      setResetSuccess(false); //NOTE remove this line
+      setResetSuccess(false);
       const response = await forgotPassword({ email: email });
       const { status, data } = response;
-      if (status !== 200) toast.error(data?.error);
-      else setResetSuccess(true);
+      if (status !== 200) {
+        const { message } = data;
+        if (typeof message === "string") toast.error(data?.message);
+        else if (message?.code === "auth/user-not-found")
+          toast.error("User not found!");
+      } else setResetSuccess(true);
       setLoading(false);
     }
     setLoading(false);
@@ -104,19 +108,19 @@ function ForgotPassword() {
                   Send me an email
                 </button>
               </div>
-              <div className="pt-4">
-                <Divider />
-                <span className="text-xl">
-                  <div
-                    onClick={() => navigate("/login")}
-                    className="text-logoBlue cursor-pointer hover:underline font-bold"
-                  >
-                    back to login
-                  </div>
-                </span>
-              </div>
             </div>
           )}
+          <div className="pt-4">
+            <Divider />
+            <span className="text-xl">
+              <div
+                onClick={() => navigate("/login")}
+                className="text-logoBlue cursor-pointer hover:underline font-bold"
+              >
+                back to login
+              </div>
+            </span>
+          </div>
         </div>
       </div>
     </div>

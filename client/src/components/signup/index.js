@@ -91,7 +91,7 @@ function SignUp() {
     const singupInfo = await signup(apiBody);
 
     const { data, status } = singupInfo;
-    if (status !== 200) {
+    if (status !== 201) {
       const { message } = data;
       if (typeof message === "string") toast.error(data?.message);
       else if (message?.code === "auth/email-already-in-use")
