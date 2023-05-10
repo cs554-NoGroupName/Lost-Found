@@ -100,7 +100,7 @@ function ItemCard({ item }) {
             navigate("/item/" + _id);
           }}
         >
-          More info
+          View details
         </button>
         <ExpandMore
           expand={expanded}

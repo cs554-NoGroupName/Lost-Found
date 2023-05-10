@@ -56,6 +56,8 @@ function Login() {
         if (typeof message === "string") toast.error(data?.message);
         else if (message?.code === "auth/user-not-found")
           toast.error("User not found!");
+        else if (message?.code === "auth/wrong-password")
+          toast.error("Invalid credentials!");
       } else {
         localStorage.setItem("token", data?.token);
         dispatch(setUserData({ data }));

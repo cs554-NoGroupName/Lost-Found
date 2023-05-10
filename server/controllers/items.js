@@ -281,7 +281,7 @@ export async function getReportedItemById(req, res) {
   } catch (e) {
     if (Object.keys(e).includes('status'))
       return res.status(e.status).json({ error: e.message });
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: e });
   }
 }
 
