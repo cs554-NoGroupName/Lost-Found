@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import lodash from "lodash";
-// import testData from "./testData.json";
-import { Link } from "react-router-dom";
 import LayoutProvider from "components/common/Layout";
 import useDocumentTitle from "components/common/useDocumentTitle";
 import LoadingText from "components/common/loadingText";
@@ -10,15 +8,11 @@ import { styled } from "@mui/material/styles";
 import "./styles.css";
 
 import {
-  Backdrop,
   Box,
-  Button,
   Chip,
-  Fade,
   FormControl,
   InputLabel,
   MenuItem,
-  Modal,
   Select,
   SwipeableDrawer,
   Typography,
@@ -31,25 +25,12 @@ import Search from "./Search";
 import { makeApiCall } from "utils/apis/api";
 
 import {
-  Clear,
   FilterAlt,
   FilterAltOff,
   FilterList,
   FilterListOff,
 } from "@mui/icons-material";
 import ItemCard from "components/myActivities/card";
-
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-};
 
 const container = window !== undefined ? () => window.document.body : undefined;
 
@@ -73,33 +54,30 @@ const Puller = styled(Box)(({ theme }) => ({
 }));
 
 const Home = () => {
-  const currentUser = localStorage.getItem("token");
+  // State variables
   const [loading, setLoading] = useState(true);
   const [itemsData, setItemsData] = useState([]);
   const [tags, setTags] = useState([]);
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState(null);
   const [filterType, setFilterType] = useState(null);
   const [filterCategory, setFilterCategory] = useState(null);
   const [filterTags, setFilterTags] = useState([]);
   const [lastSevenDays, setLastSevenDays] = useState([]);
   const [appliedFilters, setAppliedFilters] = useState(null);
-
   const [todayItems, setTodayItems] = useState([]);
 
+  // MUI Theme
   const theme = useTheme();
 
   // API Call on load
   useEffect(() => {
     async function fetchData() {
       try {
-        const { data } = await makeApiCall(
-          `/items` // TODO: Replace with items data backend call using REACT env variables
-        );
-        //console.log("data:", data);
+        const { data } = await makeApiCall(`/items`);
+        console.log("data:", data);
         const dataWithTags = arrayfyTags(data?.data);
         setItemsData(dataWithTags?.beyond);
         setTodayItems(dataWithTags?.today);
@@ -114,13 +92,27 @@ const Home = () => {
     fetchData();
   }, []);
 
+  // Search UseEffect
   useEffect(() => {
-    //console.log("search useEffect fired");
+    console.log("search useEffect fired");
+    async function fetchWithoutSearch() {
+      try {
+        console.log(`in fetch searchTerm`);
+        const { data } = await makeApiCall(`/items`);
+        console.log("search data:", data);
+        const dataWithTags = arrayfyTags(data?.data);
+        setItemsData(dataWithTags?.beyond ?? []);
+        setTodayItems(dataWithTags?.today ?? []);
+        setLastSevenDays(dataWithTags?.week ?? []);
+      } catch (e) {
+        console.log(e);
+      }
+    }
     async function fetchData() {
       try {
-        //console.log(`in fetch searchTerm: ${searchTerm}`);
+        console.log(`in fetch searchTerm: ${searchTerm}`);
         const { data } = await makeApiCall(`/items?itemName=${searchTerm}`);
-        //console.log("search data:", data);
+        console.log("search data:", data);
         const dataWithTags = arrayfyTags(data?.data);
         setItemsData(dataWithTags?.beyond ?? []);
         setTodayItems(dataWithTags?.today ?? []);
@@ -133,12 +125,19 @@ const Home = () => {
       //console.log("searchTerm is set");
       fetchData();
       setAppliedFilters(null);
+      setFilterCategory(null);
+      setFilterStatus(null);
+      setFilterType(null);
+      setFilterTags([]);
+    } else {
+      fetchWithoutSearch();
+      setAppliedFilters(null);
+      setFilterCategory(null);
+      setFilterStatus(null);
+      setFilterType(null);
+      setFilterTags([]);
     }
   }, [searchTerm]);
-
-  useEffect(() => {
-    //console.log("Current user:", currentUser);
-  }, [currentUser]);
 
   const arrayfyTags = (data) => {
     const today = data?.today ?? [];
@@ -182,7 +181,7 @@ const Home = () => {
       const totalData = [...itemsData, ...todayItems, ...lastSevenDays];
 
       for (const item of totalData) {
-        // //console.log(item)
+        // console.log(item)
         const value = item?.tags?.map((tag) => tag);
         temp = lodash.uniq([...temp, ...value]);
       }
@@ -214,33 +213,10 @@ const Home = () => {
     setSearchTerm(value);
   };
 
+  // Filter functions
   const toggleFilter = () => {
     setShowFilters(!showFilters);
   };
-
-  // const updateTodayItems = (data) => {
-  //   const today = new Date();
-  //   const dayToday = today.getDate();
-  //   const monthToday = today.getMonth();
-  //   const yearToday = today.getFullYear();
-  //   const formattedToday = new Date(`${yearToday}-${monthToday}-${dayToday} 0:00:00`);
-  //   // const todayData = data?.data?.filter((item) => new Date(item.reportedDate) > formattedToday);
-  //   const todayData = data?.filter((item) => new Date(item?.lastSeenDate) > formattedToday);
-  //   //console.log("todayData", todayData);
-  //   setTodayItems(todayData ?? []);
-  // };
-
-  // const updateLastSevenDaysItems = (data) => {
-  //   const sevenDaysAgo = new Date(Date.now() - 1000*60*60*24*7);
-  //   const day = sevenDaysAgo.getDate();
-  //   const month = sevenDaysAgo.getMonth();
-  //   const year = sevenDaysAgo.getFullYear();
-  //   const formattedToday = new Date(`${year}-${month}-${day} 0:00:00`);
-  //   // const todayData = data?.data?.filter((item) => new Date(item.reportedDate) > formattedToday);
-  //   const sevenDaysAgoData = data?.filter((item) => new Date(item?.lastSeenDate) > formattedToday);
-  //   //console.log("sevenDaysAgoData", sevenDaysAgoData);
-  //   setLastSevenDays(sevenDaysAgoData ?? []);
-  // };
 
   const setStatusOnFilter = (status) => {
     if (status && typeof status == "string" && status.trim().length > 0) {
@@ -265,116 +241,6 @@ const Home = () => {
       setFilterTags(tags);
     }
   };
-
-  // const filterByField = (field, value) => {
-  //   setSearchTerm(itemsData.filter(item => item[field] === value));
-  // };
-
-  // const filterByTag = (tag) => {
-  //   setSearchTerm(itemsData.filter(item => item.tags.includes(tag)));
-  // };
-
-  const clearFilter = () => {
-    setFilterCategory(null);
-    setFilterTags([]);
-    setFilterStatus(null);
-    setFilterType(null);
-    setAppliedFilters(null);
-    refetchWithFilters(false);
-  };
-
-  //console.log("TAGS:", tags);
-
-  const cardBuilder = (item) => {
-    return <ItemCard item={item} />;
-    // return (
-    //   <Card key={item?._id} sx={{ maxWidth: 325, margin: "10px" }}>
-    //     <CardHeader title={item?.itemName} subheader={item?.category} subheaderTypographyProps={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}} sx={{ color: theme.palette.primary.contrastText,
-    //       backgroundColor: theme.palette.primary.main}} />
-    //     <CardMedia
-    //       // className="card-media"
-    //       component="img"
-    //       height="200px"
-    //       width="100%"
-    //       sx={{
-    //         objectFit: "contain",
-    //         width: "300px",
-    //         height: "300px"
-    //       }}
-    //       image={item?.imageUrl ?? noImage}
-    //       alt={item?.itemName}
-    //     />
-    //     <CardContent sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
-    //       {item?.lastSeenDate ? (<div className="item-reported-date">{new Date(item.lastSeenDate).toLocaleDateString(undefined, options)}</div>) : <></>}
-    //       {item?.type ? <div>Type: {item?.type}</div> : <></>}
-    //       {item?.itemStatus ? <div>Status: {item?.itemStatus}</div> : <></>}
-    //       {item?.description ? (
-    //         <Typography variant="body2" sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
-    //           {item?.description}
-    //         </Typography>
-    //       ) : (
-    //         <></>
-    //       )}
-    //     </CardContent>
-    //     <CardContent sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
-    //       {item?.tags && item?.tags?.length > 0 ? (
-    //         <>{itemTags(item?.tags)}</>
-    //       ) : (
-    //         <></>
-    //       )}
-    //     </CardContent>
-    //   </Card>
-    // );
-  };
-
-  // const itemTags = (tags) => {
-  //   return tags?.map((tag) => {
-  //     return (
-  //       <Chip
-  //         variant="outlined"
-  //         style={{ marginRight: "5px", marginBottom: "2px" }}
-  //         label={tag}
-  //         sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}
-  //       />
-  //     );
-  //   });
-  // };
-
-  // const refetchTestData = () => {
-  //   const filters = {};
-  //   if (filterStatus) {
-  //     filters.status = filterStatus;
-  //   }
-  //   if (filterTags && filterTags.length > 0) {
-  //     filters.tags = tags;
-  //   }
-  //   if (filterCategory) {
-  //     filters.category = filterCategory;
-  //   }
-  //   if (filterType) {
-  //     filters.type = filterType;
-  //   }
-  //   let filteredTestData = testData;
-  //   const filterKeys = Object.keys(filters) ?? [];
-  //   if (filterKeys && filterKeys?.length > 0) {
-  //     for (const key of filterKeys) {
-  //       if (key !== "tags") {
-  //         filteredTestData = filteredTestData?.filter((item) => item[key] === filters[key])
-  //       } else {
-  //         filteredTestData = filteredTestData?.filter((item) => checkExactSubset(item?.keys, filters?.keys))
-  //       }
-  //     }
-  //   }
-  //   setItemsData(filteredTestData);
-  //   updateTodayItems(filteredTestData);
-  //   updateLastSevenDaysItems(filteredTestData);
-  // };
-
-  // const checkExactSubset = (parentArray, childArray) => {
-  //   return childArray?.every((el) => {
-  //       return parentArray?.includes(el)
-  //   });
-  // };
 
   const refetchWithFilters = async (filterBool = true) => {
     let filters = "";
@@ -404,23 +270,29 @@ const Home = () => {
     setAppliedFilters(filterBool ? filterObj : null);
   };
 
-  // Modal operations
-  // const openModal = () => setShowModal(true);
+  const clearFilter = () => {
+    setFilterCategory(null);
+    setFilterTags([]);
+    setFilterStatus(null);
+    setFilterType(null);
+    setAppliedFilters(null);
+    refetchWithFilters(false);
+  };
 
-  const closeModal = () => setShowModal(false);
+  // Items Card building
+  const cardBuilder = (item) => {
+    return (
+      <div className="mr-4 mb-2">
+        <ItemCard item={item} />
+      </div>
+    );
+  };
 
   const itemsCard = (data) => {
     return (
       <div className="items-card">
         {data?.map((item) => {
           return cardBuilder(item);
-          // <div>
-          //   {currentUser ? (
-          //     <Link to={`/item/${item?._id}`}>{cardBuilder(item)}</Link>
-          //   ) : (
-          //     <span onClick={openModal}>{cardBuilder(item)}</span>
-          //   )}
-          // </div>
         })}
       </div>
     );
@@ -432,11 +304,6 @@ const Home = () => {
         {data?.map((item) => {
           return (
             <Grid item lg={4} md={6} sm={12} xs={12}>
-              {/* {currentUser ? ( */}
-              {/* <Link to={`/item/${item?._id}`}>{cardBuilder(item)}</Link> */}
-              {/* ) : ( */}
-              {/* <span onClick={openModal}>{cardBuilder(item)}</span> */}
-              {/* )} */}
               {cardBuilder(item)}
             </Grid>
           );
@@ -444,55 +311,6 @@ const Home = () => {
       </Grid>
     );
   };
-
-  // const getLastSevenDaysCard = (data) => {
-  //   return (
-  //     <div className="item-row">
-  //       {data?.map((item) => {
-  //         return (
-  //           <>
-  //             {currentUser ? (
-  //               <Link to={`/item/${item?._id}`}>{rowCardBuilder(item)}</Link>
-  //             ) : (
-  //               <span onClick={openModal}>{rowCardBuilder(item)}</span>
-  //             )}
-  //           </>
-  //         );
-  //       })}
-  //     </div>
-  //   );
-  // };
-
-  // const rowCardBuilder = (item) => {
-  //   return (
-  //     <div className="row-wrapper">
-  //       <div className="image-wrapper">
-  //         <img className="row-image" src={item?.imageUrl ?? noImage} alt={item?.itemName} />
-  //         {item?.type ? <div className="image-text">{item.type}</div> : <></>}
-  //       </div>
-  //       <div className="row-details">
-  //         <div className="item-name">{item?.itemName}</div>
-  //         <div className="item-data">
-  //         {item?.type ? <div className="item-type">Type: {item?.type}</div> : <></>}
-  //         {item?.itemStatus ? <div className="item-status">Status: {item?.itemStatus}</div> : <></>}
-  //         {item?.description ? (
-  //           <div className="item-description">
-  //             {item?.description}
-  //           </div>
-  //         ) : (
-  //           <></>
-  //         )}
-  //         {item?.tags && item?.tags?.length > 0 ? (
-  //           <div className="item-tags">{itemTags(item?.tags)}</div>
-  //         ) : (
-  //           <></>
-  //         )}
-  //         </div>
-  //       </div>
-  //       <div className="row-end">{item?.lastSeenDate ? (<div className="item-reported-date">{new Date(item.lastSeenDate).toLocaleDateString(undefined, options)}</div>) : <></>}</div>
-  //     </div>
-  //   );
-  // };
 
   return (
     <LayoutProvider>
@@ -502,88 +320,9 @@ const Home = () => {
           <LoadingText />
         ) : (
           <div>
-            {/* Items displayed in cards using Material UI Grid */}
-            {/* Filter options */}
-            {/* {showFilters ?
-        <Grid container spacing={0}>
-          <Grid item md={3} sm={6} xs={12}>
-          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
-            <InputLabel id="category-filter-label">Category</InputLabel>
-            <Select
-              value={filterCategory}
-              labelId="category-filter-label"
-              id="category-filter"
-              onChange={(e) => setCategoryOnFilter(e.target.value)}
-              label="Status"
-            >
-              {categories.map((category) => {
-                return <MenuItem value={category}>{category}</MenuItem>
-              })}
-            </Select>
-          </FormControl>
-          </Grid>
-          <Grid item md={3} sm={6} xs={12}>
-          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
-            <InputLabel id="status-filter-label">Status</InputLabel>
-            <Select
-              value={filterStatus}
-              labelId="status-filter-label"
-              id="status-filter"
-              onChange={(e) => setStatusOnFilter(e.target.value)}
-              label="Status"
-            >
-              <MenuItem value="open">Open</MenuItem>
-              <MenuItem value="closed">Claimed</MenuItem>
-            </Select>
-          </FormControl>
-          </Grid>
-          <Grid item md={3} sm={6} xs={12}>
-          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
-            <InputLabel id="type-filter-label">Type</InputLabel>
-            <Select
-              value={filterType}
-              labelId="type-filter-label"
-              id="type-filter"
-              onChange={(e) => setTypeOnFilter(e.target.value)}
-              label="Type"
-            >
-              <MenuItem value="lost">Lost</MenuItem>
-              <MenuItem value="found">Found</MenuItem>
-            </Select>
-          </FormControl>
-          </Grid>
-          <Grid item md={3} sm={6} xs={12}>
-          <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
-            <InputLabel id="tags-filter-label">Tag</InputLabel>
-            <Select
-              value={filterTags}
-              multiple
-              labelId="tags-filter-label"
-              id="tags-filter"
-              onChange={(e) => setTagsOnFilter(e.target.value)}
-              label="Tag"
-            >
-              {tags.map((tag) => {
-                return <MenuItem value={tag}>{tag}</MenuItem>
-              })}
-            </Select>
-          </FormControl>
-          </Grid>
-        </Grid>
-         : <></>} */}
             <div className="flexer-even">
               <Search searchValue={searchValue} searchType="Events" />
-              <Button
-                sx={{
-                  backgroundColor: theme.palette.yellowButton,
-                  margin: "10px",
-                  border: "1px solid black",
-                }}
-                onClick={() => setSearchTerm(" ")}
-              >
-                <Clear />
-                Clear Search
-              </Button>
+              {/* <button className="btn_default" onClick={() => setSearchTerm(" ")}><Clear />Clear Search</button> */}
               <button className="btn_default" onClick={toggleFilter}>
                 {showFilters ? (
                   <div>
@@ -597,8 +336,6 @@ const Home = () => {
                   </div>
                 )}
               </button>
-              {/* {showFilters ? <Button onClick={refetchTestData}>Apply Filters</Button> : <></>}
-          <Button onClick={clearFilter}>Clear Filters</Button> */}
             </div>
             {appliedFilters ? (
               <div>
@@ -680,11 +417,6 @@ const Home = () => {
             </div>
             <div>
               {lastSevenDays && lastSevenDays?.length > 0 ? (
-                // <div>
-                //   <div className="items-rows">
-                //     {getLastSevenDaysCard(lastSevenDays)}
-                //   </div>
-                // </div>
                 <div>{itemsCardAlt(lastSevenDays)}</div>
               ) : (
                 <div style={{ margin: "10px" }}>No data</div>
@@ -700,41 +432,12 @@ const Home = () => {
                 <div style={{ margin: "10px" }}>No data</div>
               )}
             </div>
-
+            <br />
+            <br />
             {/* Modal display to ask users to login for item details */}
-            <Modal
-              aria-labelledby="transition-modal-title"
-              aria-describedby="transition-modal-description"
-              open={showModal}
-              onClose={closeModal}
-              closeAfterTransition
-              slots={{ backdrop: Backdrop }}
-              slotProps={{
-                backdrop: {
-                  timeout: 500,
-                },
-              }}
-            >
-              <Fade in={showModal}>
-                <Box sx={modalStyle}>
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    component="h2"
-                  >
-                    Looks like you haven't signed in
-                  </Typography>
-                  <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-                    <Link to={`/login`}>Click here</Link> to sign and view this
-                    item in detail
-                  </Typography>
-                </Box>
-              </Fade>
-            </Modal>
             <Global
               styles={{
                 ".MuiDrawer-root > .MuiPaper-root": {
-                  // height: `calc(50% - ${drawerBleeding}px)`,
                   overflow: "visible",
                 },
               }}
@@ -769,16 +472,6 @@ const Home = () => {
                   Filters
                 </Typography>
               </StyledBox>
-              {/* <StyledBox
-          sx={{
-            px: 2,
-            pb: 2,
-            height: '100%',
-            overflow: 'auto',
-          }}
-        >
-          <Skeleton variant="rectangular" height="100%" />
-        </StyledBox> */}
               <Grid container spacing={0}>
                 <Grid item md={3} sm={12} xs={12}>
                   <FormControl
@@ -789,6 +482,7 @@ const Home = () => {
                       display: "flex",
                       justifyContent: "center",
                       justifyItems: "center",
+                      marginRight: "15px",
                     }}
                   >
                     <InputLabel id="category-filter-label">Category</InputLabel>
@@ -798,6 +492,7 @@ const Home = () => {
                       id="category-filter"
                       onChange={(e) => setCategoryOnFilter(e.target.value)}
                       label="Status"
+                      sx={{ marginRight: "15px" }}
                     >
                       {categories.map((category) => {
                         return <MenuItem value={category}>{category}</MenuItem>;
@@ -814,6 +509,7 @@ const Home = () => {
                       display: "flex",
                       justifyContent: "center",
                       justifyItems: "center",
+                      marginRight: "15px",
                     }}
                   >
                     <InputLabel id="status-filter-label">Status</InputLabel>
@@ -823,6 +519,7 @@ const Home = () => {
                       id="status-filter"
                       onChange={(e) => setStatusOnFilter(e.target.value)}
                       label="Status"
+                      sx={{ marginRight: "15px" }}
                     >
                       <MenuItem value="reported">Reported</MenuItem>
                       <MenuItem value="claimed">Claimed</MenuItem>
@@ -838,6 +535,7 @@ const Home = () => {
                       display: "flex",
                       justifyContent: "center",
                       justifyItems: "center",
+                      marginRight: "15px",
                     }}
                   >
                     <InputLabel id="type-filter-label">Type</InputLabel>
@@ -847,6 +545,7 @@ const Home = () => {
                       id="type-filter"
                       onChange={(e) => setTypeOnFilter(e.target.value)}
                       label="Type"
+                      sx={{ marginRight: "15px" }}
                     >
                       <MenuItem value="lost">Lost</MenuItem>
                       <MenuItem value="found">Found</MenuItem>
@@ -873,6 +572,7 @@ const Home = () => {
                         id="tags-filter"
                         onChange={(e) => setTagsOnFilter(e.target.value)}
                         label="Tag"
+                        sx={{ marginRight: "15px" }}
                       >
                         {tags?.map((tag) => {
                           return <MenuItem value={tag}>{tag}</MenuItem>;
@@ -894,7 +594,6 @@ const Home = () => {
                 </button>
                 <button
                   className="btn_default__light mx-2"
-                  // sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }}
                   onClick={clearFilter}
                 >
                   <FilterAltOff />
