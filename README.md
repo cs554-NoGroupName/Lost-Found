@@ -83,15 +83,19 @@ CI/CD is setup for the application using GitHub Actions. Whenever a pull request
 
 ### Backend endpoints
 
-Dev - https://lostandfounddev.azurewebsites.net
+Azure End Point - https://lostandfounddev.azurewebsites.net
 
-Prod - https://lostandfoundprod.azurewebsites.net
+To use Deployed endpoint change the following in the .env file
 
-### Frontend
+```bash
+REACT_APP_BASE_URL="https://lostandfounddev.azurewebsites.net"
+```
 
-Dev - https://lostandfounddev.netlify.app
+### Frontend Live At.
 
-Prod - https://lostandfoundprod.netlify.app
+Dev - https://dev.lostnfound.live/
+
+Prod - https://lostnfound.live/
 
 ## Contribution Guidelines
 

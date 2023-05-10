@@ -1,0 +1,1 @@
+export const GET_ITEMS_LIST = `${process.env.REACT_APP_BASE_URL}/items`;

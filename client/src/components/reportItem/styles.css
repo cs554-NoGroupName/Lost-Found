@@ -1,0 +1,103 @@
+.css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected {
+  color: #324b4b !important;
+  font-weight: bold;
+}
+
+.css-11yukd5-MuiTabs-indicator {
+  background-color: #324b4b !important;
+}
+
+.css-qywfm8-MuiDivider-wrapper {
+  font-size: 24px !important;
+  font-weight: bold !important;
+  color: #1c2536 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.section_number {
+  width: 35px;
+  background-color: #1c2536;
+  color: white;
+  display: flex;
+  justify-content: center;
+  border-radius: 100%;
+  align-items: center;
+  height: 35px;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  background-color: white;
+  max-width: 100%;
+  max-height: 75%;
+  border-radius: 10px;
+}
+
+.modal_header {
+  background-color: #1c2536;
+  width: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 10px;
+  font-size: 18px;
+  color: white;
+  font-weight: 600;
+}
+
+.modal_body {
+  font-size: 15px;
+  overflow-y: auto;
+  padding: 8px 10px;
+  margin-bottom: 16px;
+}
+
+.modal_footer {
+  display: flex;
+  justify-content: space-around;
+  padding: 8px;
+  box-shadow: 0px 0px 5px 0px #1c2536;
+  margin-top: -10px;
+}
+
+.modal_body__key {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.modal_body__value {
+  font-size: 16px;
+  inline-size: auto;
+  overflow-wrap: break-word;
+}
+
+.profile_upload_modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  max-width: 450px;
+  max-height: 500px;
+  border-radius: 10px;
+  padding: 10px;
+  justify-content: space-evenly;
+  width: fit-content;
+}
+
+.upload_image_preview {
+  width: 300px;
+  max-width: 300px;
+  height: 300px;
+  max-height: 300px;
+}
