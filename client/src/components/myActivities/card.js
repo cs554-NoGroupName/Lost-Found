@@ -44,8 +44,8 @@ function ItemCard({ item }) {
     setExpanded(!expanded);
   };
   return (
-    <Card sx={{ maxWidth: 350, position: "relative" }}>
-      <Link to={`/items/${_id}`}><CardMedia sx={{ height: 400 }} image={imageUrl} title={itemName} /></Link>
+    <Card sx={{ minWidth: 320 }}>
+      <Link to={`/item/${_id}`}><CardMedia sx={{ height: 400 }} image={imageUrl} title={itemName} /></Link>
 
       <CardContent>
         <div className="text-xl font-[700]">{itemName}</div>
