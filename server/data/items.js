@@ -80,16 +80,20 @@ export const uploadImage = async (id, imageUrl) => {
 
 export const userMinDetails = async (uid) => {
   const userCollection = await mongoCollections.users();
-  let user = await userCollection.findOne({
-    user_firebase_id: uid,
-  });
-  user = {
-    uid: user.user_firebase_id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    image_url: user.image_url,
-  };
-  return user;
+  try {
+    let user = await userCollection.findOne({
+      user_firebase_id: uid,
+    });
+    user = {
+      uid: user.user_firebase_id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      image_url: user.image_url,
+    };
+    return user;
+  } catch (e) {
+    return null;
+  }
 };
 
 export const getItemById = async (id) => {
@@ -102,10 +106,13 @@ export const getItemById = async (id) => {
   item.reportedBy = user;
   // for each userId in claims array append user details
   for (let i = 0; i < item.claims.length; i++) {
-    const user = await userMinDetails(item.claims[i].userId);
-    item.claims[i].userDetails = user;
+    try {
+      const user = await userMinDetails(item.claims[i].userId);
+      item.claims[i].userDetails = user;
+    } catch (e) {
+      item.claims[i].userDetails = null;
+    }
   }
-
   return item;
 };
 

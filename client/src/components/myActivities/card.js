@@ -44,7 +44,8 @@ function ItemCard({ item }) {
     setExpanded(!expanded);
   };
   return (
-    <Card sx={{ maxWidth: 350, position: "relative" }}>
+
+    <Card sx={{ minWidth: 320 }}>
       <CardMedia sx={{ height: 400 }} image={imageUrl} title={itemName} />
 
       <CardContent>
@@ -100,7 +101,7 @@ function ItemCard({ item }) {
             navigate("/item/" + _id);
           }}
         >
-          More info
+          View details
         </button>
         <ExpandMore
           expand={expanded}
