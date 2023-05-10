@@ -47,7 +47,11 @@ function App() {
               path="/"
               exact
               element={
-               <Home />
+                isAuthenticated() ? (
+                  <Home />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
               }
             />
             <Route

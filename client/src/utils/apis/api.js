@@ -33,7 +33,8 @@ export const makeApiCall = async (endpoint, method, body, headers = null) => {
       toast.info("Session expired!");
       toast.error("Logging out...");
       localStorage.setItem("token", null);
-      return store.dispatch(setUserData({ data: {} }));
+      store.dispatch(setUserData({ data: {} }));
+      return (window.location.href = "/login");
     } else {
       const err = { status, data };
       return err;
