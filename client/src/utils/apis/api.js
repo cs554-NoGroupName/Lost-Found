@@ -1,9 +1,9 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import store from "../../redux/store";
+import { setUserData } from "redux/reducer";
 const baseUrl = process.env.REACT_APP_BASE_URL;
-// const baseUrl = "http://localhost:4000";
 
-const errosStatusCodes = [500, 409, 404, 400, 401];
 export const makeApiCall = async (endpoint, method, body, headers = null) => {
   let results = {};
 
@@ -29,12 +29,14 @@ export const makeApiCall = async (endpoint, method, body, headers = null) => {
   } catch (err) {
     const { response } = err;
     const { status, data } = response;
-
-    if (errosStatusCodes.includes(status)) {
-      // toast.error(data?.error);
+    if (status === 401 && data?.message === "Invalid authorization token.") {
+      toast.info("Session expired!");
+      toast.error("Logging out...");
+      localStorage.setItem("token", null);
+      return store.dispatch(setUserData({ data: {} }));
+    } else {
       const err = { status, data };
       return err;
     }
-    toast.error("Something went wrong!");
   }
 };
