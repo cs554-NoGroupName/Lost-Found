@@ -74,7 +74,6 @@ function Profile() {
         else dispatch(setUserData({ data }));
       })
       .catch((err) => {
-        console.log({ err });
       });
   }, [dispatch]);
 

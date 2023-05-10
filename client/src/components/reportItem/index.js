@@ -3,7 +3,6 @@ import { IconButton, MenuItem, TextField } from "@mui/material";
 import LayoutProvider from "components/common/Layout";
 import {
   itemNameValidation,
-  nameValidation,
   validateDescription,
   validateTags,
 } from "utils/helper";

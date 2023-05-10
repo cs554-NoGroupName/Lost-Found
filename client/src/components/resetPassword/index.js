@@ -36,7 +36,6 @@ function ResetPassword() {
   };
 
   const validateData = async () => {
-    console.log(params);
     if (Object.keys(resetData).length === 0) {
       return setErrors({
         password: true,
