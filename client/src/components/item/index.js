@@ -161,7 +161,7 @@ function ItemDetails() {
     const { status, data } = await sendClaimRequest(itemData?._id);
     setOpenClaim(false);
     if (status === 200) {
-      // setItemData(data?.updatedItem);
+      setItemData(data?.updatedItem);
       toast.success("Claim request sent.");
     } else toast.info(data.error);
   };

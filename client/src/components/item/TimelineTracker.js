@@ -9,6 +9,8 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import "./styles.css";
+import { capitalizeFirstLetter } from "utils/helper";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const titleStyle = {
   fontWeight: "bold",
@@ -44,12 +46,15 @@ const TimelineTracker = ({ timeline }) => {
         <Stepper
           classes={"blinking_effect"}
           activeStep={timeline?.length - 1}
-          orientation="horizontal"
+          orientation={
+            useMediaQuery("(max-width:639px)") ? "vertical" : "horizontal"
+          }
           alternativeLabel
           sx={{
             display: { xs: "block", sm: "block", md: "flex" },
             alignItems: "center",
-            width: "max-content",
+            width: "100%",
+            overflowX: "auto",
             "& .MuiStepLabel-label.Mui-completed ": {
               backgroundColor: "#e6e6e6",
               color: "black",
@@ -82,11 +87,11 @@ const TimelineTracker = ({ timeline }) => {
             <Step key={item?.id}>
               <StepLabel>
                 <Box>
-                  <Typography sx={{ fontSize: "1.2rem", fontWeight: "700" }}>
-                    Date: {moment(item?.date).format("MMMM Do YYYY, h:mm a")}
+                  <Typography sx={{ fontSize: "1.1rem", fontWeight: "700" }}>
+                    {moment(item?.date).format("MMMM Do YYYY, h:mm a")}
                   </Typography>
-                  <Typography sx={{ fontSize: "1.2rem", fontWeight: "700" }}>
-                    Status: {item?.status}
+                  <Typography sx={{ fontSize: "1.1rem", fontWeight: "700" }}>
+                    Status: {capitalizeFirstLetter(item?.status)}
                   </Typography>
                   <Typography
                     sx={{
