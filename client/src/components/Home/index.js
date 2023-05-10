@@ -395,7 +395,7 @@ const Home = () => {
   };
 
   // Modal operations
-  const openModal = () => setShowModal(true);
+  // const openModal = () => setShowModal(true);
 
   const closeModal = () => setShowModal(false);
 
