@@ -44,7 +44,7 @@ function ItemCard({ item }) {
     setExpanded(!expanded);
   };
   return (
-    <Card sx={{ minWidth: 340, position: "relative" }}>
+    <Card sx={{ maxWidth: 350, position: "relative" }}>
       <CardMedia sx={{ height: 400 }} image={imageUrl} title={itemName} />
 
       <CardContent>
@@ -59,7 +59,23 @@ function ItemCard({ item }) {
           Reported Date: {moment(lastSeenDate).format("MMMM Do YYYY, h:mm a")}
         </div>
         <div className="font-[600] mt-2">
-          {tags?.split(",")?.map((tag) => (
+          {typeof tags === 'object' ? 
+          tags?.map((tag) => (
+            <Chip
+              key={tag}
+              sx={{
+                backgroundColor: "#ff9717",
+                color: "#1c2536",
+                borderRadius: "50px",
+                marginRight: "5px",
+                fontSize: "0.85rem",
+                fontWeight: "bold",
+                marginBottom: "5px",
+              }}
+              label={tag}
+            />
+          ))
+          :  tags?.split(",")?.map((tag) => (
             <Chip
               key={tag}
               sx={{

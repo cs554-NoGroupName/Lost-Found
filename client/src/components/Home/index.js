@@ -35,6 +35,8 @@ import Search from "./Search";
 import { makeApiCall } from "utils/apis/api";
 
 import noImage from "../../utils/images/No-Image-Placeholder.png";
+import { Clear, FilterAlt, FilterAltOff, FilterList, FilterListOff } from "@mui/icons-material";
+import ItemCard from "components/myActivities/card";
 
 const modalStyle = {
   position: "absolute",
@@ -145,7 +147,7 @@ const Home = () => {
     const week = data?.week ?? [];
     const beyond = data?.beyond ?? [];
     today.forEach((item) => {
-      let itemTag = item.tags.split(",");
+      let itemTag = item?.tags?.split(",");
       let empty = [];
       itemTag.forEach((tag) => {
         empty.push(tag.trim());
@@ -153,7 +155,7 @@ const Home = () => {
       item.tags = empty;
     });
     week.forEach((item) => {
-      let itemTag = item.tags.split(",");
+      let itemTag = item?.tags?.split(",");
       let empty = [];
       itemTag.forEach((tag) => {
         empty.push(tag.trim());
@@ -161,7 +163,7 @@ const Home = () => {
       item.tags = empty;
     });
     beyond.forEach((item) => {
-      let itemTag = item.tags.split(",");
+      let itemTag = item?.tags?.split(",");
       let empty = [];
       itemTag.forEach((tag) => {
         empty.push(tag.trim());
@@ -280,59 +282,60 @@ const Home = () => {
 
   console.log("TAGS:", tags);
 
-  const cardBuilder = (item) => {
-    return (
-      <Card key={item?._id} sx={{ maxWidth: 345, width: "max-content", margin: "10px" }}>
-        <CardHeader title={item?.itemName} subheader={item?.category} subheaderTypographyProps={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}} sx={{ color: theme.palette.primary.contrastText,
-          backgroundColor: theme.palette.primary.main}} />
-        <CardMedia
-          // className="card-media"
-          component="img"
-          height="200px"
-          width="100%"
-          sx={{
-            objectFit: "contain",
-            width: "300px",
-            height: "300px"
-          }}
-          image={item?.imageUrl ?? noImage}
-          alt={item?.itemName}
-        />
-        <CardContent sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
-          {item?.lastSeenDate ? (<div className="item-reported-date">{new Date(item.lastSeenDate).toLocaleDateString(undefined, options)}</div>) : <></>}
-          {item?.type ? <div>Type: {item?.type}</div> : <></>}
-          {item?.itemStatus ? <div>Status: {item?.itemStatus}</div> : <></>}
-          {item?.description ? (
-            <Typography variant="body2" sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
-              {item?.description}
-            </Typography>
-          ) : (
-            <></>
-          )}
-        </CardContent>
-        <CardContent sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
-          {item?.tags && item?.tags?.length > 0 ? (
-            <>{itemTags(item?.tags)}</>
-          ) : (
-            <></>
-          )}
-        </CardContent>
-      </Card>
-    );
+  const cardBuilder = (item) => { 
+    return <ItemCard item={item} />
+    // return (
+    //   <Card key={item?._id} sx={{ maxWidth: 325, margin: "10px" }}>
+    //     <CardHeader title={item?.itemName} subheader={item?.category} subheaderTypographyProps={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}} sx={{ color: theme.palette.primary.contrastText,
+    //       backgroundColor: theme.palette.primary.main}} />
+    //     <CardMedia
+    //       // className="card-media"
+    //       component="img"
+    //       height="200px"
+    //       width="100%"
+    //       sx={{
+    //         objectFit: "contain",
+    //         width: "300px",
+    //         height: "300px"
+    //       }}
+    //       image={item?.imageUrl ?? noImage}
+    //       alt={item?.itemName}
+    //     />
+    //     <CardContent sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
+    //       {item?.lastSeenDate ? (<div className="item-reported-date">{new Date(item.lastSeenDate).toLocaleDateString(undefined, options)}</div>) : <></>}
+    //       {item?.type ? <div>Type: {item?.type}</div> : <></>}
+    //       {item?.itemStatus ? <div>Status: {item?.itemStatus}</div> : <></>}
+    //       {item?.description ? (
+    //         <Typography variant="body2" sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
+    //           {item?.description}
+    //         </Typography>
+    //       ) : (
+    //         <></>
+    //       )}
+    //     </CardContent>
+    //     <CardContent sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}>
+    //       {item?.tags && item?.tags?.length > 0 ? (
+    //         <>{itemTags(item?.tags)}</>
+    //       ) : (
+    //         <></>
+    //       )}
+    //     </CardContent>
+    //   </Card>
+    // );
   };
 
-  const itemTags = (tags) => {
-    return tags?.map((tag) => {
-      return (
-        <Chip
-          variant="outlined"
-          style={{ marginRight: "5px", marginBottom: "2px" }}
-          label={tag}
-          sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}
-        />
-      );
-    });
-  };
+  // const itemTags = (tags) => {
+  //   return tags?.map((tag) => {
+  //     return (
+  //       <Chip
+  //         variant="outlined"
+  //         style={{ marginRight: "5px", marginBottom: "2px" }}
+  //         label={tag}
+  //         sx={{ color: theme.palette.primary.contrastText, backgroundColor: theme.palette.primary.main}}
+  //       />
+  //     );
+  //   });
+  // };
 
   // const refetchTestData = () => {
   //   const filters = {};
@@ -407,15 +410,16 @@ const Home = () => {
     return (
       <div className="items-card">
         {data?.map((item) => {
-          return (
-            <div>
-              {currentUser ? (
-                <Link to={`/item/${item?._id}`}>{cardBuilder(item)}</Link>
-              ) : (
-                <span onClick={openModal}>{cardBuilder(item)}</span>
-              )}
-            </div>
-          );
+          return  cardBuilder(item)
+            // <div>
+            //   {currentUser ? (
+            //     <Link to={`/item/${item?._id}`}>{cardBuilder(item)}</Link>
+            //   ) : (
+            //     <span onClick={openModal}>{cardBuilder(item)}</span>
+            //   )}
+            // </div>
+            
+          
         })}
       </div>
     );
@@ -423,15 +427,16 @@ const Home = () => {
 
   const itemsCardAlt = (data) => {
     return (
-      <Grid container spacing={1}>
+      <Grid container spacing={4}>
         {data?.map((item) => {
           return (
             <Grid item lg={4} md={6} sm={12} xs={12}>
-              {currentUser ? (
-                <Link to={`/item/${item?._id}`}>{cardBuilder(item)}</Link>
-              ) : (
-                <span onClick={openModal}>{cardBuilder(item)}</span>
-              )}
+              {/* {currentUser ? ( */}
+                {/* <Link to={`/item/${item?._id}`}>{cardBuilder(item)}</Link> */}
+              {/* ) : ( */}
+                {/* <span onClick={openModal}>{cardBuilder(item)}</span> */}
+              {/* )} */}
+              {cardBuilder(item)}
             </Grid>
           );
         })}
@@ -564,9 +569,8 @@ const Home = () => {
          : <></>} */}
         <div className="flexer-even">
           <Search searchValue={searchValue} searchType="Events" />
-          <Button sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }} onClick={() => setSearchTerm(" ")}>Clear Search</Button>
-          <Button sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }} onClick={toggleFilter}>{showFilters ? "Hide Filters" : "Show Filters"}</Button>
-          {/* TODO: Replace function refetchTestData with commented out function refetchWithFilters once Backend is ready */}
+          <Button sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }} onClick={() => setSearchTerm(" ")}><Clear />Clear Search</Button>
+          <button className="btn_default" onClick={toggleFilter}>{showFilters ? <div><FilterListOff />Hide</div> : <div><FilterList />Filters</div>}</button>
           {/* {showFilters ? <Button onClick={refetchTestData}>Apply Filters</Button> : <></>} 
           <Button onClick={clearFilter}>Clear Filters</Button> */}
         </div>
@@ -705,7 +709,7 @@ const Home = () => {
           <Skeleton variant="rectangular" height="100%" />
         </StyledBox> */}
         <Grid container spacing={0}>
-          <Grid item md={3} sm={6} xs={12}>
+          <Grid item md={3} sm={12} xs={12}>
           <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
             <InputLabel id="category-filter-label">Category</InputLabel>
             <Select
@@ -721,7 +725,7 @@ const Home = () => {
             </Select>
           </FormControl>
           </Grid>
-          <Grid item md={3} sm={6} xs={12}>
+          <Grid item md={3} sm={12} xs={12}>
           <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
             <InputLabel id="status-filter-label">Status</InputLabel>
             <Select
@@ -736,7 +740,7 @@ const Home = () => {
             </Select>
           </FormControl>
           </Grid>
-          <Grid item md={3} sm={6} xs={12}>
+          <Grid item md={3} sm={12} xs={12}>
           <FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
             <InputLabel id="type-filter-label">Type</InputLabel>
             <Select
@@ -751,7 +755,7 @@ const Home = () => {
             </Select>
           </FormControl>
           </Grid>
-          <Grid item md={3} sm={6} xs={12}>
+          <Grid item md={3} sm={12} xs={12}>
           {tags ?<FormControl variant="outlined" sx={{ m: 1, minWidth: 200, display: "flex", justifyContent: "center", justifyItems: "center" }}>
             <InputLabel id="tags-filter-label">Tag</InputLabel>
             <Select
@@ -769,9 +773,14 @@ const Home = () => {
           </FormControl> : <></>}
           </Grid>
         </Grid>
-        <div className="flexer">
-          <Button sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }} onClick={refetchWithFilters}>Apply Filters</Button>
-          <Button sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }} onClick={clearFilter}>Clear Filters</Button>
+        <div className="flexer my-2">
+          <button 
+          className='btn_default mx-2'
+          onClick={refetchWithFilters}><FilterAlt />Apply</button>
+          <button
+          className="btn_default__light mx-2" 
+          // sx={{ backgroundColor: theme.palette.yellowButton, margin: "10px", border: "1px solid black" }} 
+          onClick={clearFilter}><FilterAltOff />Clear</button>
         </div>
       </SwipeableDrawer>
       </div>
