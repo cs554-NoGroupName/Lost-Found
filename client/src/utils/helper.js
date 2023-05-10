@@ -26,7 +26,7 @@ export const passwordValidation = (password) => {
 };
 
 export const nameValidation = (name) => {
-  const regex = /^[a-zA-Z0-9 ]{3,40}$/;
+  const regex = /^[a-zA-Z0-9 ]{4,40}$/;
   return regex.test(name);
 };
 
