@@ -1,11 +1,11 @@
-import LayoutProvider from "components/common/Layout";
-import React from "react";
-import { getUserActivites } from "utils/apis/user";
-import { Box, Grid } from "@mui/material";
-import LoadingText from "components/common/loadingText";
-import ItemCard from "./card";
-import { useDispatch } from "react-redux";
-import { setUserData } from "redux/reducer";
+import LayoutProvider from 'components/common/Layout';
+import React from 'react';
+import { getUserActivites } from 'utils/apis/user';
+import { Box, Grid } from '@mui/material';
+import LoadingText from 'components/common/loadingText';
+import ItemCard from './card';
+import { useDispatch } from 'react-redux';
+import { setUserData } from 'redux/reducer';
 
 function MyActivites() {
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ function MyActivites() {
       });
   }, [dispatch]);
 
-  const section = (title, data, noDataTitle = "Nothing to show!") => {
+  const section = (title, data, noDataTitle = 'Nothing to show!') => {
     return (
       <div className="mx-5 mb-8">
         <div className="text-2xl font-[700] mt-3 mb-4 text-[#1c2536bd]">
@@ -57,16 +57,16 @@ function MyActivites() {
     <LayoutProvider>
       <div>
         <div className="text-3xl font-[700] mb-5 text-[#1c2536]">
-          My MyActivites
+          My Activites
         </div>
         {loading ? (
           <LoadingText />
         ) : (
           <>
-            {section("My Reported Items", data?.reported)}
-            {section("My Claimed Items", data?.claims)}
-            {section("Recieved claim requests", data?.received_claims)}
-            {section("Sent claim requests", data?.requested_claims)}
+            {section('My Reported Items', data?.reported)}
+            {section('My Claimed Items', data?.claims)}
+            {section('Recieved claim requests', data?.received_claims)}
+            {section('Sent claim requests', data?.requested_claims)}
           </>
         )}
       </div>
