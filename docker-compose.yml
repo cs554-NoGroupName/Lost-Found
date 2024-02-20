@@ -2,9 +2,11 @@ version: '1.0'
 services:
   redis:
     container_name: redis
-    image: redis:alpine
-    ports:
-      - '6379:6379'
+    # image: redis:alpine
+    # ports:
+    #   - '6379:6379'
+    image: redis:latest
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
     volumes:
       - ./redis-data:/data
   web:
