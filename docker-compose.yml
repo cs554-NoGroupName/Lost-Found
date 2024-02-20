@@ -9,6 +9,8 @@ services:
     command: ["redis-server", "--bind", "redis", "--port", "6379"]
     volumes:
       - ./redis-data:/data
+    hostname: 'redis'
+
   web:
     restart: on-failure
     build: ./server
